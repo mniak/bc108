@@ -1,12 +1,9 @@
-import 'dart:convert';
+library utils;
+
 import 'dart:typed_data';
 
 class BytesBuilder {
-  List<int> _bytes;
-
-  BytesBuilder() {
-    this._bytes = List<int>();
-  }
+  List<int> _bytes = List<int>();
 
   BytesBuilder addByte(int byte) {
     _bytes.add(byte);

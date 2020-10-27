@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pinpad/bytes_builder.dart';
+import 'package:pinpad/utils/utils.dart';
 
 final random = Random();
 
