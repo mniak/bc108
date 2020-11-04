@@ -6,17 +6,6 @@ import 'dart:typed_data';
 
 import 'package:pinpad/utils/utils.dart';
 
-// class DataPackage {
-//   DataPackage();
-
-//   DataPackage withBytes(Uint8List bytes) {
-//     this.bytes = bytes;
-//     return this;
-//   }
-
-//   Uint8List bytes;
-// }
-
 enum ReaderState {
   Initial,
   Payload,
