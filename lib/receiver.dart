@@ -8,19 +8,31 @@ import 'package:pinpad/exceptions.dart';
 import 'package:pinpad/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 
-enum ReaderState {
+enum Stage {
   Initial,
   Payload,
   CRC1,
   CRC2,
 }
 
+class State {
+  final payload = List<int>();
+  Stage stage;
+  int crc1;
+
+  State() {
+    this.reset();
+  }
+
+  void reset() {
+    this.payload.clear();
+    this.stage = Stage.Initial;
+  }
+}
+
 class ReaderTransformer implements StreamTransformer<int, String> {
   final _controller = StreamController<String>();
-  final _payload = List<int>();
-  var _state = ReaderState.Initial;
-  int _crc1;
-
+  final _state = State();
   @override
   Stream<String> bind(Stream<int> stream) {
     stream.listen((b) => _processBytes(b));
@@ -28,8 +40,8 @@ class ReaderTransformer implements StreamTransformer<int, String> {
   }
 
   void _processBytes(int b) {
-    switch (this._state) {
-      case ReaderState.Initial:
+    switch (this._state.stage) {
+      case Stage.Initial:
         if (b == Byte.CAN.toInt()) {
           break;
         }
@@ -39,52 +51,50 @@ class ReaderTransformer implements StreamTransformer<int, String> {
           break;
         }
 
-        this._state = ReaderState.Payload;
+        this._state.stage = Stage.Payload;
         break;
 
-      case ReaderState.Payload:
+      case Stage.Payload:
         if (b == Byte.ETB.toInt()) {
-          if (_payload.length == 0) _fail(InvalidPayloadLengthException(0));
+          if (this._state.payload.length == 0)
+            _fail(InvalidPayloadLengthException(0));
 
-          _payload.forEach((b) {
+          this._state.payload.forEach((b) {
             if (b < 0x20 || b > 0x7f) {
               _fail(ByteOutOfRangeException(b));
             }
           });
 
-          _state = ReaderState.CRC1;
+          this._state.stage = Stage.CRC1;
           break;
         }
 
-        _payload.add(b);
-        if (_payload.length > 1024)
-          _fail(InvalidPayloadLengthException(_payload.length));
+        this._state.payload.add(b);
+        if (this._state.payload.length > 1024)
+          _fail(InvalidPayloadLengthException(this._state.payload.length));
 
         break;
-      case ReaderState.CRC1:
-        _crc1 = b;
-        _state = ReaderState.CRC2;
+      case Stage.CRC1:
+        this._state.crc1 = b;
+        this._state.stage = Stage.CRC2;
         break;
-      case ReaderState.CRC2:
-        final crc = crc16(Uint8List.fromList(_payload + [Byte.ETB.toInt()]));
-        if (crc[0] != _crc1 || crc[1] != b) {
-          _fail(ChecksumException(_crc1 * 256 + b, crc[0] * 256 + crc[1]));
+      case Stage.CRC2:
+        final crc =
+            crc16(Uint8List.fromList(this._state.payload + [Byte.ETB.toInt()]));
+        if (crc[0] != this._state.crc1 || crc[1] != b) {
+          _fail(ChecksumException(
+              this._state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
         } else {
-          final text = ascii.decode(_payload);
+          final text = ascii.decode(this._state.payload);
           _controller.sink.add(text);
         }
-        _reset();
+        this._state.reset();
         break;
     }
   }
 
   void _fail(Exception ex) {
     _controller.sink.addError(ex);
-  }
-
-  void _reset() {
-    _payload.clear();
-    _state = ReaderState.Initial;
   }
 
   @override
