@@ -1,7 +1,5 @@
 library utils;
 
-import 'dart:typed_data';
-
 import 'package:bc108/utils/bytes.dart';
 
 class BytesBuilder {
