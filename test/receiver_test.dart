@@ -170,16 +170,21 @@ void main() {
 
   group('when ACK/NAK is received, should raise event ACK/NAK', () {
     final data = [
-      [Byte.ACK.toInt(), predicate((x) => !x.isDataEvent && x.ack)],
-      [Byte.NAK.toInt(), predicate((x) => !x.isDataEvent && x.nak)],
-      // [Byte.NAK.toInt(), false, null],
-      // [Byte.ETB.toInt(), false, Exception()],
-      // ['X'.codeUnitAt(0), false, Exception()],
-      // [8, false, Exception()],
+      [
+        Byte.ACK.toInt(),
+        emitsInOrder([predicate((x) => !x.isDataEvent && x.ack)])
+      ],
+      [
+        Byte.NAK.toInt(),
+        emitsInOrder([predicate((x) => !x.isDataEvent && x.nak)])
+      ],
+      [Byte.ETB.toInt(), emitsError(TypeMatcher<ExpectedSynException>())],
+      ['X'.codeUnitAt(0), emitsError(TypeMatcher<ExpectedSynException>())],
+      [8, emitsError(TypeMatcher<ExpectedSynException>())],
     ];
     data.forEach((d) {
       final byte = d[0] as int;
-      final matcher = d[1] as Matcher;
+      final matcher = d[1] as StreamMatcher;
       test('0x${byte.toRadixString(16)}', () {
         final streamController = StreamController<int>();
         final stream = streamController.stream.transform(ReaderTransformer());
