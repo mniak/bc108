@@ -29,9 +29,9 @@ class State {
   }
 }
 
-class Event {
+class ReaderEvent {
   String _data;
-  Event.data(String data) {
+  ReaderEvent.data(String data) {
     if (data == null) throw ArgumentError.notNull('data');
     this._data = data;
   }
@@ -39,21 +39,21 @@ class Event {
   String get data => this._data;
 
   int _interrupt;
-  Event.ack() {
+  ReaderEvent.ack() {
     this._interrupt = 1;
   }
   bool get ack => this._interrupt == 1;
-  Event.nak() {
+  ReaderEvent.nak() {
     this._interrupt = 2;
   }
   bool get nak => this._interrupt == 2;
 }
 
-class ReaderTransformer implements StreamTransformer<int, Event> {
-  final _controller = StreamController<Event>();
+class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
+  final _controller = StreamController<ReaderEvent>();
   final _state = State();
   @override
-  Stream<Event> bind(Stream<int> stream) {
+  Stream<ReaderEvent> bind(Stream<int> stream) {
     stream.listen((b) => _processBytes(b));
     return _controller.stream;
   }
@@ -65,10 +65,10 @@ class ReaderTransformer implements StreamTransformer<int, Event> {
           case Byte.CAN:
             break;
           case Byte.ACK:
-            _controller.sink.add(Event.ack());
+            _controller.sink.add(ReaderEvent.ack());
             break;
           case Byte.NAK:
-            _controller.sink.add(Event.nak());
+            _controller.sink.add(ReaderEvent.nak());
             break;
           case Byte.SYN:
             this._state.stage = Stage.Payload;
@@ -111,7 +111,7 @@ class ReaderTransformer implements StreamTransformer<int, Event> {
               this._state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
         } else {
           final text = ascii.decode(this._state.payload);
-          _controller.sink.add(Event.data(text));
+          _controller.sink.add(ReaderEvent.data(text));
         }
         this._state.reset();
         break;
