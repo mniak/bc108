@@ -50,12 +50,12 @@ class ReaderEvent {
 }
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
-  final _state = ReaderState();
   @override
   Stream<ReaderEvent> bind(Stream<int> stream) {
+    final state = ReaderState();
     final controller = StreamController<ReaderEvent>();
     stream.listen(
-      (data) => _processBytes(data, controller.sink),
+      (data) => _processBytes(data, controller.sink, state),
       onError: (error) {
         controller.sink.addError(error);
       },
@@ -66,8 +66,9 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
     return controller.stream;
   }
 
-  void _processBytes(int b, StreamSink<ReaderEvent> sink) {
-    switch (this._state.stage) {
+  static void _processBytes(
+      int b, StreamSink<ReaderEvent> sink, ReaderState state) {
+    switch (state.stage) {
       case ReaderStage.Initial:
         switch (b.toByte()) {
           case Byte.CAN:
@@ -79,7 +80,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
             sink.add(ReaderEvent.nak());
             break;
           case Byte.SYN:
-            this._state.stage = ReaderStage.Payload;
+            state.stage = ReaderStage.Payload;
             break;
           default:
             sink.addError(ExpectedSynException(b));
@@ -89,39 +90,39 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
 
       case ReaderStage.Payload:
         if (b == Byte.ETB.toInt()) {
-          if (this._state.payload.length == 0)
+          if (state.payload.length == 0)
             sink.addError(PayloadTooShortException());
 
-          this._state.payload.forEach((b) {
+          state.payload.forEach((b) {
             if (b < 0x20 || b > 0x7f) {
               sink.addError(ByteOutOfRangeException(b));
             }
           });
 
-          this._state.stage = ReaderStage.CRC1;
+          state.stage = ReaderStage.CRC1;
           break;
         }
 
-        this._state.payload.add(b);
-        if (this._state.payload.length > 1024)
-          sink.addError(PayloadTooLongException(this._state.payload.length));
+        state.payload.add(b);
+        if (state.payload.length > 1024)
+          sink.addError(PayloadTooLongException(state.payload.length));
 
         break;
       case ReaderStage.CRC1:
-        this._state.crc1 = b;
-        this._state.stage = ReaderStage.CRC2;
+        state.crc1 = b;
+        state.stage = ReaderStage.CRC2;
         break;
       case ReaderStage.CRC2:
         final crc =
-            crc16(Uint8List.fromList(this._state.payload + [Byte.ETB.toInt()]));
-        if (crc[0] != this._state.crc1 || crc[1] != b) {
-          sink.addError(ChecksumException(
-              this._state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
+            crc16(Uint8List.fromList(state.payload + [Byte.ETB.toInt()]));
+        if (crc[0] != state.crc1 || crc[1] != b) {
+          sink.addError(
+              ChecksumException(state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
         } else {
-          final text = ascii.decode(this._state.payload);
+          final text = ascii.decode(state.payload);
           sink.add(ReaderEvent.data(text));
         }
-        this._state.reset();
+        state.reset();
         break;
     }
   }
