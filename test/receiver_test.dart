@@ -168,7 +168,7 @@ void main() {
     streamController.close();
   });
 
-  group('when ACK/NAK is received, should raise event ACK/NAK', () {
+  group('when ACK/NAK are received, should raise event ACK/NAK', () {
     final data = [
       [Byte.ACK.toInt(), predicate((x) => !x.isDataEvent && x.ack)],
       [Byte.NAK.toInt(), predicate((x) => !x.isDataEvent && x.nak)],
@@ -189,7 +189,7 @@ void main() {
     });
   });
 
-  group('when ETB/X/8 is received, should raise error', () {
+  group('when ETB/X/8 are received, should raise error', () {
     final data = [
       Byte.ETB.toInt(),
       'X'.codeUnitAt(0),
