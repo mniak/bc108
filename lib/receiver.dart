@@ -127,14 +127,3 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
     return StreamTransformer.castFrom(this);
   }
 }
-
-Stream<String> readMessage(Stream<int> stream) {
-  // final sc = StreamController<String>();
-  // stream.listen((event) {
-  //   sc.sink.add("event");
-  // });
-  // return sc.stream;
-
-  // StreamTransformer<Uint8List, String>()
-  return null;
-}
