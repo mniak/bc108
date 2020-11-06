@@ -26,7 +26,5 @@ class BytesBuilder {
     return this;
   }
 
-  Uint8List build() {
-    return Uint8List.fromList(this._bytes);
-  }
+  Iterable<int> build() => this._bytes;
 }
