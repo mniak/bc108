@@ -168,25 +168,14 @@ void main() {
     streamController.close();
   });
 
-  group(
-      'when ACK/NAK/ETB/X/8 is received, should raise ACK/NAK/error/error/error',
-      () {
+  group('when ACK/NAK is received, should raise event ACK/NAK', () {
     final data = [
-      [
-        Byte.ACK.toInt(),
-        emitsInOrder([predicate((x) => !x.isDataEvent && x.ack)])
-      ],
-      [
-        Byte.NAK.toInt(),
-        emitsInOrder([predicate((x) => !x.isDataEvent && x.nak)])
-      ],
-      [Byte.ETB.toInt(), emitsError(TypeMatcher<ExpectedSynException>())],
-      ['X'.codeUnitAt(0), emitsError(TypeMatcher<ExpectedSynException>())],
-      [8, emitsError(TypeMatcher<ExpectedSynException>())],
+      [Byte.ACK.toInt(), predicate((x) => !x.isDataEvent && x.ack)],
+      [Byte.NAK.toInt(), predicate((x) => !x.isDataEvent && x.nak)],
     ];
     data.forEach((d) {
       final byte = d[0] as int;
-      final matcher = d[1] as StreamMatcher;
+      final matcher = d[1] as Matcher;
       test('0x${byte.toRadixString(16)}', () {
         final streamController = StreamController<int>();
         final stream = streamController.stream.transform(ReaderTransformer());
@@ -194,6 +183,26 @@ void main() {
         streamController.sink.add(byte);
 
         expectLater(stream, emitsInOrder([matcher]));
+
+        streamController.close();
+      });
+    });
+  });
+
+  group('when ETB/X/8 is received, should raise error', () {
+    final data = [
+      Byte.ETB.toInt(),
+      'X'.codeUnitAt(0),
+      8,
+    ];
+    data.forEach((byte) {
+      test('0x${byte.toRadixString(16)}', () {
+        final streamController = StreamController<int>();
+        final stream = streamController.stream.transform(ReaderTransformer());
+
+        streamController.sink.add(byte);
+
+        expectLater(stream, emitsError(TypeMatcher<ExpectedSynException>()));
 
         streamController.close();
       });
