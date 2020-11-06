@@ -124,4 +124,28 @@ void main() {
       });
     });
   });
+
+  group('when data has invalid length, should raise error', () {
+    final data = [0, 1025];
+    data.forEach((d) {
+      test(d, () {
+        final streamController = StreamController<int>();
+        final stream = streamController.stream.transform(ReaderTransformer());
+
+        final bytes = BytesBuilder()
+            .addByte(Byte.SYN.toInt())
+            .addString('A' * d)
+            .addByte(Byte.ETB.toInt())
+            .addBytes([0x11, 0x22]).build();
+
+        for (var b in bytes) {
+          streamController.sink.add(b);
+        }
+        expectLater(
+            stream, emitsError(TypeMatcher<InvalidPayloadLengthException>()));
+
+        streamController.close();
+      });
+    });
+  });
 }
