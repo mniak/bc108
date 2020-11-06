@@ -1,8 +1,8 @@
-name: pinpad
-description: A new Flutter package project.
+name: bc108
+description: "Implementation of the 'Biblioteca Compartilhada' v1.08 specification."
 version: 0.0.1
 author: mniak
-# homepage: none
+homepage: https://github.com/mniak/bc108
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
