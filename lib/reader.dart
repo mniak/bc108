@@ -7,25 +7,25 @@ import 'dart:typed_data';
 import 'package:pinpad/exceptions.dart';
 import 'package:pinpad/utils/utils.dart';
 
-enum Stage {
+enum ReaderStage {
   Initial,
   Payload,
   CRC1,
   CRC2,
 }
 
-class State {
+class ReaderState {
   final payload = List<int>();
-  Stage stage;
+  ReaderStage stage;
   int crc1;
 
-  State() {
+  ReaderState() {
     this.reset();
   }
 
   void reset() {
     this.payload.clear();
-    this.stage = Stage.Initial;
+    this.stage = ReaderStage.Initial;
   }
 }
 
@@ -51,7 +51,7 @@ class ReaderEvent {
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
   final _controller = StreamController<ReaderEvent>();
-  final _state = State();
+  final _state = ReaderState();
   @override
   Stream<ReaderEvent> bind(Stream<int> stream) {
     stream.listen((b) => _processBytes(b));
@@ -60,7 +60,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
 
   void _processBytes(int b) {
     switch (this._state.stage) {
-      case Stage.Initial:
+      case ReaderStage.Initial:
         switch (b.toByte()) {
           case Byte.CAN:
             break;
@@ -71,7 +71,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
             _controller.sink.add(ReaderEvent.nak());
             break;
           case Byte.SYN:
-            this._state.stage = Stage.Payload;
+            this._state.stage = ReaderStage.Payload;
             break;
           default:
             _fail(ExpectedSynException(b));
@@ -79,7 +79,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
         }
         break;
 
-      case Stage.Payload:
+      case ReaderStage.Payload:
         if (b == Byte.ETB.toInt()) {
           if (this._state.payload.length == 0)
             _fail(PayloadTooShortException());
@@ -90,7 +90,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
             }
           });
 
-          this._state.stage = Stage.CRC1;
+          this._state.stage = ReaderStage.CRC1;
           break;
         }
 
@@ -99,11 +99,11 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
           _fail(PayloadTooLongException(this._state.payload.length));
 
         break;
-      case Stage.CRC1:
+      case ReaderStage.CRC1:
         this._state.crc1 = b;
-        this._state.stage = Stage.CRC2;
+        this._state.stage = ReaderStage.CRC2;
         break;
-      case Stage.CRC2:
+      case ReaderStage.CRC2:
         final crc =
             crc16(Uint8List.fromList(this._state.payload + [Byte.ETB.toInt()]));
         if (crc[0] != this._state.crc1 || crc[1] != b) {

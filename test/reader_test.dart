@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
 import 'package:pinpad/exceptions.dart';
-import 'package:pinpad/receiver.dart';
+import 'package:pinpad/reader.dart';
 import 'package:pinpad/utils/utils.dart';
 
 void main() {
