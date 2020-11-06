@@ -50,31 +50,39 @@ class ReaderEvent {
 }
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
-  final _controller = StreamController<ReaderEvent>();
   final _state = ReaderState();
   @override
   Stream<ReaderEvent> bind(Stream<int> stream) {
-    stream.listen((b) => _processBytes(b));
-    return _controller.stream;
+    final controller = StreamController<ReaderEvent>();
+    stream.listen(
+      (data) => _processBytes(data, controller.sink),
+      onError: (error) {
+        controller.sink.addError(error);
+      },
+      onDone: () {
+        controller.sink.close();
+      },
+    );
+    return controller.stream;
   }
 
-  void _processBytes(int b) {
+  void _processBytes(int b, StreamSink<ReaderEvent> sink) {
     switch (this._state.stage) {
       case ReaderStage.Initial:
         switch (b.toByte()) {
           case Byte.CAN:
             break;
           case Byte.ACK:
-            _controller.sink.add(ReaderEvent.ack());
+            sink.add(ReaderEvent.ack());
             break;
           case Byte.NAK:
-            _controller.sink.add(ReaderEvent.nak());
+            sink.add(ReaderEvent.nak());
             break;
           case Byte.SYN:
             this._state.stage = ReaderStage.Payload;
             break;
           default:
-            _fail(ExpectedSynException(b));
+            sink.addError(ExpectedSynException(b));
             break;
         }
         break;
@@ -82,11 +90,11 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
       case ReaderStage.Payload:
         if (b == Byte.ETB.toInt()) {
           if (this._state.payload.length == 0)
-            _fail(PayloadTooShortException());
+            sink.addError(PayloadTooShortException());
 
           this._state.payload.forEach((b) {
             if (b < 0x20 || b > 0x7f) {
-              _fail(ByteOutOfRangeException(b));
+              sink.addError(ByteOutOfRangeException(b));
             }
           });
 
@@ -96,7 +104,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
 
         this._state.payload.add(b);
         if (this._state.payload.length > 1024)
-          _fail(PayloadTooLongException(this._state.payload.length));
+          sink.addError(PayloadTooLongException(this._state.payload.length));
 
         break;
       case ReaderStage.CRC1:
@@ -107,19 +115,15 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
         final crc =
             crc16(Uint8List.fromList(this._state.payload + [Byte.ETB.toInt()]));
         if (crc[0] != this._state.crc1 || crc[1] != b) {
-          _fail(ChecksumException(
+          sink.addError(ChecksumException(
               this._state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
         } else {
           final text = ascii.decode(this._state.payload);
-          _controller.sink.add(ReaderEvent.data(text));
+          sink.add(ReaderEvent.data(text));
         }
         this._state.reset();
         break;
     }
-  }
-
-  void _fail(Exception ex) {
-    _controller.sink.addError(ex);
   }
 
   @override
