@@ -2,11 +2,18 @@ library utils;
 
 import 'dart:typed_data';
 
+import 'package:pinpad/utils/bytes.dart';
+
 class BytesBuilder {
   List<int> _bytes = List<int>();
 
   BytesBuilder addByte(int byte) {
     _bytes.add(byte);
+    return this;
+  }
+
+  BytesBuilder addByte2(Byte byte) {
+    _bytes.add(byte.toInt());
     return this;
   }
 

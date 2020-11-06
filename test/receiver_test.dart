@@ -7,29 +7,25 @@ import 'package:pinpad/exceptions.dart';
 import 'package:pinpad/receiver.dart';
 import 'package:pinpad/utils/utils.dart';
 
-class TextCRC {
-  TextCRC(this.text, this.crc1, this.crc2);
-  String text;
-  int crc1;
-  int crc2;
-}
-
 void main() {
   group('when bytes are well formatted message, should return string', () {
     final data = [
-      TextCRC("OPN000", 0x77, 0x5e),
-      TextCRC("AAAAAAAA", 0x9a, 0x63)
+      ["OPN000", 0x77, 0x5e],
+      ["AAAAAAAA", 0x9a, 0x63],
     ];
     data.forEach((d) {
-      test(d.text, () {
+      final text = d[0] as String;
+      final crc1 = d[1] as int;
+      final crc2 = d[2] as int;
+      test(text, () {
         final streamController = StreamController<int>();
         final stream = streamController.stream.transform(ReaderTransformer());
 
         final bytes = BytesBuilder()
-            .addByte(Byte.SYN.toInt())
-            .addString(d.text)
-            .addByte(Byte.ETB.toInt())
-            .addBytes([d.crc1, d.crc2]).build();
+            .addByte2(Byte.SYN)
+            .addString(text)
+            .addByte2(Byte.ETB)
+            .addBytes([crc1, crc2]).build();
 
         for (var b in bytes) {
           streamController.sink.add(b);
@@ -37,7 +33,7 @@ void main() {
         expectLater(
             stream,
             emitsInOrder([
-              predicate((x) => x.isDataEvent && x.data == d.text),
+              predicate((x) => x.isDataEvent && x.data == text),
             ]));
 
         streamController.close();
@@ -47,20 +43,23 @@ void main() {
 
   group('when bytes are CAN+well formatted message, should return string', () {
     final data = [
-      TextCRC("OPN000", 0x77, 0x5e),
-      TextCRC("AAAAAAAA", 0x9a, 0x63)
+      ["OPN000", 0x77, 0x5e],
+      ["AAAAAAAA", 0x9a, 0x63],
     ];
     data.forEach((d) {
-      test(d.text, () {
+      final text = d[0] as String;
+      final crc1 = d[1] as int;
+      final crc2 = d[2] as int;
+      test(text, () {
         final streamController = StreamController<int>();
         final stream = streamController.stream.transform(ReaderTransformer());
 
         final bytes = BytesBuilder()
-            .addByte(Byte.CAN.toInt())
-            .addByte(Byte.SYN.toInt())
-            .addString(d.text)
-            .addByte(Byte.ETB.toInt())
-            .addBytes([d.crc1, d.crc2]).build();
+            .addByte2(Byte.CAN)
+            .addByte2(Byte.SYN)
+            .addString(text)
+            .addByte2(Byte.ETB)
+            .addBytes([crc1, crc2]).build();
 
         for (var b in bytes) {
           streamController.sink.add(b);
@@ -68,7 +67,7 @@ void main() {
         expectLater(
             stream,
             emitsInOrder([
-              predicate((x) => x.isDataEvent && x.data == d.text),
+              predicate((x) => x.isDataEvent && x.data == text),
             ]));
 
         streamController.close();
@@ -88,9 +87,9 @@ void main() {
     final stream = streamController.stream.transform(ReaderTransformer());
 
     final bytes = BytesBuilder()
-        .addByte(Byte.SYN.toInt())
+        .addByte2(Byte.SYN)
         .addString("ABCDEFG")
-        .addByte(Byte.ETB.toInt())
+        .addByte2(Byte.ETB)
         .addBytes([0x11, 0x22]).build();
 
     for (var b in bytes) {
@@ -117,11 +116,11 @@ void main() {
         final stream = streamController.stream.transform(ReaderTransformer());
 
         final bytes = BytesBuilder()
-            .addByte(Byte.SYN.toInt())
+            .addByte2(Byte.SYN)
             .addString("ABCD")
             .addByte(b)
             .addString("EFGH")
-            .addByte(Byte.ETB.toInt())
+            .addByte2(Byte.ETB)
             .addBytes([0x11, 0x22]).build();
 
         for (var b in bytes) {
@@ -139,8 +138,8 @@ void main() {
     final stream = streamController.stream.transform(ReaderTransformer());
 
     final bytes = BytesBuilder()
-        .addByte(Byte.SYN.toInt())
-        .addByte(Byte.ETB.toInt())
+        .addByte2(Byte.SYN)
+        .addByte2(Byte.ETB)
         .addBytes([0x11, 0x22]).build();
 
     for (var b in bytes) {
@@ -156,9 +155,9 @@ void main() {
     final stream = streamController.stream.transform(ReaderTransformer());
 
     final bytes = BytesBuilder()
-        .addByte(Byte.SYN.toInt())
+        .addByte2(Byte.SYN)
         .addString('A' * 1025)
-        .addByte(Byte.ETB.toInt())
+        .addByte2(Byte.ETB)
         .addBytes([0x11, 0x22]).build();
 
     for (var b in bytes) {
@@ -169,28 +168,28 @@ void main() {
     streamController.close();
   });
 
-  // test('TestReceiveACKorNAK_WhenReadByte_ShouldReturnAccordingly', () {
-  //   // final data = [
-  //   //   [Byte.ACK.toInt(), true, null],
-  //   //   [Byte.NAK.toInt(), false, null],
-  //   //   [Byte.ETB.toInt(), false, Exception()],
-  //   //   ['X'.codeUnitAt(0), false, Exception()],
-  //   //   [8, false, Exception()],
-  //   // ];
-  //   // data.forEach((d) {
-  //   // int byte = d[0];
-  //   // bool ack = d[1];
-  //   // final error = d[2];
-  //   // test('0x${byte.toRadixString(16)}', () {
-  //   final streamController = StreamController<int>();
-  //   final stream = streamController.stream.transform(ReaderTransformer());
+  group('when ACK/NAK is received, should raise event ACK/NAK', () {
+    final data = [
+      [Byte.ACK.toInt(), predicate((x) => !x.isDataEvent && x.ack)],
+      [Byte.NAK.toInt(), predicate((x) => !x.isDataEvent && x.nak)],
+      // [Byte.NAK.toInt(), false, null],
+      // [Byte.ETB.toInt(), false, Exception()],
+      // ['X'.codeUnitAt(0), false, Exception()],
+      // [8, false, Exception()],
+    ];
+    data.forEach((d) {
+      final byte = d[0] as int;
+      final matcher = d[1] as Matcher;
+      test('0x${byte.toRadixString(16)}', () {
+        final streamController = StreamController<int>();
+        final stream = streamController.stream.transform(ReaderTransformer());
 
-  //   streamController.sink.add(byte);
+        streamController.sink.add(byte);
 
-  //   expectLater(stream, emitsError(error));
+        expectLater(stream, emitsInOrder([matcher]));
 
-  //   streamController.close();
-  //   //   });
-  //   // });
-  // });
+        streamController.close();
+      });
+    });
+  });
 }

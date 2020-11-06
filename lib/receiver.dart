@@ -61,15 +61,22 @@ class ReaderTransformer implements StreamTransformer<int, Event> {
   void _processBytes(int b) {
     switch (this._state.stage) {
       case Stage.Initial:
-        if (b == Byte.CAN.toInt()) {
-          break;
+        switch (b.toByte()) {
+          case Byte.CAN:
+            break;
+          case Byte.ACK:
+            _controller.sink.add(Event.ack());
+            break;
+          case Byte.NAK:
+            _controller.sink.add(Event.nak());
+            break;
+          case Byte.SYN:
+            this._state.stage = Stage.Payload;
+            break;
+          default:
+            _fail(ExpectedSynException(b));
+            break;
         }
-        if (b != Byte.SYN.toInt()) {
-          _fail(ExpectedSynException(b));
-          break;
-        }
-
-        this._state.stage = Stage.Payload;
         break;
 
       case Stage.Payload:
