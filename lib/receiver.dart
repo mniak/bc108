@@ -46,8 +46,7 @@ class ReaderTransformer implements StreamTransformer<int, String> {
           break;
         }
         if (b != Byte.SYN.toInt()) {
-          _fail(Exception(
-              "Protocol violation. Expecting byte SYN (0x16), ACK (0x06) or NAK (0x15"));
+          _fail(ExpectedSynException(b));
           break;
         }
 
