@@ -34,12 +34,17 @@ void main() {
         for (var b in bytes) {
           streamController.sink.add(b);
         }
-        expectLater(stream, emitsInOrder([d.text]));
+        expectLater(
+            stream,
+            emitsInOrder([
+              predicate((x) => x.isDataEvent && x.data == d.text),
+            ]));
 
         streamController.close();
       });
     });
   });
+
   group('when bytes are CAN+well formatted message, should return string', () {
     final data = [
       TextCRC("OPN000", 0x77, 0x5e),
@@ -60,7 +65,11 @@ void main() {
         for (var b in bytes) {
           streamController.sink.add(b);
         }
-        expectLater(stream, emitsInOrder([d.text]));
+        expectLater(
+            stream,
+            emitsInOrder([
+              predicate((x) => x.isDataEvent && x.data == d.text),
+            ]));
 
         streamController.close();
       });
@@ -125,27 +134,63 @@ void main() {
     });
   });
 
-  group('when data has invalid length, should raise error', () {
-    final data = [0, 1025];
-    data.forEach((d) {
-      test(d, () {
-        final streamController = StreamController<int>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+  test('when payload length is 0, should raise error', () {
+    final streamController = StreamController<int>();
+    final stream = streamController.stream.transform(ReaderTransformer());
 
-        final bytes = BytesBuilder()
-            .addByte(Byte.SYN.toInt())
-            .addString('A' * d)
-            .addByte(Byte.ETB.toInt())
-            .addBytes([0x11, 0x22]).build();
+    final bytes = BytesBuilder()
+        .addByte(Byte.SYN.toInt())
+        .addByte(Byte.ETB.toInt())
+        .addBytes([0x11, 0x22]).build();
 
-        for (var b in bytes) {
-          streamController.sink.add(b);
-        }
-        expectLater(
-            stream, emitsError(TypeMatcher<InvalidPayloadLengthException>()));
+    for (var b in bytes) {
+      streamController.sink.add(b);
+    }
+    expectLater(stream, emitsError(TypeMatcher<PayloadTooShortException>()));
 
-        streamController.close();
-      });
-    });
+    streamController.close();
   });
+
+  test('when payload length > 1024, should raise error', () {
+    final streamController = StreamController<int>();
+    final stream = streamController.stream.transform(ReaderTransformer());
+
+    final bytes = BytesBuilder()
+        .addByte(Byte.SYN.toInt())
+        .addString('A' * 1025)
+        .addByte(Byte.ETB.toInt())
+        .addBytes([0x11, 0x22]).build();
+
+    for (var b in bytes) {
+      streamController.sink.add(b);
+    }
+    expectLater(stream, emitsError(TypeMatcher<PayloadTooLongException>()));
+
+    streamController.close();
+  });
+
+  // test('TestReceiveACKorNAK_WhenReadByte_ShouldReturnAccordingly', () {
+  //   // final data = [
+  //   //   [Byte.ACK.toInt(), true, null],
+  //   //   [Byte.NAK.toInt(), false, null],
+  //   //   [Byte.ETB.toInt(), false, Exception()],
+  //   //   ['X'.codeUnitAt(0), false, Exception()],
+  //   //   [8, false, Exception()],
+  //   // ];
+  //   // data.forEach((d) {
+  //   // int byte = d[0];
+  //   // bool ack = d[1];
+  //   // final error = d[2];
+  //   // test('0x${byte.toRadixString(16)}', () {
+  //   final streamController = StreamController<int>();
+  //   final stream = streamController.stream.transform(ReaderTransformer());
+
+  //   streamController.sink.add(byte);
+
+  //   expectLater(stream, emitsError(error));
+
+  //   streamController.close();
+  //   //   });
+  //   // });
+  // });
 }

@@ -33,14 +33,25 @@ class ExpectedSynException implements PinpadException {
   }
 }
 
-class InvalidPayloadLengthException implements PinpadException {
+class PayloadTooShortException implements PinpadException {
   String message;
-  InvalidPayloadLengthException(int length) {
-    this.message =
-        "Payload length expected to be in range 1-1024 but got was $length";
+  PayloadTooShortException() {
+    this.message = "Payload must be at least 1 byte long";
   }
 
   String toString() {
-    return "InvalidPayloadLengthException: $message";
+    return "PayloadTooShortException: $message";
+  }
+}
+
+class PayloadTooLongException implements PinpadException {
+  String message;
+  PayloadTooLongException(int length) {
+    this.message =
+        "Payload must be at most 1024 bytes long but has $length bytes";
+  }
+
+  String toString() {
+    return "PayloadTooLongException: $message";
   }
 }

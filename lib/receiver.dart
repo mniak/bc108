@@ -6,7 +6,6 @@ import 'dart:typed_data';
 
 import 'package:pinpad/exceptions.dart';
 import 'package:pinpad/utils/utils.dart';
-import 'package:tuple/tuple.dart';
 
 enum Stage {
   Initial,
@@ -30,11 +29,31 @@ class State {
   }
 }
 
-class ReaderTransformer implements StreamTransformer<int, String> {
-  final _controller = StreamController<String>();
+class Event {
+  String _data;
+  Event.data(String data) {
+    if (data == null) throw ArgumentError.notNull('data');
+    this._data = data;
+  }
+  bool get isDataEvent => this._data != null;
+  String get data => this._data;
+
+  int _interrupt;
+  Event.ack() {
+    this._interrupt = 1;
+  }
+  bool get ack => this._interrupt == 1;
+  Event.nak() {
+    this._interrupt = 2;
+  }
+  bool get nak => this._interrupt == 2;
+}
+
+class ReaderTransformer implements StreamTransformer<int, Event> {
+  final _controller = StreamController<Event>();
   final _state = State();
   @override
-  Stream<String> bind(Stream<int> stream) {
+  Stream<Event> bind(Stream<int> stream) {
     stream.listen((b) => _processBytes(b));
     return _controller.stream;
   }
@@ -56,7 +75,7 @@ class ReaderTransformer implements StreamTransformer<int, String> {
       case Stage.Payload:
         if (b == Byte.ETB.toInt()) {
           if (this._state.payload.length == 0)
-            _fail(InvalidPayloadLengthException(0));
+            _fail(PayloadTooShortException());
 
           this._state.payload.forEach((b) {
             if (b < 0x20 || b > 0x7f) {
@@ -70,7 +89,7 @@ class ReaderTransformer implements StreamTransformer<int, String> {
 
         this._state.payload.add(b);
         if (this._state.payload.length > 1024)
-          _fail(InvalidPayloadLengthException(this._state.payload.length));
+          _fail(PayloadTooLongException(this._state.payload.length));
 
         break;
       case Stage.CRC1:
@@ -85,7 +104,7 @@ class ReaderTransformer implements StreamTransformer<int, String> {
               this._state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
         } else {
           final text = ascii.decode(this._state.payload);
-          _controller.sink.add(text);
+          _controller.sink.add(Event.data(text));
         }
         this._state.reset();
         break;
