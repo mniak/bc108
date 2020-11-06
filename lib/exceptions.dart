@@ -32,3 +32,15 @@ class ExpectedSynException implements PinpadException {
     return "ExpectedSynException: $message";
   }
 }
+
+class InvalidPayloadLengthException implements PinpadException {
+  String message;
+  InvalidPayloadLengthException(int length) {
+    this.message =
+        "Payload length expected to be in range 1-1024 but got was $length";
+  }
+
+  String toString() {
+    return "InvalidPayloadLengthException: $message";
+  }
+}

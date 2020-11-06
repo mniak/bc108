@@ -27,58 +27,58 @@ class ReaderTransformer implements StreamTransformer<Uint8List, String> {
     return _controller.stream;
   }
 
-  // void _processBytes(Uint8List bytes) {
-  //   while (bytes.isNotEmpty) {
-  //     var b = bytes[0];
-  //     switch (this._state) {
-  //       case ReaderState.Initial:
-  //         if (b == Byte.CAN.toInt()) {
-  //           // Do nothing. Just skip the byte.
-  //         } else if (b != Byte.SYN.toInt()) {
-  //           _fail(Exception(
-  //               "Protocol violation. Expecting byte SYN (0x16), ACK (0x06) or NAK (0x15"));
-  //         } else {
-  //           this._state = ReaderState.Payload;
-  //         }
-  //         bytes = bytes.sublist(1);
-  //         break;
-  //       case ReaderState.Payload:
-  //         var index = bytes.indexOf(Byte.ETB.toInt());
-  //         if (index >= 0) {
-  //           _payload.addAll(bytes.sublist(0, index));
-  //           bytes = bytes.sublist(index + 1);
-  //           _state = ReaderState.CRC1;
-  //         } else {
-  //           _payload.addAll(bytes);
-  //           bytes = bytes.sublist(bytes.length);
-  //         }
-  //         break;
-  //       case ReaderState.CRC1:
-  //         _crc1 = b;
-  //         // bytes.forEach((b) {
-  //         //   if (b < 0x20 || b > 0x7f) {
-  //         //     _fail(ByteOutOfRangeException(b));
-  //         //   }
-  //         // });
+  void _processBytes(Uint8List bytes) {
+    while (bytes.isNotEmpty) {
+      var b = bytes[0];
+      switch (this._state) {
+        case ReaderState.Initial:
+          if (b == Byte.CAN.toInt()) {
+            // Do nothing. Just skip the byte.
+          } else if (b != Byte.SYN.toInt()) {
+            _fail(Exception(
+                "Protocol violation. Expecting byte SYN (0x16), ACK (0x06) or NAK (0x15"));
+          } else {
+            this._state = ReaderState.Payload;
+          }
+          bytes = bytes.sublist(1);
+          break;
+        case ReaderState.Payload:
+          var index = bytes.indexOf(Byte.ETB.toInt());
+          if (index >= 0) {
+            _payload.addAll(bytes.sublist(0, index));
+            bytes = bytes.sublist(index + 1);
+            _state = ReaderState.CRC1;
+          } else {
+            _payload.addAll(bytes);
+            bytes = bytes.sublist(bytes.length);
+          }
+          break;
+        case ReaderState.CRC1:
+          _crc1 = b;
+          // bytes.forEach((b) {
+          //   if (b < 0x20 || b > 0x7f) {
+          //     _fail(ByteOutOfRangeException(b));
+          //   }
+          // });
 
-  //         bytes = bytes.sublist(1);
-  //         _state = ReaderState.CRC2;
-  //         break;
-  //       case ReaderState.CRC2:
-  //         bytes = bytes.sublist(1);
+          bytes = bytes.sublist(1);
+          _state = ReaderState.CRC2;
+          break;
+        case ReaderState.CRC2:
+          bytes = bytes.sublist(1);
 
-  //         final crc = crc16(Uint8List.fromList(_payload + [Byte.ETB.toInt()]));
-  //         if (crc[0] != _crc1 || crc[1] != b) {
-  //           _fail(ChecksumException(crc[0], crc[1]));
-  //         } else {
-  //           final text = ascii.decode(_payload);
-  //           _controller.sink.add(text);
-  //         }
-  //         _reset();
-  //         break;
-  //     }
-  //   }
-  // }
+          final crc = crc16(Uint8List.fromList(_payload + [Byte.ETB.toInt()]));
+          if (crc[0] != _crc1 || crc[1] != b) {
+            _fail(ChecksumException(crc[0], crc[1]));
+          } else {
+            final text = ascii.decode(_payload);
+            _controller.sink.add(text);
+          }
+          _reset();
+          break;
+      }
+    }
+  }
 
   void _fail(Exception ex) {
     _controller.sink.addError(ex);
@@ -183,7 +183,11 @@ class ReadPayload implements Handler {
     // if (b != Byte.SYN.toInt()) return Result.failure(ExpectedSynException(b));
     // return _next.handle(reader);
 
-    // final index = reader.findByte(Byte.ETB.toInt(), 1024);
+    final i = reader.findByte(Byte.ETB.toInt(), 1024);
+    if (i < 1 || i > 1024)
+      return Result.failure(InvalidPayloadLengthException(i));
+
+    final data = reader.getBytes(i + 1);
     // if (index >= 0) {
     //   _payload.addAll(bytes.sublist(0, index));
     //   bytes = bytes.sublist(index + 1);
@@ -212,5 +216,9 @@ class Reader {
 
   int findByte(int expectedByte, int maximumLength) {
     return 0;
+  }
+
+  Iterable<int> getBytes(int count) {
+    return [0, 0, 0, 0];
   }
 }
