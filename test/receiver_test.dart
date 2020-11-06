@@ -86,34 +86,34 @@ void main() {
     streamController.close();
   });
 
-  group('when byte in payload section is out of range, should raise error', () {
-    final data = [
-      0x00,
-      0x11,
-      0x19,
-      0x90,
-      0xa0,
-      0xf0,
-    ];
+  // group('when byte in payload section is out of range, should raise error', () {
+  //   final data = [
+  //     0x00,
+  //     0x11,
+  //     0x19,
+  //     0x90,
+  //     0xa0,
+  //     0xf0,
+  //   ];
 
-    data.forEach((b) {
-      test('0x${b.toRadixString(16)}', () {
-        final streamController = StreamController<Uint8List>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+  //   data.forEach((b) {
+  //     test('0x${b.toRadixString(16)}', () {
+  //       final streamController = StreamController<Uint8List>();
+  //       final stream = streamController.stream.transform(ReaderTransformer());
 
-        final bytes = BytesBuilder()
-            .addByte(Byte.SYN.toInt())
-            .addString("ABCD")
-            .addByte(b)
-            .addString("EFGH")
-            .addByte(Byte.ETB.toInt())
-            .addBytes([0x11, 0x22]).build();
+  //       final bytes = BytesBuilder()
+  //           .addByte(Byte.SYN.toInt())
+  //           .addString("ABCD")
+  //           .addByte(b)
+  //           .addString("EFGH")
+  //           .addByte(Byte.ETB.toInt())
+  //           .addBytes([0x11, 0x22]).build();
 
-        streamController.sink.add(bytes);
-        expectLater(stream, emitsError(TypeMatcher<ByteOutOfRangeException>()));
+  //       streamController.sink.add(bytes);
+  //       expectLater(stream, emitsError(TypeMatcher<ByteOutOfRangeException>()));
 
-        streamController.close();
-      });
-    });
-  });
+  //       streamController.close();
+  //     });
+  //   });
+  // });
 }

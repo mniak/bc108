@@ -23,7 +23,7 @@ class ReaderTransformer implements StreamTransformer<Uint8List, String> {
 
   @override
   Stream<String> bind(Stream<Uint8List> stream) {
-    // stream.listen((bytes) => _processBytes(bytes));
+    stream.listen((bytes) => _processBytes(bytes));
     return _controller.stream;
   }
 
