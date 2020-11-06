@@ -6,9 +6,10 @@ enum Byte {
   NAK,
   ETB,
   CAN,
+  Other,
 }
 
-extension ByteConverter on Byte {
+extension ByteToIntConverter on Byte {
   int toInt() {
     switch (this) {
       case Byte.ACK:
@@ -23,6 +24,25 @@ extension ByteConverter on Byte {
         return 0x18;
       default:
         return 0;
+    }
+  }
+}
+
+extension IntToByteConverter on int {
+  Byte toByte() {
+    switch (this) {
+      case 0x06:
+        return Byte.ACK;
+      case 0x16:
+        return Byte.SYN;
+      case 0x15:
+        return Byte.NAK;
+      case 0x17:
+        return Byte.ETB;
+      case 0x18:
+        return Byte.CAN;
+      default:
+        return Byte.Other;
     }
   }
 }

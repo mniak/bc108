@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pinpad/utils/utils.dart';
+import 'package:bc108/utils/utils.dart';
 
 class TextCRC {
   TextCRC(this.text, this.crc1, this.crc2);
