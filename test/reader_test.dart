@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
-import 'package:pinpad/exceptions.dart';
-import 'package:pinpad/reader.dart';
-import 'package:pinpad/utils/utils.dart';
+import 'package:bc108/exceptions.dart';
+import 'package:bc108/reader.dart';
+import 'package:bc108/utils/utils.dart';
 
 void main() {
   group('when bytes are well formatted message, should return string', () {

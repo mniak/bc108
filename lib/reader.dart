@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:pinpad/exceptions.dart';
-import 'package:pinpad/utils/utils.dart';
+import 'package:bc108/exceptions.dart';
+import 'package:bc108/utils/utils.dart';
 
 enum ReaderStage {
   Initial,

@@ -2,7 +2,7 @@ library utils;
 
 import 'dart:typed_data';
 
-import 'package:pinpad/utils/bytes.dart';
+import 'package:bc108/utils/bytes.dart';
 
 class BytesBuilder {
   List<int> _bytes = List<int>();
