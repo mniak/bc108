@@ -7,7 +7,6 @@ class ChecksumException implements PinpadException {
         "Invalid checksum: 0x${byte1.toRadixString(16)}${byte2.toRadixString(16)}";
   }
   String toString() {
-    if (message == null) return "Exception";
     return "ChecksumException: $message";
   }
 }
@@ -18,7 +17,18 @@ class ByteOutOfRangeException implements PinpadException {
     this.message = "Byte out of range: 0x${byte.toRadixString(16)}";
   }
   String toString() {
-    if (message == null) return "Exception";
     return "ByteOutOfRangeException: $message";
+  }
+}
+
+class ExpectedSynException implements PinpadException {
+  String message;
+  ExpectedSynException(int byte) {
+    this.message =
+        "Expecting byte SYN (0x16) but got 0x${byte.toRadixString(16)}";
+  }
+
+  String toString() {
+    return "ExpectedSynException: $message";
   }
 }
