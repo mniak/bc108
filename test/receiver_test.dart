@@ -168,7 +168,9 @@ void main() {
     streamController.close();
   });
 
-  group('when ACK/NAK is received, should raise event ACK/NAK', () {
+  group(
+      'when ACK/NAK/ETB/X/8 is received, should raise ACK/NAK/error/error/error',
+      () {
     final data = [
       [
         Byte.ACK.toInt(),
