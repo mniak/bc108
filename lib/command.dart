@@ -1,7 +1,16 @@
+import 'package:bc108/command_exceptions.dart';
+
 class Command {
   String _code;
   Iterable<String> _parameters;
-  Command(this._code, this._parameters);
+  Command(this._code, this._parameters) {
+    if (_code.length != 3) throw InvalidCommandLengthException(_code.length);
+
+    final invalidLengths =
+        parameters.map((p) => p.length).where((x) => x > 999);
+    if (invalidLengths.isNotEmpty)
+      throw ParameterTooLongException(invalidLengths.first);
+  }
 
   String get code => _code;
   Iterable<String> get parameters => _parameters;
