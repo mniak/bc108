@@ -2,10 +2,24 @@ import 'package:bc108/command.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('when there are no parameters, should format as CMD000', () {
-    final cmd = Command("OPN", []);
-    final payload = cmd.getPayload();
+  group('formatting parameters', () {
+    test('when there are no parameters, should format as CMD 000', () {
+      final cmd = Command("AAA", []);
+      final payload = cmd.getPayload();
+      expect("AAA000", payload);
+    });
 
-    expect("OPN000", payload);
+    test('when there is one empty parameter, should format as CMD 000', () {
+      final cmd = Command("BBB", ['']);
+      final payload = cmd.getPayload();
+      expect("BBB000", payload);
+    });
+
+    test('when there are two empty parameters, should format as CMD 000 000',
+        () {
+      final cmd = Command("CCC", ['', '']);
+      final payload = cmd.getPayload();
+      expect("CCC000000", payload);
+    });
   });
 }
