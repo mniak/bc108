@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import 'package:bc108/exceptions.dart';
 import 'package:bc108/utils/utils.dart';
 
-enum ReaderStage {
+enum _ReaderStage {
   Initial,
   Payload,
   CRC1,
@@ -16,7 +16,7 @@ enum ReaderStage {
 
 class ReaderState {
   final payload = List<int>();
-  ReaderStage stage;
+  _ReaderStage stage;
   int crc1;
 
   ReaderState() {
@@ -25,7 +25,7 @@ class ReaderState {
 
   void reset() {
     this.payload.clear();
-    this.stage = ReaderStage.Initial;
+    this.stage = _ReaderStage.Initial;
   }
 }
 
@@ -69,7 +69,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
   static void _processBytes(
       int b, StreamSink<ReaderEvent> sink, ReaderState state) {
     switch (state.stage) {
-      case ReaderStage.Initial:
+      case _ReaderStage.Initial:
         switch (b.toByte()) {
           case Byte.CAN:
             break;
@@ -80,7 +80,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
             sink.add(ReaderEvent.nak());
             break;
           case Byte.SYN:
-            state.stage = ReaderStage.Payload;
+            state.stage = _ReaderStage.Payload;
             break;
           default:
             sink.addError(ExpectedSynException(b));
@@ -88,7 +88,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
         }
         break;
 
-      case ReaderStage.Payload:
+      case _ReaderStage.Payload:
         if (b == Byte.ETB.toInt()) {
           if (state.payload.length == 0)
             sink.addError(PayloadTooShortException());
@@ -99,7 +99,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
             }
           });
 
-          state.stage = ReaderStage.CRC1;
+          state.stage = _ReaderStage.CRC1;
           break;
         }
 
@@ -108,11 +108,11 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
           sink.addError(PayloadTooLongException(state.payload.length));
 
         break;
-      case ReaderStage.CRC1:
+      case _ReaderStage.CRC1:
         state.crc1 = b;
-        state.stage = ReaderStage.CRC2;
+        state.stage = _ReaderStage.CRC2;
         break;
-      case ReaderStage.CRC2:
+      case _ReaderStage.CRC2:
         final crc =
             crc16(Uint8List.fromList(state.payload + [Byte.ETB.toInt()]));
         if (crc[0] != state.crc1 || crc[1] != b) {
