@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
-import 'package:bc108/reader_exceptions.dart';
-import 'package:bc108/reader.dart';
+import 'package:bc108/read/reader_exceptions.dart';
+import 'package:bc108/read/reader.dart';
 import 'package:bc108/utils/utils.dart';
 
 void main() {

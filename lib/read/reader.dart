@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:bc108/reader_exceptions.dart';
+import 'package:bc108/read/reader_exceptions.dart';
 import 'package:bc108/utils/utils.dart';
 
 enum _ReaderStage {

@@ -1,5 +1,5 @@
-import 'package:bc108/command.dart';
-import 'package:bc108/command_exceptions.dart';
+import 'package:bc108/write/command.dart';
+import 'package:bc108/write/command_exceptions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,4 +1,4 @@
-import 'package:bc108/command_exceptions.dart';
+import 'package:bc108/write/command_exceptions.dart';
 
 class Command {
   String _code;
