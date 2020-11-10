@@ -7,6 +7,11 @@ import 'package:bc108/read/reader_exceptions.dart';
 import 'package:bc108/read/reader.dart';
 import 'package:bc108/utils/utils.dart';
 
+Stream<ReaderEvent> getStream(StreamController<int> controller) {
+  final stream = controller.stream.transform(ReaderTransformer(CRC16()));
+  return stream;
+}
+
 void main() {
   group('when bytes are well formatted message, should return string', () {
     final data = [
@@ -19,7 +24,7 @@ void main() {
       final crc2 = d[2] as int;
       test(text, () {
         final streamController = StreamController<int>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+        final stream = getStream(streamController);
 
         final bytes = BytesBuilder()
             .addByte2(Byte.SYN)
@@ -52,7 +57,7 @@ void main() {
       final crc2 = d[2] as int;
       test(text, () {
         final streamController = StreamController<int>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+        final stream = getStream(streamController);
 
         final bytes = BytesBuilder()
             .addByte2(Byte.CAN)
@@ -77,14 +82,15 @@ void main() {
 
   test('when there is no bytes, should receive no string', () {
     final streamController = StreamController<int>();
-    final stream = streamController.stream.transform(ReaderTransformer());
+    final stream = getStream(streamController);
+
     stream.listen(expectAsync1((x) {}, count: 0));
     streamController.close();
   });
 
   test('when CRC is wrong, should raise error', () {
     final streamController = StreamController<int>();
-    final stream = streamController.stream.transform(ReaderTransformer());
+    final stream = getStream(streamController);
 
     final bytes = BytesBuilder()
         .addByte2(Byte.SYN)
@@ -113,7 +119,7 @@ void main() {
     data.forEach((b) {
       test('0x${b.toRadixString(16)}', () {
         final streamController = StreamController<int>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+        final stream = getStream(streamController);
 
         final bytes = BytesBuilder()
             .addByte2(Byte.SYN)
@@ -135,7 +141,7 @@ void main() {
 
   test('when payload length is 0, should raise error', () {
     final streamController = StreamController<int>();
-    final stream = streamController.stream.transform(ReaderTransformer());
+    final stream = getStream(streamController);
 
     final bytes = BytesBuilder()
         .addByte2(Byte.SYN)
@@ -152,7 +158,7 @@ void main() {
 
   test('when payload length > 1024, should raise error', () {
     final streamController = StreamController<int>();
-    final stream = streamController.stream.transform(ReaderTransformer());
+    final stream = getStream(streamController);
 
     final bytes = BytesBuilder()
         .addByte2(Byte.SYN)
@@ -178,7 +184,7 @@ void main() {
       final matcher = d[1] as Matcher;
       test('0x${byte.toRadixString(16)}', () {
         final streamController = StreamController<int>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+        final stream = getStream(streamController);
 
         streamController.sink.add(byte);
 
@@ -198,7 +204,7 @@ void main() {
     data.forEach((byte) {
       test('0x${byte.toRadixString(16)}', () {
         final streamController = StreamController<int>();
-        final stream = streamController.stream.transform(ReaderTransformer());
+        final stream = getStream(streamController);
 
         streamController.sink.add(byte);
 

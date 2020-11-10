@@ -2,7 +2,6 @@ library pinpad;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:bc108/read/reader_exceptions.dart';
 import 'package:bc108/utils/utils.dart';
@@ -50,9 +49,13 @@ class ReaderEvent {
 }
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
+  Checksum _checksumAlgorithm;
+  ReaderTransformer(this._checksumAlgorithm);
+
   @override
   Stream<ReaderEvent> bind(Stream<int> stream) {
     final state = ReaderState();
+    // ignore: close_sinks
     final controller = StreamController<ReaderEvent>();
     stream.listen(
       (data) => _processBytes(data, controller.sink, state),
@@ -66,8 +69,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
     return controller.stream;
   }
 
-  static void _processBytes(
-      int b, StreamSink<ReaderEvent> sink, ReaderState state) {
+  void _processBytes(int b, StreamSink<ReaderEvent> sink, ReaderState state) {
     switch (state.stage) {
       case _ReaderStage.Initial:
         switch (b.toByte()) {
@@ -113,11 +115,12 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
         state.stage = _ReaderStage.CRC2;
         break;
       case _ReaderStage.CRC2:
-        final crc =
-            crc16(Uint8List.fromList(state.payload + [Byte.ETB.toInt()]));
-        if (crc[0] != state.crc1 || crc[1] != b) {
-          sink.addError(
-              ChecksumException(state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
+        final payloadWithETB = state.payload + [Byte.ETB.toInt()];
+        final crcInMessage = [state.crc1, b];
+        final crcIsValid =
+            _checksumAlgorithm.validate(payloadWithETB, crcInMessage);
+        if (!crcIsValid) {
+          sink.addError(ChecksumException(crcInMessage));
         } else {
           final text = ascii.decode(state.payload);
           sink.add(ReaderEvent.data(text));

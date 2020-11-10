@@ -2,9 +2,11 @@ abstract class PinpadException implements Exception {}
 
 class ChecksumException implements PinpadException {
   String message;
-  ChecksumException(int expected, int actual) {
-    this.message =
-        "Expected checksum to be 0x${expected.toRadixString(16)} 0x${actual.toRadixString(16)}";
+  ChecksumException(Iterable<int> expected) {
+    final b1 = expected.first;
+    final b2 = expected.skip(1).first;
+    final long = b1 * 256 + b2;
+    this.message = "Invalid checksum. Expecting 0x${long.toRadixString(16)}.";
   }
   String toString() {
     return "ChecksumException: $message";
