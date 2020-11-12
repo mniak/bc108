@@ -75,4 +75,16 @@ void main() {
       });
     });
   });
+
+  group('some special cases should not throw error', () {
+    final data = ['GIN00200'];
+    data.forEach((d) {
+      test(d, () {
+        final sut = CRC16();
+        final bytes = BytesBuilder().addString(d).addByte2(Byte.ETB).build();
+        final checksum = sut.compute(bytes);
+        expect(checksum, isNotEmpty);
+      });
+    });
+  });
 }

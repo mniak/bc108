@@ -1,10 +1,20 @@
 import 'package:bc108/utils/utils.dart';
-import 'package:bc108/write/command.dart';
 
-class Frame {}
+import 'command.dart';
 
-// Iterable<int> buildFrame(Command command) {
-//   final payloadWithEtb =
-//       BytesBuilder().addString(command.getPayload()).addByte2(Byte.ETB).build();
-//   var crc = crc16(data);
-// }
+class FrameBuilder {
+  Checksum _checksumAlgorithm;
+  FrameBuilder(this._checksumAlgorithm);
+
+  Iterable<int> build(Command command) {
+    final payloadWithEtb =
+        BytesBuilder().addString(command.payload).addByte2(Byte.ETB).build();
+    final checksum = _checksumAlgorithm.compute(payloadWithEtb);
+    final result = BytesBuilder()
+        .addByte2(Byte.SYN)
+        .addBytes(payloadWithEtb)
+        .addBytes(checksum)
+        .build();
+    return result;
+  }
+}

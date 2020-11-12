@@ -6,21 +6,19 @@ void main() {
   group('empty parameters:', () {
     test('when there are no parameters, should format as CMD 000', () {
       final cmd = Command("AAA", []);
-      final payload = cmd.getPayload();
+      final payload = cmd.payload;
       expect("AAA000", payload);
     });
 
     test('when there is one empty parameter, should format as CMD 000', () {
       final cmd = Command("BBB", ['']);
-      final payload = cmd.getPayload();
-      expect("BBB000", payload);
+      expect("BBB000", cmd.payload);
     });
 
     test('when there are two empty parameters, should format as CMD 000 000',
         () {
       final cmd = Command("CCC", ['', '']);
-      final payload = cmd.getPayload();
-      expect("CCC000000", payload);
+      expect("CCC000000", cmd.payload);
     });
   });
 
@@ -51,8 +49,7 @@ void main() {
 
       test('when there is one parameter, should format accordingly', () {
         final cmd = Command("CMD", parameters);
-        final payload = cmd.getPayload();
-        expect("CMD" + expected, payload);
+        expect("CMD" + expected, cmd.payload);
       });
     });
   });
