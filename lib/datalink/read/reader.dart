@@ -3,8 +3,9 @@ library pinpad;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bc108/read/reader_exceptions.dart';
-import 'package:bc108/utils/utils.dart';
+import '../utils/crc.dart';
+import '../utils/bytes.dart';
+import 'reader_exceptions.dart';
 
 enum _ReaderStage {
   Initial,

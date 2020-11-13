@@ -1,6 +1,6 @@
 library utils;
 
-import 'package:bc108/utils/bytes.dart';
+import 'bytes.dart';
 
 class BytesBuilder {
   List<int> _bytes = List<int>();

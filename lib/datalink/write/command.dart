@@ -1,4 +1,4 @@
-import 'package:bc108/write/command_exceptions.dart';
+import 'command_exceptions.dart';
 
 class Command {
   String _code;
@@ -24,19 +24,5 @@ class Command {
     if (parameters.isEmpty) sb.write("000");
     final text = sb.toString();
     return text;
-  }
-}
-
-class CommandFactory {
-  Command display(String message) {
-    if (message.length > 32) throw ArgumentError.value(message);
-    final cmd = Command("DSP", [message]);
-    return cmd;
-  }
-
-  Command getInfo(int num) {
-    if (num >= 9) throw ArgumentError.value(num);
-    final cmd = Command("GIN", [num.toString().padLeft(2, '0')]);
-    return cmd;
   }
 }

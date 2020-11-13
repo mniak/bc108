@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
-import 'package:bc108/read/reader_exceptions.dart';
-import 'package:bc108/read/reader.dart';
-import 'package:bc108/utils/utils.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tuple/tuple.dart';
+
+import 'package:bc108/datalink/read/reader.dart';
+import 'package:bc108/datalink/read/reader_exceptions.dart';
+import 'package:bc108/datalink/utils/bytes.dart';
+import 'package:bc108/datalink/utils/bytes_builder.dart';
+import 'package:bc108/datalink/utils/crc.dart';
 
 class ChecksumMock extends Mock implements Checksum {}
 

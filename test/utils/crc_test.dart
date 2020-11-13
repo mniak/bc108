@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bc108/utils/utils.dart';
+
+import 'package:bc108/datalink/utils/bytes.dart';
+import 'package:bc108/datalink/utils/bytes_builder.dart';
+import 'package:bc108/datalink/utils/crc.dart';
 
 class ChecksumStub extends Checksum {
   Iterable<int> _checksum;

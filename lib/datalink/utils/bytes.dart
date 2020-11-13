@@ -110,8 +110,8 @@ extension IntToByteConverter on int {
         return "<RS>";
       case 0x1F:
         return "<US>";
-      case 0x20:
-        return "<SPACE>";
+      // case 0x20:
+      //   return "<SPACE>";
     }
     if (this < 0x80) return String.fromCharCode(this);
     return "<?>";

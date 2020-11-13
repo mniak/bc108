@@ -1,5 +1,6 @@
-// import 'package:bc108/reader.dart';
-// import 'package:bc108/utils/utils.dart';
+// import 'read/reader.dart';
+// import 'utils/main.dart';
+// import 'write/command.dart';
 
 // class NonBlockingCommandResult {
 //   int status;
@@ -13,8 +14,7 @@
 //   Stream<ReaderEvent> _stream;
 //   Operator(this._sink, this._stream);
 
-//   Future<NonBlockingCommandResult> executeNonBlocking(
-//       NonBlockingCommand cmd) async {
+//   Future<NonBlockingCommandResult> executeNonBlocking(Command cmd) async {
 //     final data = _buildCommand(cmd.code, cmd.parameters);
 //     data.forEach((b) {
 //       _sink.add(b);
@@ -36,7 +36,7 @@
 //     payloadBuilder.addByte2(Byte.ETB);
 
 //     final payload = payloadBuilder.build();
-//     final crc = crc16(payload);
+//     final crc = _frameBuider.compute(payload);
 //     final bytes = BytesBuilder()
 //         .addByte2(Byte.SYN)
 //         .addBytes(payload)

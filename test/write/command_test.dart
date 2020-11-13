@@ -1,6 +1,7 @@
-import 'package:bc108/write/command.dart';
-import 'package:bc108/write/command_exceptions.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:bc108/datalink/write/command.dart';
+import 'package:bc108/datalink/write/command_exceptions.dart';
 
 void main() {
   group('empty parameters:', () {

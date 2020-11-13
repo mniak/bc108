@@ -1,5 +1,6 @@
-import 'package:bc108/utils/utils.dart';
-
+import '../utils/crc.dart';
+import '../utils/bytes.dart';
+import '../utils/bytes_builder.dart';
 import 'command.dart';
 
 class FrameBuilder {
