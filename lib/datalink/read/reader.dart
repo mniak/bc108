@@ -51,7 +51,9 @@ class ReaderEvent {
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
   Checksum _checksumAlgorithm;
-  ReaderTransformer(this._checksumAlgorithm);
+  ReaderTransformer({Checksum checksumAlgorithm}) {
+    this._checksumAlgorithm = checksumAlgorithm ?? CRC16();
+  }
 
   @override
   Stream<ReaderEvent> bind(Stream<int> stream) {
@@ -134,5 +136,11 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
   @override
   StreamTransformer<RS, RT> cast<RS, RT>() {
     return StreamTransformer.castFrom(this);
+  }
+}
+
+extension EventReaderExtension on Stream<int> {
+  Stream<ReaderEvent> asEventReader({Checksum checksumAlgorithm}) {
+    return transform(ReaderTransformer(checksumAlgorithm: checksumAlgorithm));
   }
 }

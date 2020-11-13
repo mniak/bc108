@@ -17,7 +17,8 @@ class ChecksumMock extends Mock implements Checksum {}
 Tuple2<Stream<ReaderEvent>, Checksum> getStream(
     StreamController<int> controller) {
   final checksum = ChecksumMock();
-  final stream = controller.stream.transform(ReaderTransformer(checksum));
+  final stream = controller.stream
+      .transform(ReaderTransformer(checksumAlgorithm: checksum));
   return Tuple2.fromList([stream, checksum]);
 }
 
@@ -37,8 +38,8 @@ void main() {
         // final tuple = getStream(streamController);
         // final stream = tuple.item1;
         final checksumAlg = ChecksumMock();
-        final stream =
-            streamController.stream.transform(ReaderTransformer(checksumAlg));
+        final stream = streamController.stream
+            .transform(ReaderTransformer(checksumAlgorithm: checksumAlg));
 
         // final checksumAlg = tuple.item2;
         // final checksum = faker.randomGenerator.numbers(255, 2);

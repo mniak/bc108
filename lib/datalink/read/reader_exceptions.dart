@@ -1,6 +1,6 @@
-abstract class PinpadException implements Exception {}
+abstract class ReaderException implements Exception {}
 
-class ChecksumException implements PinpadException {
+class ChecksumException implements ReaderException {
   String message;
   ChecksumException(Iterable<int> expected) {
     final b1 = expected.first;
@@ -13,7 +13,7 @@ class ChecksumException implements PinpadException {
   }
 }
 
-class ByteOutOfRangeException implements PinpadException {
+class ByteOutOfRangeException implements ReaderException {
   String message;
   ByteOutOfRangeException(int byte) {
     this.message = "Byte out of range: 0x${byte.toRadixString(16)}";
@@ -23,7 +23,7 @@ class ByteOutOfRangeException implements PinpadException {
   }
 }
 
-class ExpectedSynException implements PinpadException {
+class ExpectedSynException implements ReaderException {
   String message;
   ExpectedSynException(int byte) {
     this.message =
@@ -35,7 +35,7 @@ class ExpectedSynException implements PinpadException {
   }
 }
 
-class PayloadTooShortException implements PinpadException {
+class PayloadTooShortException implements ReaderException {
   String message;
   PayloadTooShortException() {
     this.message = "Payload must be at least 1 byte long";
@@ -46,7 +46,7 @@ class PayloadTooShortException implements PinpadException {
   }
 }
 
-class PayloadTooLongException implements PinpadException {
+class PayloadTooLongException implements ReaderException {
   String message;
   PayloadTooLongException(int length) {
     this.message =

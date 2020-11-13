@@ -1,48 +1,65 @@
-// import 'read/reader.dart';
-// import 'utils/main.dart';
-// import 'write/command.dart';
+import 'package:bc108/datalink/read/receiver.dart';
 
-// class NonBlockingCommandResult {
-//   int status;
-//   Iterable<String> parameters;
-// }
+import 'read/reader.dart';
+import 'write/frame_sender.dart';
+import 'write/command.dart';
 
-// class Operator {
-//   final _receiveTimeout = Duration(seconds: 2);
+class CommandResult {
+  bool _aborted = false;
+  String _abortMessage;
+  CommandResult.aborted(String message) {
+    this._aborted = true;
+    this._abortMessage = message;
+  }
+  bool get aborted => _aborted;
+  String get abortMessage => _abortMessage;
 
-//   Sink<int> _sink;
-//   Stream<ReaderEvent> _stream;
-//   Operator(this._sink, this._stream);
+  bool _timeout = false;
+  CommandResult.timeout() {
+    this._timeout = true;
+  }
+  bool get timeout => _timeout;
 
-//   Future<NonBlockingCommandResult> executeNonBlocking(Command cmd) async {
-//     final data = _buildCommand(cmd.code, cmd.parameters);
-//     data.forEach((b) {
-//       _sink.add(b);
-//     });
+  String _data;
+  CommandResult.data(String data) {
+    this._data = data;
+  }
+  bool get isDataResult => _data != null;
+  String get data => _data;
+}
 
-//     final event = await _stream.first.timeout(_receiveTimeout);
-//     if (event.ack) {}
-//   }
+class Operator {
+  Receiver _receiver;
+  FrameSender _sender;
+  Operator(this._receiver, this._sender);
 
-//   Iterable<int> _buildCommand(String name, Iterable<String> parameters) {
-//     final payloadBuilder = BytesBuilder().addString(name);
+  Operator.fromStreamAndSink(Stream<ReaderEvent> stream, Sink<int> sink)
+      : this(Receiver(stream), FrameSender(sink));
 
-//     parameters.forEach((parameter) {
-//       payloadBuilder
-//           .addString(parameter.length.toString().padLeft(3, '0'))
-//           .addString(parameter);
-//     });
+  Future<ReceiverResult> _sendAndReceive(Command cmd) async {
+    _sender.send(cmd);
+    final result = await _receiver.receive();
+    return result;
+  }
 
-//     payloadBuilder.addByte2(Byte.ETB);
+  Future<CommandResult> execute(Command cmd) async {
+    int retryCount = 3;
+    ReceiverResult recv;
+    do {
+      recv = await _sendAndReceive(cmd);
+    } while (retryCount > 0 && recv.tryAgain);
 
-//     final payload = payloadBuilder.build();
-//     final crc = _frameBuider.compute(payload);
-//     final bytes = BytesBuilder()
-//         .addByte2(Byte.SYN)
-//         .addBytes(payload)
-//         .addBytes(crc)
-//         .build();
+    if (recv.tryAgain) {
+      return CommandResult.aborted('received NAK 3 times');
+    }
+    if (recv.timeout) {
+      return CommandResult.timeout();
+    }
 
-//     return bytes;
-//   }
-// }
+    return CommandResult.data(recv.data);
+  }
+
+  void close() {
+    this._sender.close();
+  }
+}

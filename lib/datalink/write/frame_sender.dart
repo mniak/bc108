@@ -5,12 +5,18 @@ class FrameSender {
   FrameBuilder _frameBuilder;
   Sink<int> _sink;
 
-  FrameSender(this._frameBuilder, this._sink);
+  FrameSender(this._sink, {FrameBuilder frameBuilder}) {
+    this._frameBuilder = frameBuilder ?? FrameBuilder();
+  }
 
   void send(Command cmd) {
     final frame = _frameBuilder.build(cmd);
     for (var byte in frame) {
       _sink.add(byte);
     }
+  }
+
+  void close() {
+    this._sink.close();
   }
 }

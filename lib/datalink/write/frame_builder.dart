@@ -5,7 +5,9 @@ import 'command.dart';
 
 class FrameBuilder {
   Checksum _checksumAlgorithm;
-  FrameBuilder(this._checksumAlgorithm);
+  FrameBuilder({Checksum checksumAlgorithm}) {
+    this._checksumAlgorithm = checksumAlgorithm ?? CRC16();
+  }
 
   Iterable<int> build(Command command) {
     final payloadWithEtb =

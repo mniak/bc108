@@ -26,6 +26,17 @@ class CommandFactory {
     return cmd;
   }
 
+  Command tableLoadRec(int acquirer, int timestamp) {
+    if (acquirer < 0 || acquirer >= 9) throw ArgumentError.value(num);
+    if (timestamp < 0 || timestamp > 9999999999)
+      throw ArgumentError.value(timestamp);
+    final cmd = Command("TLI", [
+      acquirer.toString().padLeft(2, '0'),
+      _formatTimestamp(timestamp),
+    ]);
+    return cmd;
+  }
+
   String _formatTimestamp(int timestamp) {
     final result = timestamp.toString().padLeft(10, '0');
     return result;
