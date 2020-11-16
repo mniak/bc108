@@ -11,6 +11,10 @@ void main() {
     final params = faker.lorem.sentences(paramCount);
 
     final sut = Command(code, params);
+
+    expect(sut.code, equals(code));
+    expect(sut.parameters, equals(params));
+
     final expected = code +
         params
             .map((p) => (p.length % 999).toString().padLeft(3, '0') + p)
