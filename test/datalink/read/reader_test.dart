@@ -213,7 +213,7 @@ void main() {
     });
   });
 
-  test("Error events are bypassed", () {
+  test("error events are bypassed", () {
     final sut = SUT();
     final error = faker.lorem.sentence();
     sut.controller.addError(error);
@@ -222,7 +222,7 @@ void main() {
     sut.close();
   });
 
-  test("Close event is bypassed", () {
+  test("done event is bypassed", () {
     final sut = SUT();
 
     sut.close();
