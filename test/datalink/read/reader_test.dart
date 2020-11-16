@@ -10,7 +10,7 @@ import 'package:bc108/datalink/read/reader.dart';
 import 'package:bc108/datalink/read/reader_exceptions.dart';
 import 'package:bc108/datalink/utils/bytes.dart';
 import 'package:bc108/datalink/utils/bytes_builder.dart';
-import 'package:bc108/datalink/utils/crc.dart';
+import 'package:bc108/datalink/utils/checksum.dart';
 
 class ChecksumMock extends Mock implements ChecksumAlgorithm {}
 

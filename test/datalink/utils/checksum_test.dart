@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:bc108/datalink/utils/bytes.dart';
 import 'package:bc108/datalink/utils/bytes_builder.dart';
-import 'package:bc108/datalink/utils/crc.dart';
+import 'package:bc108/datalink/utils/checksum.dart';
 
 class ChecksumStub extends ChecksumAlgorithm {
   Iterable<int> _checksum;

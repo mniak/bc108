@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bc108/datalink/utils/crc.dart';
+import 'package:bc108/datalink/utils/checksum.dart';
 import 'package:bc108/datalink/write/frame_builder.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';

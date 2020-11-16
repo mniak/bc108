@@ -1,4 +1,4 @@
-import '../utils/crc.dart';
+import '../utils/checksum.dart';
 import '../utils/bytes.dart';
 import '../utils/bytes_builder.dart';
 

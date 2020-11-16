@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bc108/datalink/read/frame_receiver.dart';
 import 'package:bc108/datalink/read/frame_receiver_exceptions.dart';
 import 'package:bc108/datalink/read/reader.dart';
-import 'package:bc108/datalink/utils/bytes.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 

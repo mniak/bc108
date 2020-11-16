@@ -3,7 +3,7 @@ library pinpad;
 import 'dart:async';
 import 'dart:convert';
 
-import '../utils/crc.dart';
+import '../utils/checksum.dart';
 import '../utils/bytes.dart';
 import 'reader_exceptions.dart';
 
