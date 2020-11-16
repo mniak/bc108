@@ -1,8 +1,23 @@
 import 'package:bc108/application/write/command.dart';
 import 'package:bc108/application/write/command_exceptions.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('format payload using random data', () {
+    final code =
+        faker.lorem.word().substring(0, 3).padRight(3, ' ').toLowerCase();
+    final paramCount = faker.randomGenerator.integer(200);
+    final params = faker.lorem.sentences(paramCount);
+
+    final sut = Command(code, params);
+    final expected = code +
+        params
+            .map((p) => (p.length % 999).toString().padLeft(3, '0') + p)
+            .join();
+    expect(sut.payload, equals(expected));
+  });
+
   group('empty parameters:', () {
     test('when there are no parameters, should format as CMD 000', () {
       final cmd = Command("AAA", []);
