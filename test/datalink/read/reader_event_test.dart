@@ -21,7 +21,7 @@ void main() {
         expect(sut.data, isNull);
       });
 
-      test('Data', () {
+      test('data', () {
         final data = faker.lorem.sentence();
 
         final sut = ReaderEvent.data(data);
@@ -31,7 +31,7 @@ void main() {
         expect(sut.data, equals(data));
       });
 
-      test('Data null', () {
+      test('data null', () {
         expect(() => ReaderEvent.data(null), throwsArgumentError);
       });
     });
