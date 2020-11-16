@@ -17,7 +17,6 @@ class SUT {
       responseTimeout: Duration(milliseconds: 500),
     );
   }
-  void close() => controller.close();
 }
 
 void main() {

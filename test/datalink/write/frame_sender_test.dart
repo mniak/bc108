@@ -10,6 +10,7 @@ import 'package:rxdart/rxdart.dart';
 class FrameBuilderMock extends Mock implements FrameBuilder {}
 
 class SUT {
+  // ignore: close_sinks
   StreamController<int> controller;
   FrameBuilder frameBuilder;
   FrameSender sender;
@@ -21,8 +22,6 @@ class SUT {
   }
   Stream<Iterable<int>> get stream =>
       controller.stream.bufferTime(Duration(milliseconds: 100));
-
-  void close() => controller.close();
 }
 
 void main() {
@@ -36,12 +35,11 @@ void main() {
     sut.sender.send(payload);
 
     expectLater(sut.stream, emits(equals(data)));
-    sut.close();
   });
 
   test('done event should be bypassed', () {
     final sut = SUT();
-    sut.close();
+    sut.controller.close();
     expectLater(sut.stream, emitsDone);
   });
 }

@@ -25,7 +25,6 @@ class SUT {
     this.eventStream =
         controller.stream.asEventReader(checksumAlgorithm: checksumAlgorightm);
   }
-  void close() => controller.close();
 }
 
 void main() {
@@ -49,8 +48,6 @@ void main() {
         }
         expectLater(sut.eventStream,
             emits(predicate((x) => x.isDataEvent && x.data == text)));
-
-        sut.close();
       });
     });
   });
@@ -77,8 +74,6 @@ void main() {
         }
         expectLater(sut.eventStream,
             emits(predicate((x) => x.isDataEvent && x.data == text)));
-
-        sut.close();
       });
     });
   });
@@ -86,7 +81,6 @@ void main() {
   test('when there is no bytes, should receive no string', () {
     final sut = SUT();
     sut.eventStream.listen(expectAsync1((x) {}, count: 0));
-    sut.close();
   });
 
   test('when CRC is wrong, should raise error', () {
@@ -102,8 +96,6 @@ void main() {
       sut.controller.sink.add(b);
     }
     expectLater(sut.eventStream, emitsError(TypeMatcher<ChecksumException>()));
-
-    sut.close();
   });
 
   group('when byte in payload section is out of range, should raise error', () {
@@ -134,8 +126,6 @@ void main() {
         }
         expectLater(sut.eventStream,
             emitsError(TypeMatcher<ByteOutOfRangeException>()));
-
-        // sut.close();
       });
     });
   });
@@ -152,8 +142,6 @@ void main() {
     }
     expectLater(
         sut.eventStream, emitsError(TypeMatcher<PayloadTooShortException>()));
-
-    sut.close();
   });
 
   test('when payload length > 1024, should raise error', () {
@@ -169,8 +157,6 @@ void main() {
     }
     expectLater(
         sut.eventStream, emitsError(TypeMatcher<PayloadTooLongException>()));
-
-    sut.close();
   });
 
   group('when ACK/NAK are received, should raise event ACK/NAK', () {
@@ -187,8 +173,6 @@ void main() {
         sut.controller.sink.add(byte);
 
         expectLater(sut.eventStream, emits(matcher));
-
-        sut.close();
       });
     });
   });
@@ -207,8 +191,6 @@ void main() {
 
         expectLater(
             sut.eventStream, emitsError(TypeMatcher<ExpectedSynException>()));
-
-        sut.close();
       });
     });
   });
@@ -219,13 +201,11 @@ void main() {
     sut.controller.addError(error);
 
     expectLater(sut.eventStream, emitsError(equals(error)));
-    sut.close();
   });
 
   test("done event is bypassed", () {
     final sut = SUT();
-
-    sut.close();
+    sut.controller.close();
     expectLater(sut.eventStream, emitsDone);
   });
 }
