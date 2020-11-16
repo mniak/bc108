@@ -38,4 +38,10 @@ void main() {
     expectLater(sut.stream, emits(equals(data)));
     sut.close();
   });
+
+  test('close event should be bypassed', () {
+    final sut = SUT();
+    sut.close();
+    expectLater(sut.stream, emitsDone);
+  });
 }
