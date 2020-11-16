@@ -7,6 +7,7 @@ import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class SUT {
+  // ignore: close_sinks
   StreamController<ReaderEvent> controller;
   FrameReceiver receiver;
   SUT() {

@@ -15,6 +15,7 @@ import 'package:bc108/datalink/utils/checksum.dart';
 class ChecksumMock extends Mock implements ChecksumAlgorithm {}
 
 class SUT {
+  // ignore: close_sinks
   StreamController<int> controller;
   Stream<ReaderEvent> eventStream;
   ChecksumAlgorithm checksumAlgorightm;
