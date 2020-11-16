@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
 import 'package:mockito/mockito.dart';
@@ -216,5 +217,14 @@ void main() {
         sut.close();
       });
     });
+  });
+
+  test("Errors are bypassed", () {
+    final sut = SUT();
+    final error = faker.lorem.sentence();
+    sut.controller.addError(error);
+
+    expectLater(sut.eventStream, emitsError(equals(error)));
+    sut.close();
   });
 }
