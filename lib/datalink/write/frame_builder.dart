@@ -1,7 +1,6 @@
 import '../utils/crc.dart';
 import '../utils/bytes.dart';
 import '../utils/bytes_builder.dart';
-import 'command.dart';
 
 class FrameBuilder {
   Checksum _checksumAlgorithm;
@@ -9,9 +8,9 @@ class FrameBuilder {
     this._checksumAlgorithm = checksumAlgorithm ?? CRC16();
   }
 
-  Iterable<int> build(Command command) {
+  Iterable<int> build(String payload) {
     final payloadWithEtb =
-        BytesBuilder().addString(command.payload).addByte2(Byte.ETB).build();
+        BytesBuilder().addString(payload).addByte2(Byte.ETB).build();
     final checksum = _checksumAlgorithm.compute(payloadWithEtb);
     final result = BytesBuilder()
         .addByte2(Byte.SYN)

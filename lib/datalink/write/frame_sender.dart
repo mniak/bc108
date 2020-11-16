@@ -1,4 +1,3 @@
-import 'command.dart';
 import 'frame_builder.dart';
 
 class FrameSender {
@@ -9,8 +8,8 @@ class FrameSender {
     this._frameBuilder = frameBuilder ?? FrameBuilder();
   }
 
-  void send(Command cmd) {
-    final frame = _frameBuilder.build(cmd);
+  void send(String payload) {
+    final frame = _frameBuilder.build(payload);
     for (var byte in frame) {
       _sink.add(byte);
     }

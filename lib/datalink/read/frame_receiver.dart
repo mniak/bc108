@@ -1,54 +1,53 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:bc108/datalink/read/reader.dart';
-import 'package:bc108/datalink/utils/crc.dart';
+import 'frame_receiver_exceptions.dart';
 
-import 'receiver_exceptions.dart';
-
-class ReceiverResult {
+class FrameResult {
   bool _tryAgain = false;
-  ReceiverResult.tryAgain() {
+  FrameResult.tryAgain() {
     this._tryAgain = true;
   }
   bool get tryAgain => _tryAgain;
 
   bool _timeout = false;
-  ReceiverResult.timeout() {
+  FrameResult.timeout() {
     this._timeout = true;
   }
   bool get timeout => _timeout;
 
   String _data;
-  ReceiverResult.data(String data) {
+  FrameResult.data(String data) {
     this._data = data;
   }
   bool get isDataResult => _data != null;
   String get data => _data;
 }
 
-class Receiver {
-  Stream<ReaderEvent> _stream;
+class FrameReceiver {
+  StreamQueue<ReaderEvent> _queue;
   Duration _ackTimeout;
   Duration _responseTimeout;
 
-  Receiver(Stream<ReaderEvent> stream,
+  FrameReceiver(Stream<ReaderEvent> stream,
       {Duration ackTimeout, Duration responseTimeout}) {
-    this._stream = stream.asBroadcastStream();
+    this._queue = StreamQueue<ReaderEvent>(stream);
     this._ackTimeout = ackTimeout ?? Duration(seconds: 2);
     this._responseTimeout = responseTimeout ?? Duration(seconds: 10);
   }
 
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
-      _stream.first.timeout(timeout);
+      _queue.next.timeout(timeout);
 
-  Future<ReceiverResult> receive() async {
+  Future<FrameResult> receive() async {
     try {
       final event1 = await _nextEvent(_ackTimeout);
       if (!event1.ack && !event1.nak) {
         throw ExpectingAckOrNakException(event1);
       }
       if (event1.nak) {
-        return ReceiverResult.tryAgain();
+        return FrameResult.tryAgain();
       }
 
       final event2 = await _nextEvent(_responseTimeout);
@@ -56,9 +55,9 @@ class Receiver {
         throw ExpectingDataEventException(event2);
       }
 
-      return ReceiverResult.data(event2.data);
+      return FrameResult.data(event2.data);
     } on TimeoutException {
-      return ReceiverResult.timeout();
+      return FrameResult.timeout();
     }
   }
 }

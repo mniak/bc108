@@ -1,4 +1,6 @@
-class InvalidCommandLengthException implements Exception {
+abstract class CommandException implements Exception {}
+
+class InvalidCommandLengthException implements CommandException {
   String message;
   InvalidCommandLengthException(int length) {
     this.message =
@@ -10,7 +12,7 @@ class InvalidCommandLengthException implements Exception {
   }
 }
 
-class ParameterTooLongException implements Exception {
+class ParameterTooLongException implements CommandException {
   String message;
   ParameterTooLongException(int length) {
     this.message =

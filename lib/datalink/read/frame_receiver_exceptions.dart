@@ -1,8 +1,8 @@
 import 'package:bc108/datalink/read/reader.dart';
 
-abstract class ReceiverException implements Exception {}
+abstract class FrameReceiverException implements Exception {}
 
-class ExpectingAckOrNakException implements ReceiverException {
+class ExpectingAckOrNakException implements FrameReceiverException {
   String message;
   ExpectingAckOrNakException(ReaderEvent event) {
     if (event.isDataEvent) {
@@ -17,7 +17,7 @@ class ExpectingAckOrNakException implements ReceiverException {
   }
 }
 
-class ExpectingDataEventException implements ReceiverException {
+class ExpectingDataEventException implements FrameReceiverException {
   String message;
   ExpectingDataEventException(ReaderEvent event) {
     if (event.ack) {
