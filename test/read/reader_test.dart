@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
 import 'package:mockito/mockito.dart';
-import 'package:tuple/tuple.dart';
 
 import 'package:bc108/datalink/read/reader.dart';
 import 'package:bc108/datalink/read/reader_exceptions.dart';
@@ -14,119 +13,102 @@ import 'package:bc108/datalink/utils/crc.dart';
 
 class ChecksumMock extends Mock implements Checksum {}
 
-Tuple2<Stream<ReaderEvent>, Checksum> getStream(
-    StreamController<int> controller) {
-  final checksum = ChecksumMock();
-  final stream = controller.stream
-      .transform(ReaderTransformer(checksumAlgorithm: checksum));
-  return Tuple2.fromList([stream, checksum]);
+class SUT {
+  StreamController<int> controller;
+  Stream<ReaderEvent> eventStream;
+  Checksum checksumAlgorightm;
+
+  SUT() {
+    this.controller = StreamController<int>();
+    this.checksumAlgorightm = ChecksumMock();
+    this.eventStream =
+        controller.stream.asEventReader(checksumAlgorithm: checksumAlgorightm);
+  }
+  void close() => controller.close();
 }
 
 void main() {
   group('when bytes are well formatted message, should return string', () {
     final data = [
-      ["OPN000", 0x77, 0x5e],
-      ["AAAAAAAA", 0x9a, 0x63],
+      "OPN000",
+      "AAAAAAAA",
     ];
-    data.forEach((d) {
-      final text = d[0] as String;
-      final crc1 = d[1] as int;
-      final crc2 = d[2] as int;
-
+    data.forEach((text) {
       test(text, () {
-        final streamController = StreamController<int>();
-        // final tuple = getStream(streamController);
-        // final stream = tuple.item1;
-        final checksumAlg = ChecksumMock();
-        final stream = streamController.stream
-            .transform(ReaderTransformer(checksumAlgorithm: checksumAlg));
-
-        // final checksumAlg = tuple.item2;
-        // final checksum = faker.randomGenerator.numbers(255, 2);
-
-        when(checksumAlg.validate(any, any)).thenAnswer((_) {
-          return false;
-        });
-        when(checksumAlg.compute(any)).thenAnswer((_) {
-          return [crc1, crc2];
-        });
-
+        final sut = SUT();
+        when(sut.checksumAlgorightm.validate(any, any)).thenAnswer((_) => true);
         final bytes = BytesBuilder()
             .addByte2(Byte.SYN)
             .addString(text)
             .addByte2(Byte.ETB)
-            .addBytes([crc1, crc2]).build();
+            .addBytes([0x00, 0x00]).build();
 
         for (var b in bytes) {
-          streamController.sink.add(b);
+          sut.controller.sink.add(b);
         }
         expectLater(
-            stream,
+            sut.eventStream,
             emitsInOrder([
               predicate((x) => x.isDataEvent && x.data == text),
             ]));
-        streamController.close();
+
+        sut.close();
       });
     });
   });
 
   group('when bytes are CAN+well formatted message, should return string', () {
     final data = [
-      ["OPN000", 0x77, 0x5e],
-      ["AAAAAAAA", 0x9a, 0x63],
+      "OPN000",
+      "AAAAAAAA",
     ];
-    data.forEach((d) {
-      final text = d[0] as String;
-      final crc1 = d[1] as int;
-      final crc2 = d[2] as int;
+    data.forEach((text) {
       test(text, () {
-        final streamController = StreamController<int>();
-        final stream = getStream(streamController).item1;
+        final sut = SUT();
+        when(sut.checksumAlgorightm.validate(any, any)).thenAnswer((_) => true);
 
         final bytes = BytesBuilder()
             .addByte2(Byte.CAN)
             .addByte2(Byte.SYN)
             .addString(text)
             .addByte2(Byte.ETB)
-            .addBytes([crc1, crc2]).build();
+            .addBytes([0x00, 0x00]).build();
 
         for (var b in bytes) {
-          streamController.sink.add(b);
+          sut.controller.sink.add(b);
         }
         expectLater(
-            stream,
+            sut.eventStream,
             emitsInOrder([
               predicate((x) => x.isDataEvent && x.data == text),
             ]));
 
-        streamController.close();
+        sut.close();
       });
     });
   });
 
   test('when there is no bytes, should receive no string', () {
-    final streamController = StreamController<int>();
-    final stream = getStream(streamController).item1;
-    stream.listen(expectAsync1((x) {}, count: 0));
-    streamController.close();
+    final sut = SUT();
+    sut.eventStream.listen(expectAsync1((x) {}, count: 0));
+    sut.close();
   });
 
   test('when CRC is wrong, should raise error', () {
-    final streamController = StreamController<int>();
-    final stream = getStream(streamController);
-
+    final sut = SUT();
+    when(sut.checksumAlgorightm.validate(any, any)).thenAnswer((_) => false);
     final bytes = BytesBuilder()
         .addByte2(Byte.SYN)
         .addString("ABCDEFG")
         .addByte2(Byte.ETB)
-        .addBytes([0x11, 0x22]).build();
+        .addBytes([0x00, 0x00]).build();
 
     for (var b in bytes) {
-      streamController.sink.add(b);
+      sut.controller.sink.add(b);
     }
-    expectLater(stream, emitsError(TypeMatcher<ChecksumException>()));
+    expectLater(sut.eventStream, emitsError(TypeMatcher<ChecksumException>()));
 
-    streamController.close();
+    sut.close();
   });
 
   group('when byte in payload section is out of range, should raise error', () {
@@ -141,8 +123,8 @@ void main() {
 
     data.forEach((b) {
       test('0x${b.toRadixString(16)}', () {
-        final streamController = StreamController<int>();
-        final stream = getStream(streamController).item1;
+        final sut = SUT();
+        when(sut.checksumAlgorightm.validate(any, any)).thenAnswer((_) => true);
 
         final bytes = BytesBuilder()
             .addByte2(Byte.SYN)
@@ -150,51 +132,50 @@ void main() {
             .addByte(b)
             .addString("EFGH")
             .addByte2(Byte.ETB)
-            .addBytes([0x11, 0x22]).build();
+            .addBytes([0x00, 0x00]).build();
 
         for (var b in bytes) {
-          streamController.sink.add(b);
+          sut.controller.sink.add(b);
         }
-        expectLater(stream, emitsError(TypeMatcher<ByteOutOfRangeException>()));
+        expectLater(sut.eventStream,
+            emitsError(TypeMatcher<ByteOutOfRangeException>()));
 
-        streamController.close();
+        // sut.close();
       });
     });
   });
 
   test('when payload length is 0, should raise error', () {
-    final streamController = StreamController<int>();
-    final stream = getStream(streamController).item1;
-
+    final sut = SUT();
     final bytes = BytesBuilder()
         .addByte2(Byte.SYN)
         .addByte2(Byte.ETB)
-        .addBytes([0x11, 0x22]).build();
+        .addBytes([0x00, 0x00]).build();
 
     for (var b in bytes) {
-      streamController.sink.add(b);
+      sut.controller.sink.add(b);
     }
-    expectLater(stream, emitsError(TypeMatcher<PayloadTooShortException>()));
+    expectLater(
+        sut.eventStream, emitsError(TypeMatcher<PayloadTooShortException>()));
 
-    streamController.close();
+    sut.close();
   });
 
   test('when payload length > 1024, should raise error', () {
-    final streamController = StreamController<int>();
-    final stream = getStream(streamController).item1;
-
+    final sut = SUT();
     final bytes = BytesBuilder()
         .addByte2(Byte.SYN)
         .addString('A' * 1025)
         .addByte2(Byte.ETB)
-        .addBytes([0x11, 0x22]).build();
+        .addBytes([0x00, 0x00]).build();
 
     for (var b in bytes) {
-      streamController.sink.add(b);
+      sut.controller.sink.add(b);
     }
-    expectLater(stream, emitsError(TypeMatcher<PayloadTooLongException>()));
+    expectLater(
+        sut.eventStream, emitsError(TypeMatcher<PayloadTooLongException>()));
 
-    streamController.close();
+    sut.close();
   });
 
   group('when ACK/NAK are received, should raise event ACK/NAK', () {
@@ -206,14 +187,13 @@ void main() {
       final byte = d[0] as int;
       final matcher = d[1] as Matcher;
       test('0x${byte.toRadixString(16)}', () {
-        final streamController = StreamController<int>();
-        final stream = getStream(streamController).item1;
+        final sut = SUT();
 
-        streamController.sink.add(byte);
+        sut.controller.sink.add(byte);
 
-        expectLater(stream, emitsInOrder([matcher]));
+        expectLater(sut.eventStream, emitsInOrder([matcher]));
 
-        streamController.close();
+        sut.close();
       });
     });
   });
@@ -226,14 +206,14 @@ void main() {
     ];
     data.forEach((byte) {
       test('0x${byte.toRadixString(16)}', () {
-        final streamController = StreamController<int>();
-        final stream = getStream(streamController).item1;
+        final sut = SUT();
 
-        streamController.sink.add(byte);
+        sut.controller.sink.add(byte);
 
-        expectLater(stream, emitsError(TypeMatcher<ExpectedSynException>()));
+        expectLater(
+            sut.eventStream, emitsError(TypeMatcher<ExpectedSynException>()));
 
-        streamController.close();
+        sut.close();
       });
     });
   });

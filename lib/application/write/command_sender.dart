@@ -1,5 +1,6 @@
-import 'package:bc108/datalink/write/frame_builder.dart';
+import 'dart:developer';
 
+import '../../datalink/write/frame_builder.dart';
 import '../../datalink/write/frame_sender.dart';
 import 'command.dart';
 
@@ -11,6 +12,8 @@ class CommandSender {
   }
 
   void send(Command command) {
+    log("Sending command to pinpad: '${command.payload}'",
+        name: 'net.mniak.bc108');
     _frameSender.send(command.payload);
   }
 

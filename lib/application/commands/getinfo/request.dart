@@ -1,5 +1,4 @@
 import 'package:bc108/application/fields/numeric.dart';
-import 'package:bc108/application/fields/composite.dart';
 
 class GetInfoRequest {
   int network;

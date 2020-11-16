@@ -1,6 +1,5 @@
 import 'field.dart';
 import 'field_result.dart';
-import 'list.dart';
 import 'numeric.dart';
 
 class AlphanumericField implements Field<String> {

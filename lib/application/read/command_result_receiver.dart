@@ -1,5 +1,6 @@
-import 'package:bc108/datalink/read/reader.dart';
+import 'dart:developer';
 
+import '../../datalink/read/reader.dart';
 import '../../datalink/read/frame_receiver.dart';
 import 'command_result.dart';
 
@@ -12,7 +13,8 @@ class CommandReceiver {
 
   Future<CommandResult> receive() async {
     final result = await _frameReceiver.receive();
-    //TODO: check other cases (timeout, aborted...)
+    log("Command received from pinpad: '${result.data}'",
+        name: 'net.mniak.bc108');
     return CommandResult.parse(result.data);
   }
 }

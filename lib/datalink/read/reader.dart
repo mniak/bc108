@@ -95,23 +95,30 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
 
       case _ReaderStage.Payload:
         if (b == Byte.ETB.toInt()) {
-          if (state.payload.length == 0)
+          if (state.payload.length == 0) {
             sink.addError(PayloadTooShortException());
+            state.reset();
+            break;
+          }
 
-          state.payload.forEach((b) {
+          for (var b in state.payload) {
             if (b < 0x20 || b > 0x7f) {
               sink.addError(ByteOutOfRangeException(b));
+              state.reset();
+              break;
             }
-          });
+          }
 
           state.stage = _ReaderStage.CRC1;
           break;
         }
 
         state.payload.add(b);
-        if (state.payload.length > 1024)
+        if (state.payload.length > 1024) {
           sink.addError(PayloadTooLongException(state.payload.length));
-
+          state.reset();
+          break;
+        }
         break;
       case _ReaderStage.CRC1:
         state.crc1 = b;
