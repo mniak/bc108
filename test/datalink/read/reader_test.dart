@@ -47,11 +47,8 @@ void main() {
         for (var b in bytes) {
           sut.controller.sink.add(b);
         }
-        expectLater(
-            sut.eventStream,
-            emitsInOrder([
-              predicate((x) => x.isDataEvent && x.data == text),
-            ]));
+        expectLater(sut.eventStream,
+            emits(predicate((x) => x.isDataEvent && x.data == text)));
 
         sut.close();
       });
@@ -78,11 +75,8 @@ void main() {
         for (var b in bytes) {
           sut.controller.sink.add(b);
         }
-        expectLater(
-            sut.eventStream,
-            emitsInOrder([
-              predicate((x) => x.isDataEvent && x.data == text),
-            ]));
+        expectLater(sut.eventStream,
+            emits(predicate((x) => x.isDataEvent && x.data == text)));
 
         sut.close();
       });
@@ -192,7 +186,7 @@ void main() {
 
         sut.controller.sink.add(byte);
 
-        expectLater(sut.eventStream, emitsInOrder([matcher]));
+        expectLater(sut.eventStream, emits(matcher));
 
         sut.close();
       });
