@@ -7,7 +7,7 @@ import 'package:bc108/datalink/utils/bytes.dart';
 import 'package:bc108/datalink/utils/bytes_builder.dart';
 import 'package:bc108/datalink/utils/crc.dart';
 
-class ChecksumStub extends Checksum {
+class ChecksumStub extends ChecksumAlgorithm {
   Iterable<int> _checksum;
   ChecksumStub(this._checksum);
 
@@ -39,7 +39,7 @@ void main() {
   group('CRC16', () {
     test('extends Checksum', () {
       final sut = CRC16();
-      expect(sut, isInstanceOf<Checksum>());
+      expect(sut, isInstanceOf<ChecksumAlgorithm>());
     });
     group('computes/validates the checksum nicely', () {
       final data = [

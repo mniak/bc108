@@ -12,12 +12,12 @@ import 'package:bc108/datalink/utils/bytes.dart';
 import 'package:bc108/datalink/utils/bytes_builder.dart';
 import 'package:bc108/datalink/utils/crc.dart';
 
-class ChecksumMock extends Mock implements Checksum {}
+class ChecksumMock extends Mock implements ChecksumAlgorithm {}
 
 class SUT {
   StreamController<int> controller;
   Stream<ReaderEvent> eventStream;
-  Checksum checksumAlgorightm;
+  ChecksumAlgorithm checksumAlgorightm;
 
   SUT() {
     this.controller = StreamController<int>();

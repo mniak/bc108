@@ -3,8 +3,8 @@ import '../utils/bytes.dart';
 import '../utils/bytes_builder.dart';
 
 class FrameBuilder {
-  Checksum _checksumAlgorithm;
-  FrameBuilder({Checksum checksumAlgorithm}) {
+  ChecksumAlgorithm _checksumAlgorithm;
+  FrameBuilder({ChecksumAlgorithm checksumAlgorithm}) {
     this._checksumAlgorithm = checksumAlgorithm ?? CRC16();
   }
 

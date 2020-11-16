@@ -3,7 +3,7 @@ library utils;
 import 'dart:typed_data';
 import 'package:collection/collection.dart';
 
-abstract class Checksum {
+abstract class ChecksumAlgorithm {
   Iterable<int> compute(Iterable<int> data);
   bool validate(Iterable<int> data, Iterable<int> checksum) {
     final computed = compute(data);
@@ -12,7 +12,7 @@ abstract class Checksum {
   }
 }
 
-class CRC16 extends Checksum {
+class CRC16 extends ChecksumAlgorithm {
   @override
   Iterable<int> compute(Iterable<int> data) {
     final mask = 0x1021;
