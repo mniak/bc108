@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bc108/datalink/read/frame_receiver.dart';
 import 'package:bc108/datalink/read/frame_receiver_exceptions.dart';
 import 'package:bc108/datalink/read/reader.dart';
+import 'package:bc108/datalink/utils/bytes.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -72,12 +73,39 @@ void main() {
     expect(result.data, isNull);
   });
 
-  test('when receive Event before ACK, should throw ExpectingAckOrNakException',
+  test('when receive event before ACK, should throw ExpectingAckOrNakException',
       () async {
     final sut = SUT();
     final data = faker.lorem.sentence();
     sut.controller.sink.add(ReaderEvent.data(data));
     expect(() => sut.receiver.receive(),
         throwsA(isInstanceOf<ExpectingAckOrNakException>()));
+  });
+
+  group(
+      'when receive ACK then receives ACK or NAK, should throw ExpectingAckOrNakException',
+      () {
+    test('ACK', () async {
+      final sut = SUT();
+      sut.controller.sink.add(ReaderEvent.ack());
+      sut.controller.sink.add(ReaderEvent.ack());
+      expect(() => sut.receiver.receive(),
+          throwsA(isInstanceOf<ExpectingDataEventException>()));
+    });
+
+    test('NAK', () async {
+      final sut = SUT();
+      sut.controller.sink.add(ReaderEvent.ack());
+      sut.controller.sink.add(ReaderEvent.nak());
+      expect(() => sut.receiver.receive(),
+          throwsA(isInstanceOf<ExpectingDataEventException>()));
+    });
+  });
+
+  test('when receive any other error, should throw', () {
+    final sut = SUT();
+    final error = faker.lorem.sentence();
+    sut.controller.sink.addError(error);
+    expect(() => sut.receiver.receive(), throwsA(equals(error)));
   });
 }
