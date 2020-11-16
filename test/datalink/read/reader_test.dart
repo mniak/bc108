@@ -219,12 +219,19 @@ void main() {
     });
   });
 
-  test("Errors are bypassed", () {
+  test("Error events are bypassed", () {
     final sut = SUT();
     final error = faker.lorem.sentence();
     sut.controller.addError(error);
 
     expectLater(sut.eventStream, emitsError(equals(error)));
     sut.close();
+  });
+
+  test("Close event is bypassed", () {
+    final sut = SUT();
+
+    sut.close();
+    expectLater(sut.eventStream, emitsDone);
   });
 }
