@@ -2,12 +2,12 @@ library pinpad;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
-import 'package:bc108/exceptions.dart';
-import 'package:bc108/utils/utils.dart';
+import '../utils/checksum.dart';
+import '../utils/bytes.dart';
+import 'reader_exceptions.dart';
 
-enum ReaderStage {
+enum _ReaderStage {
   Initial,
   Payload,
   CRC1,
@@ -16,7 +16,7 @@ enum ReaderStage {
 
 class ReaderState {
   final payload = List<int>();
-  ReaderStage stage;
+  _ReaderStage stage;
   int crc1;
 
   ReaderState() {
@@ -25,7 +25,7 @@ class ReaderState {
 
   void reset() {
     this.payload.clear();
-    this.stage = ReaderStage.Initial;
+    this.stage = _ReaderStage.Initial;
   }
 }
 
@@ -50,9 +50,15 @@ class ReaderEvent {
 }
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
+  ChecksumAlgorithm _checksumAlgorithm;
+  ReaderTransformer({ChecksumAlgorithm checksumAlgorithm}) {
+    this._checksumAlgorithm = checksumAlgorithm ?? CRC16();
+  }
+
   @override
   Stream<ReaderEvent> bind(Stream<int> stream) {
     final state = ReaderState();
+    // ignore: close_sinks
     final controller = StreamController<ReaderEvent>();
     stream.listen(
       (data) => _processBytes(data, controller.sink, state),
@@ -66,10 +72,9 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
     return controller.stream;
   }
 
-  static void _processBytes(
-      int b, StreamSink<ReaderEvent> sink, ReaderState state) {
+  void _processBytes(int b, StreamSink<ReaderEvent> sink, ReaderState state) {
     switch (state.stage) {
-      case ReaderStage.Initial:
+      case _ReaderStage.Initial:
         switch (b.toByte()) {
           case Byte.CAN:
             break;
@@ -80,7 +85,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
             sink.add(ReaderEvent.nak());
             break;
           case Byte.SYN:
-            state.stage = ReaderStage.Payload;
+            state.stage = _ReaderStage.Payload;
             break;
           default:
             sink.addError(ExpectedSynException(b));
@@ -88,36 +93,44 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
         }
         break;
 
-      case ReaderStage.Payload:
+      case _ReaderStage.Payload:
         if (b == Byte.ETB.toInt()) {
-          if (state.payload.length == 0)
+          if (state.payload.length == 0) {
             sink.addError(PayloadTooShortException());
+            state.reset();
+            break;
+          }
 
-          state.payload.forEach((b) {
+          for (var b in state.payload) {
             if (b < 0x20 || b > 0x7f) {
               sink.addError(ByteOutOfRangeException(b));
+              state.reset();
+              break;
             }
-          });
+          }
 
-          state.stage = ReaderStage.CRC1;
+          state.stage = _ReaderStage.CRC1;
           break;
         }
 
         state.payload.add(b);
-        if (state.payload.length > 1024)
+        if (state.payload.length > 1024) {
           sink.addError(PayloadTooLongException(state.payload.length));
-
+          state.reset();
+          break;
+        }
         break;
-      case ReaderStage.CRC1:
+      case _ReaderStage.CRC1:
         state.crc1 = b;
-        state.stage = ReaderStage.CRC2;
+        state.stage = _ReaderStage.CRC2;
         break;
-      case ReaderStage.CRC2:
-        final crc =
-            crc16(Uint8List.fromList(state.payload + [Byte.ETB.toInt()]));
-        if (crc[0] != state.crc1 || crc[1] != b) {
-          sink.addError(
-              ChecksumException(state.crc1 * 256 + b, crc[0] * 256 + crc[1]));
+      case _ReaderStage.CRC2:
+        final payloadWithETB = state.payload + [Byte.ETB.toInt()];
+        final crcInMessage = [state.crc1, b];
+        final crcIsValid =
+            _checksumAlgorithm.validate(payloadWithETB, crcInMessage);
+        if (!crcIsValid) {
+          sink.addError(ChecksumException(crcInMessage));
         } else {
           final text = ascii.decode(state.payload);
           sink.add(ReaderEvent.data(text));
@@ -130,5 +143,11 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
   @override
   StreamTransformer<RS, RT> cast<RS, RT>() {
     return StreamTransformer.castFrom(this);
+  }
+}
+
+extension EventReaderExtension on Stream<int> {
+  Stream<ReaderEvent> asEventReader({ChecksumAlgorithm checksumAlgorithm}) {
+    return transform(ReaderTransformer(checksumAlgorithm: checksumAlgorithm));
   }
 }

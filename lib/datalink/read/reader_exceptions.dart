@@ -1,17 +1,19 @@
-abstract class PinpadException implements Exception {}
+abstract class ReaderException implements Exception {}
 
-class ChecksumException implements PinpadException {
+class ChecksumException implements ReaderException {
   String message;
-  ChecksumException(int expected, int actual) {
-    this.message =
-        "Expected checksum to be 0x${expected.toRadixString(16)} 0x${actual.toRadixString(16)}";
+  ChecksumException(Iterable<int> expected) {
+    final b1 = expected.first;
+    final b2 = expected.skip(1).first;
+    final long = b1 * 256 + b2;
+    this.message = "Invalid checksum. Expecting 0x${long.toRadixString(16)}.";
   }
   String toString() {
     return "ChecksumException: $message";
   }
 }
 
-class ByteOutOfRangeException implements PinpadException {
+class ByteOutOfRangeException implements ReaderException {
   String message;
   ByteOutOfRangeException(int byte) {
     this.message = "Byte out of range: 0x${byte.toRadixString(16)}";
@@ -21,7 +23,7 @@ class ByteOutOfRangeException implements PinpadException {
   }
 }
 
-class ExpectedSynException implements PinpadException {
+class ExpectedSynException implements ReaderException {
   String message;
   ExpectedSynException(int byte) {
     this.message =
@@ -33,7 +35,7 @@ class ExpectedSynException implements PinpadException {
   }
 }
 
-class PayloadTooShortException implements PinpadException {
+class PayloadTooShortException implements ReaderException {
   String message;
   PayloadTooShortException() {
     this.message = "Payload must be at least 1 byte long";
@@ -44,7 +46,7 @@ class PayloadTooShortException implements PinpadException {
   }
 }
 
-class PayloadTooLongException implements PinpadException {
+class PayloadTooLongException implements ReaderException {
   String message;
   PayloadTooLongException(int length) {
     this.message =
