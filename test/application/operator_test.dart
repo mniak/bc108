@@ -6,14 +6,14 @@ import 'package:bc108/application/write/command_sender.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class CommandReceiverMock extends Mock implements CommandReceiver {}
+class CommandReceiverMock extends Mock implements CommandResultReceiver {}
 
 class CommandSenderMock extends Mock implements CommandSender {}
 
 class CommandResultMock extends Mock implements CommandResult {}
 
 class SUT {
-  CommandReceiver receiver;
+  CommandResultReceiver receiver;
   CommandSender sender;
   Operator oper;
 

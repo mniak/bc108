@@ -7,11 +7,11 @@ import '../../log.dart';
 import 'command_result_receiver_exceptions.dart';
 import 'command_result.dart';
 
-class CommandReceiver {
+class CommandResultReceiver {
   FrameReceiver _frameReceiver;
 
-  CommandReceiver(this._frameReceiver);
-  CommandReceiver.fromStream(Stream<ReaderEvent> stream)
+  CommandResultReceiver(this._frameReceiver);
+  CommandResultReceiver.fromStream(Stream<ReaderEvent> stream)
       : this(FrameReceiver(stream));
 
   Future<CommandResult> receive() async {

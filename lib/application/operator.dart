@@ -6,12 +6,13 @@ import 'write/command_sender.dart';
 import 'write/command.dart';
 
 class Operator {
-  CommandReceiver _receiver;
+  CommandResultReceiver _receiver;
   CommandSender _sender;
   Operator(this._receiver, this._sender);
 
   Operator.fromStreamAndSink(Stream<ReaderEvent> stream, Sink<int> sink)
-      : this(CommandReceiver.fromStream(stream), CommandSender.fromSink(sink));
+      : this(CommandResultReceiver.fromStream(stream),
+            CommandSender.fromSink(sink));
 
   Future<CommandResult> execute(Command command) async {
     _sender.send(command);

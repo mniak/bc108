@@ -12,10 +12,10 @@ class FrameReceiverMock extends Mock implements FrameReceiver {}
 
 class SUT {
   FrameReceiver frameReceiver;
-  CommandReceiver commandReceiver;
+  CommandResultReceiver commandReceiver;
   SUT() {
     frameReceiver = FrameReceiverMock();
-    commandReceiver = CommandReceiver(frameReceiver);
+    commandReceiver = CommandResultReceiver(frameReceiver);
   }
 }
 
