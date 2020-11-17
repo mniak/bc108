@@ -1,12 +1,12 @@
-abstract class CommandResultParseException implements Exception {}
+abstract class CommandResultException implements Exception {}
 
-class InvalidResultException implements CommandResultParseException {
+class CommandResultParseException implements CommandResultException {
   String message;
-  InvalidResultException(String reason) {
+  CommandResultParseException(String reason) {
     this.message = "The result is invalid. $reason";
   }
 
   String toString() {
-    return "InvalidResultException: $message";
+    return "CommandResultParseException: $message";
   }
 }
