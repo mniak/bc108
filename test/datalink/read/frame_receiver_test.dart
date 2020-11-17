@@ -26,7 +26,7 @@ void main() {
     final data = faker.lorem.sentence();
     sut.controller.sink.add(ReaderEvent.ack());
     sut.controller.sink.add(ReaderEvent.data(data));
-    final result = await sut.receiver.receive();
+    final result = await sut.receiver.receiveNonBlocking();
 
     expect(result, isNotNull);
     expect(result.timeout, isFalse);
@@ -38,7 +38,7 @@ void main() {
   test('when receive NAK then Data, should return try again', () async {
     final sut = SUT();
     sut.controller.sink.add(ReaderEvent.nak());
-    final result = await sut.receiver.receive();
+    final result = await sut.receiver.receiveNonBlocking();
 
     expect(result, isNotNull);
     expect(result.timeout, isFalse);
@@ -49,7 +49,7 @@ void main() {
 
   test('when does not receive anything, should return timeout', () async {
     final sut = SUT();
-    final result = await sut.receiver.receive();
+    final result = await sut.receiver.receiveNonBlocking();
 
     expect(result, isNotNull);
     expect(result.timeout, isTrue);
@@ -63,7 +63,7 @@ void main() {
       () async {
     final sut = SUT();
     sut.controller.sink.add(ReaderEvent.ack());
-    final result = await sut.receiver.receive();
+    final result = await sut.receiver.receiveNonBlocking();
 
     expect(result, isNotNull);
     expect(result.timeout, isTrue);
@@ -77,7 +77,7 @@ void main() {
     final sut = SUT();
     final data = faker.lorem.sentence();
     sut.controller.sink.add(ReaderEvent.data(data));
-    expect(() => sut.receiver.receive(),
+    expect(() => sut.receiver.receiveNonBlocking(),
         throwsA(isInstanceOf<ExpectingAckOrNakException>()));
   });
 
@@ -88,7 +88,7 @@ void main() {
       final sut = SUT();
       sut.controller.sink.add(ReaderEvent.ack());
       sut.controller.sink.add(ReaderEvent.ack());
-      expect(() => sut.receiver.receive(),
+      expect(() => sut.receiver.receiveNonBlocking(),
           throwsA(isInstanceOf<ExpectingDataEventException>()));
     });
 
@@ -96,7 +96,7 @@ void main() {
       final sut = SUT();
       sut.controller.sink.add(ReaderEvent.ack());
       sut.controller.sink.add(ReaderEvent.nak());
-      expect(() => sut.receiver.receive(),
+      expect(() => sut.receiver.receiveNonBlocking(),
           throwsA(isInstanceOf<ExpectingDataEventException>()));
     });
   });
@@ -105,6 +105,6 @@ void main() {
     final sut = SUT();
     final error = faker.lorem.sentence();
     sut.controller.sink.addError(error);
-    expect(() => sut.receiver.receive(), throwsA(equals(error)));
+    expect(() => sut.receiver.receiveNonBlocking(), throwsA(equals(error)));
   });
 }

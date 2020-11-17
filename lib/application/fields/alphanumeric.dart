@@ -16,7 +16,7 @@ class AlphanumericField implements Field<String> {
 
   @override
   String serialize(String data) {
-    return data.substring(0, _length).padRight(_length, ' ');
+    return data.padRight(_length, ' ').substring(0, _length);
   }
 }
 

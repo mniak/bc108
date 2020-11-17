@@ -20,7 +20,7 @@ class FrameReceiver {
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future<FrameResult> receive() async {
+  Future<FrameResult> receiveNonBlocking() async {
     try {
       final event1 = await _nextEvent(_ackTimeout);
       if (!event1.ack && !event1.nak) {
@@ -40,4 +40,23 @@ class FrameReceiver {
       return FrameResult.timeout();
     }
   }
+}
+
+class FrameReceiverWithRetry implements FrameReceiver {
+  FrameReceiver _inner;
+  FrameReceiverWithRetry(this._inner);
+
+  @override
+  Future<FrameResult> receiveNonBlocking() async {
+    var result = FrameResult.tryAgain();
+    for (var remainingTries = 3;
+        result.tryAgain && remainingTries > 0;
+        remainingTries--) {
+      result = await _inner.receiveNonBlocking();
+    }
+
+    return result;
+  }
+
+  void noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }

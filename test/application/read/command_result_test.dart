@@ -1,7 +1,6 @@
 import 'package:bc108/application/read/command_result.dart';
 import 'package:bc108/application/read/command_result_exceptions.dart';
 import 'package:bc108/application/statuses.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

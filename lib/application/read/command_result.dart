@@ -13,7 +13,7 @@ class CommandResult {
 
   CommandResult.parse(String payload) {
     if (payload == null)
-      throw CommandResultParseException("The payload must is null.");
+      throw CommandResultParseException("The payload must cannot be null.");
 
     final pattern = RegExp(r"(\w{3})(\d{3})");
     final match = pattern.matchAsPrefix(payload);
