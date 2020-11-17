@@ -1,6 +1,7 @@
 import 'package:bc108/application/read/command_result.dart';
 import 'package:bc108/application/read/command_result_exceptions.dart';
 import 'package:bc108/application/statuses.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -141,5 +142,47 @@ void main() {
             throwsA(isInstanceOf<CommandResultParseException>()));
       });
     });
+  });
+
+  test('happy scenario when there is code and status and one parameter', () {
+    final cmdResult = CommandResult.parse("CMD000010abcdefghij");
+    expect(cmdResult.code, equals("CMD"));
+    expect(cmdResult.status, equals(Status.PP_OK));
+    expect(cmdResult.parameters, isNotNull);
+    expect(cmdResult.parameters, hasLength(1));
+    expect(cmdResult.parameters, contains("abcdefghij"));
+  });
+
+  group('test unknown status code ranges', () {
+    final ranges = [
+      [32, 32],
+      [9, 9],
+      [23, 29],
+      [35, 39],
+      [45, 49],
+      [53, 59],
+      [77, 79],
+      [86, 99],
+      [100, 999],
+    ];
+    ranges.forEach((range) {
+      for (var s = range[0]; s <= range[1]; s++) {
+        test('$s should be understood as status Unknown', () {
+          final cmdResult =
+              CommandResult.parse("CMD" + s.toString().padLeft(3, '0'));
+          expect(cmdResult.code, equals("CMD"));
+          expect(cmdResult.status, equals(Status.PP_UNKNOWNSTAT));
+          expect(cmdResult.parameters, isNotNull);
+          expect(cmdResult.parameters, isEmpty);
+        });
+      }
+    });
+  });
+
+  test(
+      'when there is code and status and one parameter but the parameter size is greater thant the remaining string, should raise error',
+      () {
+    expect(() => CommandResult.parse("CMD000010abcde"),
+        throwsA(isInstanceOf<CommandResultParseException>()));
   });
 }
