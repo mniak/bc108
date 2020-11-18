@@ -8,11 +8,4 @@ class PinpadResult<T> {
   T get data => _data;
 
   PinpadResult(this._status, this._data);
-
-  // static PinpadResult<T> fromCommandResult<T>(
-  //     CommandResult commandResult, CommandResponseMapper<T> mapFn) {
-  //   return PinpadResult(commandResult.status, mapFn(commandResult.parameters));
-  // }
 }
-
-// typedef CommandResponseMapper<T> = T Function(Iterable<String> params);
