@@ -15,7 +15,8 @@ class AlphanumericField extends FixedLengthField<String> {
 
 class VariableAlphanumericField
     extends VariableLengthField<AlphanumericField, String> {
-  VariableAlphanumericField(int headerLength) : super(headerLength);
+  VariableAlphanumericField(int headerLength, {bool inclusive})
+      : super(headerLength, inclusive: inclusive);
 
   @override
   AlphanumericField getField(int length) => AlphanumericField(length);
