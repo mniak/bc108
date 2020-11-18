@@ -1,3 +1,11 @@
-## [0.0.1] - TODO: Add release date.
+## [0.1.0] - Initial implementation
 
-* TODO: Describe initial release.
+## Release Notes
+- Basic communication
+  - Retries
+- Command `PP_Display`
+- Command `PP_GetInfo` _(general information only)_ 
+- Command `PP_TableLoadInit`
+- Command `PP_TableLoadRec`
+- Command `PP_TableLoadEnd`
+- Command `PP_GetTimestamp`

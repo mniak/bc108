@@ -93,7 +93,7 @@ packages:
     source: hosted
     version: "3.5.0"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -173,7 +173,7 @@ packages:
     source: hosted
     version: "0.11.4"
   matcher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: matcher
       url: "https://pub.dartlang.org"

@@ -1,7 +1,6 @@
 name: bc108
 description: "Implementation of the 'Biblioteca Compartilhada' v1.08 specification."
-version: 0.0.1
-author: mniak
+version: 0.1.0
 homepage: https://github.com/mniak/bc108
 
 environment:
@@ -12,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   async: ^2.4.2
+  collection: ^1.14.13
+  matcher: ^0.12.9
 
 dev_dependencies:
   flutter_test:
