@@ -11,7 +11,7 @@ class CommandResultReceiver {
 
   CommandResultReceiver(this._frameReceiver);
   CommandResultReceiver.fromStream(Stream<ReaderEvent> stream)
-      : this(FrameReceiver(stream));
+      : this(FrameReceiverWithRetry(FrameReceiver(stream)));
 
   Future<CommandResult> receive() async {
     final result = await _frameReceiver.receiveNonBlocking();
