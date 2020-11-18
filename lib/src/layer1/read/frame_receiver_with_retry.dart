@@ -18,6 +18,4 @@ class FrameReceiverWithRetry implements FrameReceiver {
 
     return result;
   }
-
-  void noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }

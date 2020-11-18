@@ -39,7 +39,7 @@ void main() {
 
   test('done event should be bypassed', () {
     final sut = SUT();
-    sut.controller.close();
+    sut.sender.close();
     expectLater(sut.stream, emitsDone);
   });
 }
