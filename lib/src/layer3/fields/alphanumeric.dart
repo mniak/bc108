@@ -1,3 +1,5 @@
+import 'package:bc108/src/layer3/fields/exceptions.dart';
+
 import 'field.dart';
 import 'field_result.dart';
 import 'numeric.dart';
@@ -8,6 +10,8 @@ class AlphanumericField implements Field<String> {
 
   @override
   FieldResult<String> parse(String text) {
+    if (text == null) throw FieldParseException.isNull();
+    if (text.length < _length) throw FieldParseException.short(_length);
     return FieldResult(
       text.substring(0, _length).trim(),
       text.substring(_length),
@@ -24,8 +28,9 @@ class VariableAlphanumericField implements Field<String> {
   NumericField _headerField;
   bool _inclusive;
 
-  VariableAlphanumericField(int headerLength, [this._inclusive = false]) {
+  VariableAlphanumericField(int headerLength, {inclusive = false}) {
     _headerField = NumericField(headerLength);
+    _inclusive = inclusive;
   }
 
   @override

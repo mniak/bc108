@@ -12,7 +12,7 @@ class TableLoadRecRequest {
 class Mapper extends RequestResponseMapper<TableLoadRecRequest, void> {
   static final _requestField = new ListField(
     2,
-    VariableAlphanumericField(3, true),
+    VariableAlphanumericField(3, inclusive: true),
   );
 
   @override
