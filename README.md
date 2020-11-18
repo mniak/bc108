@@ -1,3 +1,6 @@
+[![codecov.io](https://codecov.io/github/mniak/bc108/coverage.svg?branch=master)](https://codecov.io/github/mniak/bc108?branch=master)
+
+  
 `bc108`
 ===============
 Dart implementation of the specification _'Biblioteca Compartilhada v1.08a'_.
