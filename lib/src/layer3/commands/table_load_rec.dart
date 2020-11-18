@@ -7,6 +7,7 @@ import '../mapper.dart';
 
 class TableLoadRecRequest {
   Iterable<String> records;
+  TableLoadRecRequest([this.records]);
 }
 
 class Mapper extends RequestResponseMapper<TableLoadRecRequest, void> {
