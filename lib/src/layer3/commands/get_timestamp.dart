@@ -6,20 +6,22 @@ import '../mapper.dart';
 
 class GetTimestampRequest {
   int acquirer;
+  GetTimestampRequest([this.acquirer]);
 }
 
 class GetTimestampResponse {
   int timestamp;
 }
 
-class Mapper extends RequestResponseMapper<void, GetTimestampResponse> {
+class Mapper
+    extends RequestResponseMapper<GetTimestampRequest, GetTimestampResponse> {
   static final _requestField = NumericField(2);
 
   static final _responseField = NumericField(10);
 
   @override
-  Command mapRequest(void request) {
-    return Command("GTS", [_requestField.serialize(0)]);
+  Command mapRequest(GetTimestampRequest request) {
+    return Command("GTS", [_requestField.serialize(request.acquirer)]);
   }
 
   @override
