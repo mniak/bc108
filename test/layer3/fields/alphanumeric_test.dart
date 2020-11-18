@@ -95,22 +95,5 @@ void main() {
             throwsA(isA<FieldParseException>()));
       });
     });
-    // test('when text length is lower than the field length, should raise error',
-    //     () {
-    //   final length = 100;
-
-    //   final sut = AlphanumericField(length);
-    //   final expected = "A" * (length - 10);
-
-    //   expect(() => sut.parse(expected), throwsA(isA<FieldParseException>()));
-    // });
-
-    // test('when text is null, should raise error', () {
-    //   final length = 100;
-
-    //   final sut = AlphanumericField(length);
-
-    //   expect(() => sut.parse(null), throwsA(isA<FieldParseException>()));
-    // });
   });
 }
