@@ -184,4 +184,17 @@ void main() {
     expect(() => CommandResult.parse("CMD000010abcde"),
         throwsA(isA<CommandResultParseException>()));
   });
+
+  group('when matches pattern but remaining bytes are only 1 or 2', () {
+    final data = [
+      "CMD001" + "1",
+      "CMD001" + "01",
+    ];
+    data.forEach((d) {
+      test(d, () {
+        expect(() => CommandResult.parse(d),
+            throwsA(isA<CommandResultParseException>()));
+      });
+    });
+  });
 }
