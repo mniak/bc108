@@ -8,6 +8,8 @@ import '../handler.dart';
 class TableLoadInitRequest {
   int network;
   int timestamp;
+
+  TableLoadInitRequest([this.network, this.timestamp]);
 }
 
 class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {

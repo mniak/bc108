@@ -1,4 +1,4 @@
-import 'package:bc108/src/bc108.dart';
+import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer1/read/frame_receiver_with_retry.dart';
 import 'package:bc108/src/layer1/read/frame_result.dart';
 import 'package:faker/faker.dart';
