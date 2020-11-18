@@ -1,24 +1,13 @@
-import 'field.dart';
-import 'field_result.dart';
+import 'fixed_length.dart';
 
-class NumericField implements Field<int> {
-  int _length;
-  NumericField(this._length);
-
-  int get length => _length;
+class NumericField extends FixedLengthField<int> {
+  NumericField(int length) : super(length);
 
   @override
-  FieldResult<int> parse(String text) {
-    return FieldResult(
-      int.parse(text.substring(0, _length)),
-      text.substring(_length),
-    );
-  }
+  int simpleParse(String text) => int.parse(text);
 
   @override
   String serialize(int data) {
-    final result = data.toString().padLeft(_length, '0');
-    if (result.length > _length) throw ArgumentError.value(data);
-    return result;
+    return data.toString().padLeft(length, '0').substring(0, length);
   }
 }

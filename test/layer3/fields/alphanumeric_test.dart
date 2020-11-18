@@ -1,9 +1,15 @@
 import 'package:bc108/src/layer3/fields/alphanumeric.dart';
+import 'package:bc108/src/layer3/fields/fixed_length.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AlphanumericField', () {
+    test('is a FixedLengthField', () {
+      final sut = AlphanumericField(8);
+      expect(sut, isA<FixedLengthField<String>>());
+    });
+
     test('simpleParse trims right the text', () {
       final sut = AlphanumericField(faker.randomGenerator.integer(200));
       final data = faker.lorem.sentence();
