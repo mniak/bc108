@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('format payload using random data', () {
     final code =
-        faker.lorem.word().padRight(3, ' ').substring(0, 3).toLowerCase();
+        faker.lorem.word().padRight(3, ' ').substring(0, 3).toUpperCase();
     final paramCount = faker.randomGenerator.integer(200);
     final params = faker.lorem.sentences(paramCount);
 
