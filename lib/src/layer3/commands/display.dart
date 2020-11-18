@@ -8,7 +8,7 @@ import '../handler.dart';
 class DisplayRequest {
   String line1;
   String line2;
-  DisplayRequest([String line1, String line2]);
+  DisplayRequest([this.line1, this.line2]);
 }
 
 class Mapper implements RequestResponseMapper<DisplayRequest, void> {
