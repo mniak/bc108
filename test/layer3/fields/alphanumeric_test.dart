@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AlphanumericField', () {
-    test('parse happy scenario', () {
+    test('happy scenario', () {
       final length = faker.randomGenerator.integer(100) + 10;
 
       final sut = AlphanumericField(length);
@@ -39,7 +39,7 @@ void main() {
   });
 
   group('VariableAlphanumericField', () {
-    group('Inclusive', () {
+    group('inclusive', () {
       test('parse happy scenario', () {
         final length = 100;
         final headerLength = 4;
@@ -68,8 +68,8 @@ void main() {
             throwsA(isA<FieldParseException>()));
       });
     });
-    group('Exclusive', () {
-      test('parse happy scenario', () {
+    group('exclusive', () {
+      test('happy scenario', () {
         final length = 10;
         final headerLength = 4;
         final header = "0010";
