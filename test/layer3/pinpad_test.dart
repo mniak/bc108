@@ -1,10 +1,7 @@
 import 'package:bc108/src/layer2/exports.dart';
-import 'package:bc108/src/layer3/commands/get_info.dart';
-import 'package:bc108/src/layer3/commands/table_load_init.dart';
-import 'package:bc108/src/layer3/commands/table_load_rec.dart';
+import 'package:bc108/src/layer3/exports.dart';
 import 'package:bc108/src/layer3/factory.dart';
 import 'package:bc108/src/layer3/handler.dart';
-import 'package:bc108/src/layer3/pinpad.dart';
 import 'package:bc108/src/layer3/pinpad_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -37,13 +34,40 @@ void main() {
     verify(sut.oper.close()).called(1);
   });
 
+  test('display', () async {
+    final sut = SUT();
+    final request = DisplayRequest();
+    final requestHandler = RequestHandlerMock<DisplayRequest, void>();
+    final pinpadResult = PinpadResultMock<void>();
+
+    when(requestHandler.handle(request))
+        .thenAnswer((_) => Future.value(pinpadResult));
+    when(sut.handlerFactory.display(sut.oper)).thenReturn(requestHandler);
+
+    final result = await sut.pinpad.display(request);
+    expect(result, equals(pinpadResult));
+  });
+
+  test('get info 00', () async {
+    final sut = SUT();
+    final requestHandler = RequestHandlerMock<void, GetInfo00Response>();
+    final pinpadResult = PinpadResultMock<GetInfo00Response>();
+
+    when(requestHandler.handle(any))
+        .thenAnswer((_) => Future.value(pinpadResult));
+    when(sut.handlerFactory.getInfo(sut.oper)).thenReturn(requestHandler);
+
+    final result = await sut.pinpad.getInfo00();
+    expect(result, equals(pinpadResult));
+  });
+
   test('table load init', () async {
     final sut = SUT();
     final request = TableLoadInitRequest();
     final requestHandler = RequestHandlerMock<TableLoadInitRequest, void>();
     final pinpadResult = PinpadResultMock();
 
-    when(requestHandler.handle(any))
+    when(requestHandler.handle(request))
         .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.tableLoadInit(sut.oper)).thenReturn(requestHandler);
 
@@ -78,16 +102,17 @@ void main() {
     expect(result, equals(pinpadResult));
   });
 
-  test('get info 00', () async {
+  test('get timestamp', () async {
     final sut = SUT();
-    final requestHandler = RequestHandlerMock<void, GetInfo00Response>();
-    final pinpadResult = PinpadResultMock<GetInfo00Response>();
+    final request = GetTimestampRequest();
+    final requestHandler = RequestHandlerMock<void, GetTimestampResponse>();
+    final pinpadResult = PinpadResultMock<GetTimestampResponse>();
 
-    when(requestHandler.handle(any))
+    when(requestHandler.handle(request))
         .thenAnswer((_) => Future.value(pinpadResult));
-    when(sut.handlerFactory.getInfo(sut.oper)).thenReturn(requestHandler);
+    when(sut.handlerFactory.getTimestamp(sut.oper)).thenReturn(requestHandler);
 
-    final result = await sut.pinpad.getInfo00();
+    final result = await sut.pinpad.getTimestamp(request);
     expect(result, equals(pinpadResult));
   });
 }

@@ -1,7 +1,6 @@
 import 'package:bc108/src/layer1/exports.dart';
 import 'package:bc108/src/layer2/exports.dart';
-import 'package:bc108/src/layer3/commands/table_load_init.dart';
-import 'package:bc108/src/layer3/commands/table_load_rec.dart';
+import 'exports.dart';
 
 import 'commands/get_info.dart';
 import 'factory.dart';
@@ -17,6 +16,12 @@ class Pinpad {
 
   void close() => _operator.close();
 
+  Future<PinpadResult<GetInfo00Response>> getInfo00() =>
+      _factory.getInfo(_operator).handle(null);
+
+  Future<PinpadResult<void>> display(DisplayRequest request) =>
+      _factory.display(_operator).handle(request);
+
   Future<PinpadResult<void>> tableLoadInit(TableLoadInitRequest request) =>
       _factory.tableLoadInit(_operator).handle(request);
 
@@ -26,6 +31,7 @@ class Pinpad {
   Future<PinpadResult<void>> tableLoadEnd() =>
       _factory.tableLoadEnd(_operator).handle(null);
 
-  Future<PinpadResult<GetInfo00Response>> getInfo00() =>
-      _factory.getInfo(_operator).handle(null);
+  Future<PinpadResult<GetTimestampResponse>> getTimestamp(
+          GetTimestampRequest request) =>
+      _factory.getTimestamp(_operator).handle(request);
 }

@@ -6,10 +6,10 @@ import '../mapper.dart';
 import '../handler.dart';
 
 class TableLoadInitRequest {
-  int network;
+  int acquirer;
   int timestamp;
 
-  TableLoadInitRequest([this.network, this.timestamp]);
+  TableLoadInitRequest([this.acquirer, this.timestamp]);
 }
 
 class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
@@ -22,7 +22,7 @@ class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
   Command mapRequest(TableLoadInitRequest request) {
     return Command("TLI", [
       _requestField.serialize([
-        request.network,
+        request.acquirer,
         request.timestamp,
       ])
     ]);
