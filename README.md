@@ -1,11 +1,15 @@
-bc108
+`bc108`
 ===============
-Dart implementation of the _'Biblioteca Compartilhada'_ v1.08 specification.
+Dart implementation of the specification _'Biblioteca Compartilhada v1.08a'_.
+
+> **Disclaimer:** this library does not care about the the physical layer of the communication.
+> In other words, you should be able to open a stream to the pinpad by yourself either by bluetooth, serial port, tcp/udp sockets or any other communication port.
 
 ## Usage
 ```dart
 import 'package:bc108/bc108.dart';
 
+// Connect to your pinpad and acquire a stream and a sink of int (byte)
 Stream<int> stream = ...;
 Sink<int> sink = ...;
 
