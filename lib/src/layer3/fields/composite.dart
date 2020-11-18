@@ -1,5 +1,6 @@
 import '../fields/field.dart';
 import '../fields/field_result.dart';
+import 'exceptions.dart';
 
 class CompositeField<T> implements Field<List<T>> {
   Iterable<Field> _fields;
@@ -17,8 +18,8 @@ class CompositeField<T> implements Field<List<T>> {
 
   String serialize(Iterable<T> values) {
     if (values.length != _fields.length)
-      throw ArgumentError.value(values, 'values',
-          'Values must be the same length as the fields provided in the constructor.');
+      throw FieldSerializeException(
+          'The number of values must be the same the number of fields provided in the constructor.');
 
     final itf = _fields.iterator;
     final itv = values.iterator;

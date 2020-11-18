@@ -15,3 +15,14 @@ class FieldParseException implements FieldException {
     return "FieldParseException: $message";
   }
 }
+
+class FieldSerializeException implements FieldException {
+  String message;
+  FieldSerializeException(String reason) {
+    this.message = reason;
+  }
+
+  String toString() {
+    return "FieldSerializeException: $message";
+  }
+}
