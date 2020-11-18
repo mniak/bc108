@@ -1,101 +1,46 @@
 import 'package:bc108/src/layer3/fields/alphanumeric.dart';
-import 'package:bc108/src/layer3/fields/exceptions.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AlphanumericField', () {
-    test('happy scenario', () {
-      final length = faker.randomGenerator.integer(100) + 10;
-
-      final sut = AlphanumericField(length);
-      final value = "A" * length;
-      final extra = "x" * 5;
-
-      final result = sut.parse(value + extra);
-      expect(result.data, equals(value));
-      expect(result.remaining, equals(extra));
+    test('simpleParse trims right the text', () {
+      final sut = AlphanumericField(faker.randomGenerator.integer(200));
+      final data = faker.lorem.sentence();
+      final result = sut.simpleParse(data + "       ");
+      expect(result, equals(data));
     });
 
-    test('when text length is lower than the field length, should raise error',
-        () {
-      final length = 10;
-
-      final sut = AlphanumericField(length);
-      final value = "A" * (length - 1);
-
-      expect(() => sut.parse(value), throwsA(isA<FieldParseException>()));
+    test('serialize pads right the text with spaces', () {
+      final sut = AlphanumericField(8);
+      final data = "123456";
+      final result = sut.serialize(data);
+      expect(result, equals(data + "  "));
     });
 
-    test('when text is null, should raise error', () {
-      final length = 10;
-
-      final sut = AlphanumericField(length);
-
-      expect(() => sut.parse(null), throwsA(isA<FieldParseException>()));
+    test('serialize truncates the text', () {
+      final sut = AlphanumericField(4);
+      final result = sut.serialize("ABCDEFGHIJ");
+      expect(result, equals("ABCD"));
     });
-
-    test('serialize happy scenario', () {});
   });
 
   group('VariableAlphanumericField', () {
-    group('inclusive', () {
-      test('parse happy scenario', () {
-        final length = 100;
-        final headerLength = 4;
-        final header = "0104";
+    test('getField creates an AlphanumericField with lenth N', () {
+      final sut = VariableAlphanumericField(3);
+      final length = faker.randomGenerator.integer(20) + 5;
+      final field = sut.getField(length);
 
-        final sut = VariableAlphanumericField(headerLength, inclusive: true);
-        final value = "A" * length;
-        final extra = "x" * 5;
-
-        final result = sut.parse(header + value + extra);
-        expect(result.data, equals(value));
-        expect(result.remaining, equals(extra));
-      });
-
-      test(
-          'when text length is lower than the field length, should raise error',
-          () {
-        final length = 10;
-        final headerLength = 4;
-        final header = "0014";
-
-        final sut = VariableAlphanumericField(headerLength, inclusive: true);
-        final value = "A" * (length - 1);
-
-        expect(() => sut.parse(header + value),
-            throwsA(isA<FieldParseException>()));
-      });
+      expect(field, isA<AlphanumericField>());
+      expect(field.length, equals(length));
     });
-    group('exclusive', () {
-      test('happy scenario', () {
-        final length = 10;
-        final headerLength = 4;
-        final header = "0010";
 
-        final sut = VariableAlphanumericField(headerLength, inclusive: false);
-        final expected = "A" * length;
-        final extra = "x" * 5;
+    test('getLength returns the appropriate length of the string', () {
+      final sut = VariableAlphanumericField(3);
+      final data = faker.lorem.sentence();
+      final result = sut.getLength(data);
 
-        final result = sut.parse(header + expected + extra);
-        expect(result.data, equals(expected));
-        expect(result.remaining, equals(extra));
-      });
-
-      test(
-          'when text length is lower than the field length, should raise error',
-          () {
-        final length = 10;
-        final headerLength = 4;
-        final header = "0010";
-
-        final sut = VariableAlphanumericField(headerLength, inclusive: false);
-        final value = "A" * (length - 1);
-
-        expect(() => sut.parse(header + value),
-            throwsA(isA<FieldParseException>()));
-      });
+      expect(result, equals(data.length));
     });
   });
 }

@@ -5,7 +5,7 @@ class AlphanumericField extends FixedLengthField<String> {
   AlphanumericField(int length) : super(length);
 
   @override
-  String simpleParse(String text) => text;
+  String simpleParse(String text) => text.trim();
 
   @override
   String serialize(String data) {
