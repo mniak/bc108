@@ -1,51 +1,25 @@
-import 'package:bc108/src/layer3/fields/exceptions.dart';
+import 'fixed_length.dart';
+import 'variable_length.dart';
 
-import 'field.dart';
-import 'field_result.dart';
-import 'numeric.dart';
-
-class AlphanumericField implements Field<String> {
-  int _length;
-  AlphanumericField(this._length);
+class AlphanumericField extends FixedLengthField<String> {
+  AlphanumericField(int length) : super(length);
 
   @override
-  FieldResult<String> parse(String text) {
-    if (text == null) throw FieldParseException.isNull();
-    if (text.length < _length) throw FieldParseException.short(_length);
-    return FieldResult(
-      text.substring(0, _length).trim(),
-      text.substring(_length),
-    );
-  }
+  String simpleParse(String text) => text;
 
   @override
   String serialize(String data) {
-    return data.padRight(_length, ' ').substring(0, _length);
+    return data.padRight(length, ' ').substring(0, length);
   }
 }
 
-class VariableAlphanumericField implements Field<String> {
-  NumericField _headerField;
-  bool _inclusive;
-
-  VariableAlphanumericField(int headerLength, {inclusive = false}) {
-    _headerField = NumericField(headerLength);
-    _inclusive = inclusive;
-  }
+class VariableAlphanumericField
+    extends VariableLengthField<AlphanumericField, String> {
+  VariableAlphanumericField(int headerLength) : super(headerLength);
 
   @override
-  FieldResult<String> parse(String text) {
-    final header = _headerField.parse(text);
-    text = header.remaining;
-
-    final length = _inclusive ? header.data - _headerField.length : header.data;
-    final elementField = AlphanumericField(length);
-    return elementField.parse(header.remaining);
-  }
+  AlphanumericField getField(int length) => AlphanumericField(length);
 
   @override
-  String serialize(String data) {
-    final length = _inclusive ? data.length + _headerField.length : data.length;
-    return _headerField.serialize(length) + data;
-  }
+  int getLength(String data) => data.length;
 }

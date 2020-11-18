@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AlphanumericField', () {
-    test('happy scenario', () {
+    test('parse happy scenario', () {
       final length = faker.randomGenerator.integer(100) + 10;
 
       final sut = AlphanumericField(length);
@@ -19,26 +19,28 @@ void main() {
 
     test('when text length is lower than the field length, should raise error',
         () {
-      final length = 100;
+      final length = 10;
 
       final sut = AlphanumericField(length);
-      final value = "A" * (length - 10);
+      final value = "A" * (length - 1);
 
       expect(() => sut.parse(value), throwsA(isA<FieldParseException>()));
     });
 
     test('when text is null, should raise error', () {
-      final length = 100;
+      final length = 10;
 
       final sut = AlphanumericField(length);
 
       expect(() => sut.parse(null), throwsA(isA<FieldParseException>()));
     });
+
+    test('serialize happy scenario', () {});
   });
 
   group('VariableAlphanumericField', () {
     group('Inclusive', () {
-      test('happy scenario', () {
+      test('parse happy scenario', () {
         final length = 100;
         final headerLength = 4;
         final header = "0104";
@@ -67,7 +69,7 @@ void main() {
       });
     });
     group('Exclusive', () {
-      test('happy scenario', () {
+      test('parse happy scenario', () {
         final length = 10;
         final headerLength = 4;
         final header = "0010";
