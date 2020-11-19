@@ -15,9 +15,9 @@ class CommandResultReceiver {
 
   Future<CommandResult> receive() async {
     final result = await _frameReceiver.receiveNonBlocking();
-    log("Command received from pinpad: '${result.data}'");
+    log("Command Received: '${result.data}'");
     if (result.tryAgain) return CommandResult.fromStatus(Status.PP_COMMERR);
-    if (result.timeout) return CommandResult.fromStatus(Status.PP_TIMEOUT);
+    if (result.timeout) return CommandResult.fromStatus(Status.PP_COMMTOUT);
     return CommandResult.parse(result.data);
   }
 }
