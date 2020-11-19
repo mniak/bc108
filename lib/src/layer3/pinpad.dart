@@ -1,4 +1,3 @@
-import 'package:bc108/src/layer1/exports.dart';
 import 'package:bc108/src/layer2/exports.dart';
 import 'exports.dart';
 
@@ -15,6 +14,8 @@ class Pinpad {
       : this(Operator.fromStreamAndSink(stream, sink), RequestHandlerFactory());
 
   void close() => _operator.close();
+
+  Future<PinpadResult<void>> open() => _factory.open(_operator).handle(null);
 
   Future<PinpadResult<GetInfo00Response>> getInfo00() =>
       _factory.getInfo(_operator).handle(null);
