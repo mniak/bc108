@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:async/async.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:bc108/src/layer1/read/frame_acknowledgement.dart';
 
 import 'exceptions.dart';
 import 'frame_result.dart';
@@ -20,24 +22,55 @@ class FrameReceiver {
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future<FrameResult> receiveNonBlocking() async {
+  Future<FrameAcknowledgement> _receiveAcknowledgement() async {
     try {
-      final event1 = await _nextEvent(_ackTimeout);
-      if (!event1.ack && !event1.nak) {
-        throw ExpectingAckOrNakException(event1);
+      final event = await _nextEvent(_ackTimeout);
+      if (!event.ack && !event.nak) {
+        throw ExpectingAckOrNakException(event);
       }
-      if (event1.nak) {
-        return FrameResult.tryAgain();
+      if (event.nak) {
+        return FrameAcknowledgement.tryAgain();
+      }
+      return FrameAcknowledgement.ok();
+    } on TimeoutException {
+      return FrameAcknowledgement.timeout();
+    }
+  }
+
+  Future<FrameResult> receiveNonBlocking() async {
+    final ack = await _receiveAcknowledgement();
+    if (ack.timeout) return FrameResult.timeout();
+    if (ack.tryAgain) return FrameResult.tryAgain();
+
+    try {
+      final event = await _nextEvent(_responseTimeout);
+      if (!event.isDataEvent) {
+        throw ExpectingDataEventException(event);
       }
 
-      final event2 = await _nextEvent(_responseTimeout);
-      if (!event2.isDataEvent) {
-        throw ExpectingDataEventException(event2);
-      }
-
-      return FrameResult.data(event2.data);
+      return FrameResult.data(event.data);
     } on TimeoutException {
       return FrameResult.timeout();
     }
+  }
+
+  Stream<FrameResult> receiveBlocking() async* {
+    // final controller = StreamController<FrameResult>();
+    // // controller.sink.
+    // Future.doWhile(() async {
+    //    Stream.fromFuture(future)
+    try {
+      final event = await _nextEvent(_responseTimeout);
+      if (!event.isDataEvent) {
+        throw ExpectingDataEventException(event);
+      }
+
+      yield FrameResult.data(event.data);
+    } on TimeoutException {
+      yield FrameResult.timeout();
+    }
+    // return false;
+    // });
+    // return controller.stream;
   }
 }

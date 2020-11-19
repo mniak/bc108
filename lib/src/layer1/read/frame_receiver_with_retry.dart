@@ -18,4 +18,9 @@ class FrameReceiverWithRetry implements FrameReceiver {
 
     return result;
   }
+
+  @override
+  Stream<FrameResult> receiveBlocking() {
+    return _inner.receiveBlocking();
+  }
 }
