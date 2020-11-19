@@ -18,10 +18,10 @@ Sink<int> sink = ...;
 
 final pinpad = Pinpad.fromStreamAndSink(stream, sink);
 
-final dr = await _pinpad.display(DisplayRequest("Hello" /* first line */, "World!" /* second line */));
+final dr = await pinpad.display(DisplayRequest("Hello" /* first line */, "World!" /* second line */));
 print("📺 Command Status: ${dr.status}");
 
-final tr = await _pinpad.getTimestamp(GetTimestampRequest(3 /* acquirer 3 */));
+final tr = await pinpad.getTimestamp(GetTimestampRequest(3 /* acquirer 3 */));
 print("🕐 Command Status: ${tr.status}");
 print("🕐 The timestamp is ${tr.data.timestamp}");
 ```
@@ -41,8 +41,8 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ⬜ `finishChip`
 - ⬜ `chipDirect`
 - ⬜ `changeParameter`
-- ⬜ `getInfo` _(general information)_
 - ✅ `getInfo00`
+- ⬜ `getInfo`
 - ⬜ `encryptBuffer`
 - ✅ `tableLoadInit`
 - ✅ `tableLoadRec`
