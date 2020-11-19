@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:async/async.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:bc108/src/layer1/read/frame_acknowledgement.dart';
 
 import 'exceptions.dart';
 import 'frame_result.dart';
 import 'reader.dart';
+import 'frame_acknowledgement.dart';
 
 class FrameReceiver {
   StreamQueue<ReaderEvent> _queue;

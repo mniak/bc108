@@ -1,4 +1,5 @@
 import 'package:bc108/src/layer2/exports.dart';
+import 'package:bc108/src/layer3/commands/close.dart';
 import 'exports.dart';
 
 import 'commands/get_info.dart';
@@ -13,9 +14,11 @@ class Pinpad {
   Pinpad.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(Operator.fromStreamAndSink(stream, sink), RequestHandlerFactory());
 
-  void close() => _operator.close();
+  void done() => _operator.close();
 
   Future<PinpadResult<void>> open() => _factory.open(_operator).handle(null);
+  Future<PinpadResult<void>> close(CloseRequest request) =>
+      _factory.close(_operator).handle(request);
 
   Future<PinpadResult<GetInfo00Response>> getInfo00() =>
       _factory.getInfo(_operator).handle(null);

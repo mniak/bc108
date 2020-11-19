@@ -49,6 +49,6 @@ void main() {
     final result = await sut.commandReceiver.receive();
 
     expect(result.code, equals("ERR"));
-    expect(result.status, equals(Status.PP_TIMEOUT));
+    expect(result.status, equals(Status.PP_COMMTOUT));
   });
 }

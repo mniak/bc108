@@ -30,7 +30,7 @@ class SUT {
 void main() {
   test('bypass close signal', () {
     final sut = SUT();
-    sut.pinpad.close();
+    sut.pinpad.done();
     verify(sut.oper.close()).called(1);
   });
 
