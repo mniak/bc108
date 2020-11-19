@@ -19,7 +19,7 @@ class GetInfo00Response {
 class Mapper extends RequestResponseMapper<void, GetInfo00Response> {
   static final _requestField = NumericField(2);
 
-  static final _responseField = new CompositeField([
+  static final _responseField = CompositeField([
     AlphanumericField(20),
     AlphanumericField(19),
     AlphanumericField(1),

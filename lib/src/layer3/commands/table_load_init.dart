@@ -13,7 +13,7 @@ class TableLoadInitRequest {
 }
 
 class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
-  static final _requestField = new CompositeField([
+  static final _requestField = CompositeField([
     NumericField(2),
     NumericField(10),
   ]);

@@ -11,7 +11,7 @@ class TableLoadRecRequest {
 }
 
 class Mapper extends RequestResponseMapper<TableLoadRecRequest, void> {
-  static final _requestField = new ListField(
+  static final _requestField = ListField(
     2,
     VariableAlphanumericField(3, inclusive: true),
   );

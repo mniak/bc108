@@ -11,7 +11,7 @@ class SUT {
   StreamController<ReaderEvent> controller;
   FrameReceiver receiver;
   SUT() {
-    this.controller = new StreamController<ReaderEvent>();
+    this.controller = StreamController<ReaderEvent>();
     this.receiver = FrameReceiver(
       controller.stream,
       ackTimeout: Duration(milliseconds: 500),
