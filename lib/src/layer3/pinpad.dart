@@ -11,7 +11,7 @@ class Pinpad {
   RequestHandlerFactory _factory;
 
   Pinpad(this._operator, this._factory);
-  Pinpad.fromStreamAndSink(Stream<ReaderEvent> stream, Sink<int> sink)
+  Pinpad.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(Operator.fromStreamAndSink(stream, sink), RequestHandlerFactory());
 
   void close() => _operator.close();

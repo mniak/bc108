@@ -10,8 +10,8 @@ class Operator {
   CommandSender _sender;
   Operator(this._receiver, this._sender);
 
-  Operator.fromStreamAndSink(Stream<ReaderEvent> stream, Sink<int> sink)
-      : this(CommandResultReceiver.fromStream(stream),
+  Operator.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
+      : this(CommandResultReceiver.fromStream(stream.asEventReader()),
             CommandSender.fromSink(sink));
 
   Future<CommandResult> execute(Command command) async {
