@@ -41,8 +41,13 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ⬜ `finishChip`
 - ⬜ `chipDirect`
 - ⬜ `changeParameter`
+<<<<<<< HEAD
+- ✅ `getInfo00`
+- ⬜ `getInfo`
+=======
 - ⬜ `getInfo` _(general information)_
 - ✅ `getInfo00`
+>>>>>>> 607ff06... documentation
 - ⬜ `encryptBuffer`
 - ✅ `tableLoadInit`
 - ✅ `tableLoadRec`
