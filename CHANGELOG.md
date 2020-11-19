@@ -1,3 +1,7 @@
+## [0.1.1] - General improvements
+- Pinpad now requires an `Stream<int>` instead of `Stream<ReaderEvent>`
+- Documentation fixes
+
 ## [0.1.0] - Initial implementation
 
 ## Release Notes
