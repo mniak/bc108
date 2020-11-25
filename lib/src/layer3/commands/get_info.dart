@@ -49,6 +49,6 @@ class Mapper extends RequestResponseMapper<void, GetInfo00Response> {
 }
 
 class GetInfo00Factory {
-  RequestHandler<void, GetInfo00Response> getInfo(OperatorL2 o) =>
+  RequestHandler<void, GetInfo00Response> getInfo(Operator o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

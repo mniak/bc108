@@ -14,6 +14,6 @@ class Mapper extends RequestResponseMapper<void, void> {
 }
 
 class TableLoadEndFactory {
-  RequestHandler<void, void> tableLoadEnd(OperatorL2 o) =>
+  RequestHandler<void, void> tableLoadEnd(Operator o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

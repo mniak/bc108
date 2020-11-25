@@ -32,6 +32,6 @@ class Mapper implements RequestResponseMapper<DisplayRequest, void> {
 }
 
 class DisplayFactory {
-  RequestHandler<DisplayRequest, void> display(OperatorL2 o) =>
+  RequestHandler<DisplayRequest, void> display(Operator o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

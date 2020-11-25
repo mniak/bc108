@@ -10,7 +10,8 @@ import 'package:mockito/mockito.dart';
 
 class OperatorMock extends Mock implements Operator {}
 
-class MapperMock<TRequest, TResponse> extends Mock implements RequestResponseMapper<TRequest, TResponse> {}
+class MapperMock<TRequest, TResponse> extends Mock
+    implements RequestResponseMapper<TRequest, TResponse> {}
 
 class SUT<TRequest, TResponse> {
   Operator oper;
@@ -29,13 +30,15 @@ void main() {
     final request = faker.lorem.sentence();
     final response = faker.lorem.sentence();
 
-    final code = faker.lorem.word().padRight(3, ' ').substring(0, 3).toUpperCase();
+    final code =
+        faker.lorem.word().padRight(3, ' ').substring(0, 3).toUpperCase();
     final status = faker.randomGenerator.integer(999).toStatus();
     final cmd = Command(code, [faker.lorem.sentence()]);
     final cmdResult = CommandResult.fromStatus(status);
 
     when(sut.mapper.mapRequest(request)).thenReturn(cmd);
-    when(sut.oper.executeNonBlocking(cmd)).thenAnswer((_) => Future.value(cmdResult));
+    when(sut.oper.sendNonBlocking(cmd))
+        .thenAnswer((_) => Future.value(cmdResult));
     when(sut.mapper.mapResponse(cmdResult)).thenReturn(response);
 
     final result = await sut.handler.handleNonBlocking(request);

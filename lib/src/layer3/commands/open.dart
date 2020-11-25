@@ -14,6 +14,6 @@ class Mapper extends RequestResponseMapper<void, void> {
 }
 
 class OpenFactory {
-  RequestHandler<void, void> open(OperatorL2 o) =>
+  RequestHandler<void, void> open(Operator o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

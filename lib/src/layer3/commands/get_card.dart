@@ -118,6 +118,6 @@ class Mapper extends RequestResponseMapper<GetCardRequest, GetCardResponse> {
 }
 
 class GetCardFactory {
-  RequestHandler<GetCardRequest, GetCardResponse> getCard(OperatorL2 o) =>
+  RequestHandler<GetCardRequest, GetCardResponse> getCard(Operator o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

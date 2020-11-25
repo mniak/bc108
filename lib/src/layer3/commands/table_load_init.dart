@@ -33,6 +33,6 @@ class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
 }
 
 class TableLoadInitFactory {
-  RequestHandler<TableLoadInitRequest, void> tableLoadInit(OperatorL2 o) =>
+  RequestHandler<TableLoadInitRequest, void> tableLoadInit(Operator o) =>
       RequestHandler.fromMapper(o, Mapper());
 }
