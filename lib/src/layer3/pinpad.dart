@@ -19,30 +19,32 @@ class Pinpad {
 
   Stream<String> get notifications => _operator.notifications;
 
-  Future<PinpadResult<void>> open() =>
-      _factory.open(_operator).handleNonBlocking(null);
+  Future<PinpadResult<void>> open() => _factory.open(_operator).handle(null);
   Future<PinpadResult<void>> close(CloseRequest request) =>
-      _factory.close(_operator).handleNonBlocking(request);
+      _factory.close(_operator).handle(request);
 
   Future<PinpadResult<GetInfo00Response>> getInfo00() =>
-      _factory.getInfo(_operator).handleNonBlocking(null);
+      _factory.getInfo(_operator).handle(null);
 
   Future<PinpadResult<void>> display(DisplayRequest request) =>
-      _factory.display(_operator).handleNonBlocking(request);
+      _factory.display(_operator).handle(request);
+
+  Future<PinpadResult<void>> getKey() =>
+      _factory.getKey(_operator).handle(null);
 
   Future<PinpadResult<void>> tableLoadInit(TableLoadInitRequest request) =>
-      _factory.tableLoadInit(_operator).handleNonBlocking(request);
+      _factory.tableLoadInit(_operator).handle(request);
 
   Future<PinpadResult<void>> tableLoadRec(TableLoadRecRequest request) =>
-      _factory.tableLoadRec(_operator).handleNonBlocking(request);
+      _factory.tableLoadRec(_operator).handle(request);
 
   Future<PinpadResult<void>> tableLoadEnd() =>
-      _factory.tableLoadEnd(_operator).handleNonBlocking(null);
+      _factory.tableLoadEnd(_operator).handle(null);
 
   Future<PinpadResult<GetTimestampResponse>> getTimestamp(
           GetTimestampRequest request) =>
-      _factory.getTimestamp(_operator).handleNonBlocking(request);
+      _factory.getTimestamp(_operator).handle(request);
 
   Future<PinpadResult<GetCardResponse>> getCard(GetCardRequest request) =>
-      _factory.getCard(_operator).handleBlocking(request);
+      _factory.getCard(_operator).handle(request);
 }

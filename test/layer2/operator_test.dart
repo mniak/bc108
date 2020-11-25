@@ -28,7 +28,7 @@ void main() {
   //   when(sut.operL1.receiveAcknowledgementAndData())
   //       .thenAnswer((_) => Future<CommandResult>.value(commandResult));
 
-  //   final result = await sut.oper.sendNonBlocking(command);
+  //   final result = await sut.oper.send(command);
 
   //   verify(sut.operL1.send(command.payload)).called(1);
   //   expect(result, equals(commandResult));

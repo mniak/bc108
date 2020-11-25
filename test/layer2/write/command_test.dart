@@ -23,10 +23,10 @@ void main() {
   });
 
   group('empty parameters:', () {
-    test('when there are no parameters, should format as CMD 000', () {
+    test('when there are no parameters, should format as CMD', () {
       final cmd = Command("AAA", []);
       final payload = cmd.payload;
-      expect("AAA000", payload);
+      expect("AAA", payload);
     });
 
     test('when there is one empty parameter, should format as CMD 000', () {

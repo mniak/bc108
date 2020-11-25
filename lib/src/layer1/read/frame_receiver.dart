@@ -36,7 +36,7 @@ class FrameReceiver {
     }
   }
 
-  Future<FrameResult> receiveData() async {
+  Future<FrameResult> receive() async {
     try {
       final event = await _nextEvent(_responseTimeout);
       if (!event.isDataEvent) {
@@ -46,41 +46,5 @@ class FrameReceiver {
     } on TimeoutException {
       return FrameResult.timeout();
     }
-  }
-
-  Future<FrameResult> receiveNonBlocking() async {
-    final ack = await receiveAcknowledgement();
-    if (ack.timeout) return FrameResult.timeout();
-    if (ack.tryAgain) return FrameResult.tryAgain();
-
-    try {
-      final event = await _nextEvent(_responseTimeout);
-      if (!event.isDataEvent) {
-        throw ExpectingDataEventException(event);
-      }
-      return FrameResult.data(event.data);
-    } on TimeoutException {
-      return FrameResult.timeout();
-    }
-  }
-
-  Stream<FrameResult> receiveBlocking() async* {
-    // final controller = StreamController<FrameResult>();
-    // // controller.sink.
-    // Future.doWhile(() async {
-    //    Stream.fromFuture(future)
-    try {
-      final event = await _nextEvent(_responseTimeout);
-      if (!event.isDataEvent) {
-        throw ExpectingDataEventException(event);
-      }
-
-      yield FrameResult.data(event.data);
-    } on TimeoutException {
-      yield FrameResult.timeout();
-    }
-    // return false;
-    // });
-    // return controller.stream;
   }
 }

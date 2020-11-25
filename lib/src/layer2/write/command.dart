@@ -21,7 +21,6 @@ class Command {
       sb.write(parameter.length.toString().padLeft(3, '0'));
       sb.write(parameter);
     });
-    if (parameters.isEmpty) sb.write("000");
     final text = sb.toString();
     return text;
   }

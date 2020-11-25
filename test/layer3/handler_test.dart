@@ -37,11 +37,10 @@ void main() {
     final cmdResult = CommandResult.fromStatus(status);
 
     when(sut.mapper.mapRequest(request)).thenReturn(cmd);
-    when(sut.oper.sendNonBlocking(cmd))
-        .thenAnswer((_) => Future.value(cmdResult));
+    when(sut.oper.send(cmd)).thenAnswer((_) => Future.value(cmdResult));
     when(sut.mapper.mapResponse(cmdResult)).thenReturn(response);
 
-    final result = await sut.handler.handleNonBlocking(request);
+    final result = await sut.handler.handle(request);
     expect(result.status, equals(status));
     expect(result.data, equals(response));
   });

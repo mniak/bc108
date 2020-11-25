@@ -10,7 +10,8 @@ class OperatorMock extends Mock implements Operator {}
 
 class RequestHandlerFactoryMock extends Mock implements RequestHandlerFactory {}
 
-class RequestHandlerMock<TRequest, TResponse> extends Mock implements RequestHandler<TRequest, TResponse> {}
+class RequestHandlerMock<TRequest, TResponse> extends Mock
+    implements RequestHandler<TRequest, TResponse> {}
 
 class PinpadResultMock<T> extends Mock implements PinpadResult<T> {}
 
@@ -39,7 +40,8 @@ void main() {
     final requestHandler = RequestHandlerMock<DisplayRequest, void>();
     final pinpadResult = PinpadResultMock<void>();
 
-    when(requestHandler.handleNonBlocking(request)).thenAnswer((_) => Future.value(pinpadResult));
+    when(requestHandler.handle(request))
+        .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.display(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.display(request);
@@ -51,7 +53,8 @@ void main() {
     final requestHandler = RequestHandlerMock<void, GetInfo00Response>();
     final pinpadResult = PinpadResultMock<GetInfo00Response>();
 
-    when(requestHandler.handleNonBlocking(any)).thenAnswer((_) => Future.value(pinpadResult));
+    when(requestHandler.handle(any))
+        .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.getInfo(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.getInfo00();
@@ -64,7 +67,8 @@ void main() {
     final requestHandler = RequestHandlerMock<TableLoadInitRequest, void>();
     final pinpadResult = PinpadResultMock();
 
-    when(requestHandler.handleNonBlocking(request)).thenAnswer((_) => Future.value(pinpadResult));
+    when(requestHandler.handle(request))
+        .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.tableLoadInit(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.tableLoadInit(request);
@@ -77,7 +81,8 @@ void main() {
     final requestHandler = RequestHandlerMock<TableLoadRecRequest, void>();
     final pinpadResult = PinpadResultMock();
 
-    when(requestHandler.handleNonBlocking(any)).thenAnswer((_) => Future.value(pinpadResult));
+    when(requestHandler.handle(any))
+        .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.tableLoadRec(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.tableLoadRec(request);
@@ -89,7 +94,8 @@ void main() {
     final requestHandler = RequestHandlerMock<void, void>();
     final pinpadResult = PinpadResultMock();
 
-    when(requestHandler.handleNonBlocking(any)).thenAnswer((_) => Future.value(pinpadResult));
+    when(requestHandler.handle(any))
+        .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.tableLoadEnd(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.tableLoadEnd();
@@ -102,7 +108,8 @@ void main() {
     final requestHandler = RequestHandlerMock<void, GetTimestampResponse>();
     final pinpadResult = PinpadResultMock<GetTimestampResponse>();
 
-    when(requestHandler.handleNonBlocking(request)).thenAnswer((_) => Future.value(pinpadResult));
+    when(requestHandler.handle(request))
+        .thenAnswer((_) => Future.value(pinpadResult));
     when(sut.handlerFactory.getTimestamp(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.getTimestamp(request);

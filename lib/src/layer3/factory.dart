@@ -1,7 +1,9 @@
 import 'commands/open.dart';
 import 'commands/close.dart';
-import 'commands/display.dart';
+
 import 'commands/get_info.dart';
+import 'commands/display.dart';
+import 'commands/get_key.dart';
 
 import 'commands/get_card.dart';
 
@@ -12,10 +14,14 @@ import 'commands/get_timestamp.dart';
 
 class RequestHandlerFactory
     with
+        // Control
         OpenFactory,
         CloseFactory,
-        DisplayFactory,
+
+        // Basic
         GetInfo00Factory,
+        DisplayFactory,
+        GetKeyFactory,
 
         // Card Processing
         GetCardFactory,

@@ -1,3 +1,4 @@
+import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer2/operator.dart';
 
 import 'mapper.dart';
@@ -16,16 +17,9 @@ class RequestHandler<TRequest, TResponse> {
     return RequestHandler(oper, mapper, mapper);
   }
 
-  Future<PinpadResult<TResponse>> handleNonBlocking(TRequest request) async {
+  Future<PinpadResult<TResponse>> handle(TRequest request) async {
     final command = _requestMapper.mapRequest(request);
-    final result = await _operator.sendNonBlocking(command);
-    final response = _responseMapper.mapResponse(result);
-    return PinpadResult(result.status, response);
-  }
-
-  Future<PinpadResult<TResponse>> handleBlocking(TRequest request) async {
-    final command = _requestMapper.mapRequest(request);
-    final result = await _operator.sendBlocking(command);
+    final result = await _operator.send(command);
     final response = _responseMapper.mapResponse(result);
     return PinpadResult(result.status, response);
   }
