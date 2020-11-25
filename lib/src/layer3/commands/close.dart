@@ -32,6 +32,6 @@ class Mapper extends RequestResponseMapper<CloseRequest, void> {
 }
 
 class CloseFactory {
-  RequestHandler<CloseRequest, void> close(Operator o) =>
+  RequestHandler<CloseRequest, void> close(OperatorL2 o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

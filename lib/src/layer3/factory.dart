@@ -2,6 +2,9 @@ import 'commands/open.dart';
 import 'commands/close.dart';
 import 'commands/display.dart';
 import 'commands/get_info.dart';
+
+import 'commands/get_card.dart';
+
 import 'commands/table_load_init.dart';
 import 'commands/table_load_rec.dart';
 import 'commands/table_load_end.dart';
@@ -14,7 +17,12 @@ class RequestHandlerFactory
         DisplayFactory,
         GetInfo00Factory,
 
-// Table Maintenance
+        // Card Processing
+        GetCardFactory,
+        // ChangeParameterFactory,
+        // GoOnChipFactory,
+
+        // Table Maintenance
         TableLoadInitFactory,
         TableLoadRecFactory,
         TableLoadEndFactory,

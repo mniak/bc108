@@ -26,6 +26,6 @@ class Mapper extends RequestResponseMapper<TableLoadRecRequest, void> {
 }
 
 class TableLoadRecFactory {
-  RequestHandler<TableLoadRecRequest, void> tableLoadRec(Operator o) =>
+  RequestHandler<TableLoadRecRequest, void> tableLoadRec(OperatorL2 o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

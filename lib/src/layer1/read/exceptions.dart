@@ -35,19 +35,6 @@ class ExpectingDataEventException implements FrameReceiverException {
 
 abstract class ReaderException implements Exception {}
 
-class ChecksumException implements ReaderException {
-  String message;
-  ChecksumException(Iterable<int> expected) {
-    final b1 = expected.first;
-    final b2 = expected.skip(1).first;
-    final long = b1 * 256 + b2;
-    this.message = "Invalid checksum. Expecting 0x${long.toRadixString(16)}.";
-  }
-  String toString() {
-    return "ChecksumException: $message";
-  }
-}
-
 class ByteOutOfRangeException implements ReaderException {
   String message;
   ByteOutOfRangeException(int byte) {

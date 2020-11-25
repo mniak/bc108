@@ -21,7 +21,7 @@ class FrameReceiver {
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future<FrameAcknowledgement> _receiveAcknowledgement() async {
+  Future<FrameAcknowledgement> receiveAcknowledgement() async {
     try {
       final event = await _nextEvent(_ackTimeout);
       if (!event.ack && !event.nak) {
@@ -36,8 +36,20 @@ class FrameReceiver {
     }
   }
 
+  Future<FrameResult> receiveData() async {
+    try {
+      final event = await _nextEvent(_responseTimeout);
+      if (!event.isDataEvent) {
+        throw ExpectingDataEventException(event);
+      }
+      return FrameResult.data(event.data);
+    } on TimeoutException {
+      return FrameResult.timeout();
+    }
+  }
+
   Future<FrameResult> receiveNonBlocking() async {
-    final ack = await _receiveAcknowledgement();
+    final ack = await receiveAcknowledgement();
     if (ack.timeout) return FrameResult.timeout();
     if (ack.tryAgain) return FrameResult.tryAgain();
 
@@ -46,7 +58,6 @@ class FrameReceiver {
       if (!event.isDataEvent) {
         throw ExpectingDataEventException(event);
       }
-
       return FrameResult.data(event.data);
     } on TimeoutException {
       return FrameResult.timeout();

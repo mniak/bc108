@@ -1,21 +1,32 @@
-import '../layer2/operator.dart';
-import 'pinpad_result.dart';
+import 'package:bc108/src/layer2/operator_L2.dart';
+
 import 'mapper.dart';
+import 'pinpad_result.dart';
 
 class RequestHandler<TRequest, TResponse> {
-  Operator _operator;
+  OperatorL2 _operator;
   RequestMapper<TRequest> _requestMapper;
   ResponseMapper<TResponse> _responseMapper;
 
-  RequestHandler(this._operator, this._requestMapper, this._responseMapper);
-  RequestHandler.fromMapper(
-      Operator oper, RequestResponseMapper<TRequest, TResponse> mapper)
-      : this(oper, mapper, mapper);
+  Stream<String> get notifications => _operator.notifications;
 
-  Future<PinpadResult<TResponse>> handle(TRequest request) async {
+  RequestHandler(this._operator, this._requestMapper, this._responseMapper);
+  factory RequestHandler.fromMapper(
+      OperatorL2 oper, RequestResponseMapper<TRequest, TResponse> mapper) {
+    return RequestHandler(oper, mapper, mapper);
+  }
+
+  Future<PinpadResult<TResponse>> handleNonBlocking(TRequest request) async {
     final command = _requestMapper.mapRequest(request);
-    final commandResult = await _operator.execute(command);
-    final response = _responseMapper.mapResponse(commandResult);
-    return PinpadResult(commandResult.status, response);
+    final result = await _operator.sendNonBlocking(command);
+    final response = _responseMapper.mapResponse(result);
+    return PinpadResult(result.status, response);
+  }
+
+  Future<PinpadResult<TResponse>> handleBlocking(TRequest request) async {
+    final command = _requestMapper.mapRequest(request);
+    final result = await _operator.sendBlocking(command);
+    final response = _responseMapper.mapResponse(result);
+    return PinpadResult(result.status, response);
   }
 }

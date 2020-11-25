@@ -21,10 +21,9 @@ class SUT {
 void main() {
   test('when there is data, should return parsed command', () async {
     final sut = SUT();
-    when(sut.frameReceiver.receiveNonBlocking())
-        .thenAnswer((_) => Future.value(FrameResult.data("CMD004")));
+    when(sut.frameReceiver.receiveNonBlocking()).thenAnswer((_) => Future.value(FrameResult.data("CMD004")));
 
-    final result = await sut.commandReceiver.receive();
+    final result = await sut.commandReceiver.receiveAcknowledgementAndData();
 
     expect(result.code, equals("CMD"));
     expect(result.status, equals(Status.PP_F1));
@@ -32,10 +31,9 @@ void main() {
 
   test('when tryAgain, should return status Communication Error', () async {
     final sut = SUT();
-    when(sut.frameReceiver.receiveNonBlocking())
-        .thenAnswer((_) => Future.value(FrameResult.tryAgain()));
+    when(sut.frameReceiver.receiveNonBlocking()).thenAnswer((_) => Future.value(FrameResult.tryAgain()));
 
-    final result = await sut.commandReceiver.receive();
+    final result = await sut.commandReceiver.receiveAcknowledgementAndData();
 
     expect(result.code, equals("ERR"));
     expect(result.status, equals(Status.PP_COMMERR));
@@ -43,10 +41,9 @@ void main() {
 
   test('when timeout, should return status Timeout', () async {
     final sut = SUT();
-    when(sut.frameReceiver.receiveNonBlocking())
-        .thenAnswer((_) => Future.value(FrameResult.timeout()));
+    when(sut.frameReceiver.receiveNonBlocking()).thenAnswer((_) => Future.value(FrameResult.timeout()));
 
-    final result = await sut.commandReceiver.receive();
+    final result = await sut.commandReceiver.receiveAcknowledgementAndData();
 
     expect(result.code, equals("ERR"));
     expect(result.status, equals(Status.PP_COMMTOUT));

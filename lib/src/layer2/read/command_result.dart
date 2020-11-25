@@ -1,3 +1,6 @@
+import 'package:bc108/src/layer1/read/frame_acknowledgement.dart';
+import 'package:bc108/src/layer1/read/frame_result.dart';
+
 import '../status.dart';
 import 'exceptions.dart';
 
@@ -14,6 +17,17 @@ class CommandResult {
     _code = "ERR";
     _status = status;
     _parameters = [];
+  }
+  factory CommandResult.fromResultFrame(FrameResult frame) {
+    if (frame.tryAgain) return CommandResult.fromStatus(Status.PP_COMMERR);
+    if (frame.timeout) return CommandResult.fromStatus(Status.PP_COMMTOUT);
+    return CommandResult.parse(frame.data);
+  }
+
+  factory CommandResult.fromAcknowledgementFrame(FrameAcknowledgement frame) {
+    if (frame.tryAgain) return CommandResult.fromStatus(Status.PP_COMMERR);
+    if (frame.timeout) return CommandResult.fromStatus(Status.PP_COMMTOUT);
+    return CommandResult.fromStatus(Status.PP_OK);
   }
 
   CommandResult.parse(String payload) {

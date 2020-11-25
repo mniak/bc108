@@ -30,10 +30,9 @@ void main() {
     final command = Command('CMD', []);
     final commandResult = CommandResultMock();
 
-    when(sut.receiver.receive())
-        .thenAnswer((_) => Future<CommandResult>.value(commandResult));
+    when(sut.receiver.receiveAcknowledgementAndData()).thenAnswer((_) => Future<CommandResult>.value(commandResult));
 
-    final result = await sut.oper.execute(command);
+    final result = await sut.oper.executeNonBlocking(command);
 
     verify(sut.sender.send(command)).called(1);
     expect(result, equals(commandResult));

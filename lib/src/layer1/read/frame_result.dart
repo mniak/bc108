@@ -1,3 +1,4 @@
+// TODO: rename to ResultFrame
 class FrameResult {
   bool _tryAgain = false;
   FrameResult.tryAgain() {
@@ -18,4 +19,11 @@ class FrameResult {
   }
   bool get isDataResult => _data != null;
   String get data => _data;
+
+  @override
+  String toString() {
+    if (timeout) return "TIMEOUT";
+    if (tryAgain) return "TRY_AGAIN";
+    return "'$data'";
+  }
 }

@@ -32,6 +32,6 @@ class Mapper
 }
 
 class GetTimestampFactory {
-  RequestHandler<void, GetTimestampResponse> getTimestamp(Operator o) =>
+  RequestHandler<void, GetTimestampResponse> getTimestamp(OperatorL2 o) =>
       RequestHandler.fromMapper(o, Mapper());
 }
