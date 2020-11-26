@@ -24,7 +24,7 @@ class RequestHandlerFactory
         GetKeyFactory,
 
         // Card Processing
-        GetCardFactory,
+        // GetCardFactory,
         // ChangeParameterFactory,
         // GoOnChipFactory,
 
