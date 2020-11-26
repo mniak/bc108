@@ -1,4 +1,4 @@
-import 'package:bc108/src/layer1/operator_L1.dart';
+import 'package:bc108/src/layer1/operator.dart';
 import 'package:bc108/src/layer1/read/frame_receiver.dart';
 import 'package:bc108/src/layer1/read/frame_result.dart';
 import 'package:bc108/src/layer1/write/frame_sender.dart';
@@ -12,11 +12,11 @@ class FrameSenderMock extends Mock implements FrameSender {}
 class SUT {
   FrameReceiver receiver;
   FrameSender sender;
-  OperatorL1 oper;
+  Operator oper;
   SUT() {
     receiver = FrameReceiverMock();
     sender = FrameSenderMock();
-    oper = OperatorL1(receiver, sender);
+    oper = Operator(receiver, sender);
   }
 }
 

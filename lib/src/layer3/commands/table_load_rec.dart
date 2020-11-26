@@ -17,15 +17,15 @@ class Mapper extends RequestResponseMapper<TableLoadRecRequest, void> {
   );
 
   @override
-  Command mapRequest(TableLoadRecRequest request) {
-    return Command("TLR", [_requestField.serialize(request.records)]);
+  CommandRequest mapRequest(TableLoadRecRequest request) {
+    return CommandRequest("TLR", [_requestField.serialize(request.records)]);
   }
 
   @override
-  void mapResponse(CommandResult result) {}
+  void mapResponse(CommandResponse result) {}
 }
 
 class TableLoadRecFactory {
-  RequestHandler<TableLoadRecRequest, void> tableLoadRec(Operator o) =>
+  RequestHandler<TableLoadRecRequest, void> tableLoadRec(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

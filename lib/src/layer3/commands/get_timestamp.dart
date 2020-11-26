@@ -20,18 +20,18 @@ class Mapper
   static final _responseField = NumericField(10);
 
   @override
-  Command mapRequest(GetTimestampRequest request) {
-    return Command("GTS", [_requestField.serialize(request.acquirer)]);
+  CommandRequest mapRequest(GetTimestampRequest request) {
+    return CommandRequest("GTS", [_requestField.serialize(request.acquirer)]);
   }
 
   @override
-  GetTimestampResponse mapResponse(CommandResult result) {
+  GetTimestampResponse mapResponse(CommandResponse result) {
     final parsed = _responseField.parse(result.parameters[0]);
     return GetTimestampResponse()..timestamp = parsed.data;
   }
 }
 
 class GetTimestampFactory {
-  RequestHandler<void, GetTimestampResponse> getTimestamp(Operator o) =>
+  RequestHandler<void, GetTimestampResponse> getTimestamp(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

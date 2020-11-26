@@ -58,8 +58,8 @@ class Mapper extends RequestResponseMapper<GetCardRequest, GetCardResponse> {
   ]);
 
   @override
-  Command mapRequest(GetCardRequest request) {
-    return Command("GCR", [
+  CommandRequest mapRequest(GetCardRequest request) {
+    return CommandRequest("GCR", [
       _requestField.serialize([
         request.acquirer,
         request.application,
@@ -93,7 +93,7 @@ class Mapper extends RequestResponseMapper<GetCardRequest, GetCardResponse> {
   ]);
 
   @override
-  GetCardResponse mapResponse(CommandResult result) {
+  GetCardResponse mapResponse(CommandResponse result) {
     final parsed = _responseField.parse(result.parameters[0]);
     return GetCardResponse()
       ..cardType = parsed.data[0]
@@ -118,6 +118,6 @@ class Mapper extends RequestResponseMapper<GetCardRequest, GetCardResponse> {
 }
 
 class GetCardFactory {
-  RequestHandler<GetCardRequest, GetCardResponse> getCard(Operator o) =>
+  RequestHandler<GetCardRequest, GetCardResponse> getCard(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

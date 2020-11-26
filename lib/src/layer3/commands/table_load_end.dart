@@ -5,15 +5,15 @@ import '../mapper.dart';
 
 class Mapper extends RequestResponseMapper<void, void> {
   @override
-  Command mapRequest(void request) {
-    return Command("TLE", []);
+  CommandRequest mapRequest(void request) {
+    return CommandRequest("TLE", []);
   }
 
   @override
-  void mapResponse(CommandResult result) {}
+  void mapResponse(CommandResponse result) {}
 }
 
 class TableLoadEndFactory {
-  RequestHandler<void, void> tableLoadEnd(Operator o) =>
+  RequestHandler<void, void> tableLoadEnd(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

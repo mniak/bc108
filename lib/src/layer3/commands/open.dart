@@ -5,15 +5,15 @@ import '../mapper.dart';
 
 class Mapper extends RequestResponseMapper<void, void> {
   @override
-  Command mapRequest(void request) {
-    return Command("OPN", []);
+  CommandRequest mapRequest(void request) {
+    return CommandRequest("OPN", []);
   }
 
   @override
-  void mapResponse(CommandResult result) {}
+  void mapResponse(CommandResponse result) {}
 }
 
 class OpenFactory {
-  RequestHandler<void, void> open(Operator o) =>
+  RequestHandler<void, void> open(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

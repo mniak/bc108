@@ -1,20 +1,20 @@
-import 'package:bc108/src/layer2/operator.dart';
-import 'package:bc108/src/layer2/read/command_result.dart';
+import 'package:bc108/src/layer2/command_processor.dart';
+import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/status.dart';
-import 'package:bc108/src/layer2/write/command.dart';
+import 'package:bc108/src/layer2/command_response.dart';
 import 'package:bc108/src/layer3/handler.dart';
 import 'package:bc108/src/layer3/mapper.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class OperatorMock extends Mock implements Operator {}
+class OperatorMock extends Mock implements CommandProcessor {}
 
 class MapperMock<TRequest, TResponse> extends Mock
     implements RequestResponseMapper<TRequest, TResponse> {}
 
 class SUT<TRequest, TResponse> {
-  Operator oper;
+  CommandProcessor oper;
   RequestHandler<TRequest, TResponse> handler;
   RequestResponseMapper<TRequest, TResponse> mapper;
   SUT() {
@@ -33,8 +33,8 @@ void main() {
     final code =
         faker.lorem.word().padRight(3, ' ').substring(0, 3).toUpperCase();
     final status = faker.randomGenerator.integer(999).toStatus();
-    final cmd = Command(code, [faker.lorem.sentence()]);
-    final cmdResult = CommandResult.fromStatus(status);
+    final cmd = CommandRequest(code, [faker.lorem.sentence()]);
+    final cmdResult = CommandResponse.fromStatus(status);
 
     when(sut.mapper.mapRequest(request)).thenReturn(cmd);
     when(sut.oper.send(cmd)).thenAnswer((_) => Future.value(cmdResult));

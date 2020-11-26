@@ -4,12 +4,12 @@ import 'package:bc108/src/layer1/read/frame_result.dart';
 
 import '../log.dart';
 
-class OperatorL1 {
+class Operator {
   FrameReceiver _receiver;
   FrameSender _sender;
-  OperatorL1(this._receiver, this._sender);
+  Operator(this._receiver, this._sender);
 
-  OperatorL1.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
+  Operator.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(FrameReceiver(stream.asEventReader()), FrameSender(sink));
 
   Future<FrameAcknowledgement> send(String frame) async {

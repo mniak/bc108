@@ -18,8 +18,8 @@ class Mapper extends RequestResponseMapper<CloseRequest, void> {
   ]);
 
   @override
-  Command mapRequest(CloseRequest request) {
-    return Command("CLO", [
+  CommandRequest mapRequest(CloseRequest request) {
+    return CommandRequest("CLO", [
       _requestField.serialize([
         request.idleMessageLine1,
         request.idleMessageLine2,
@@ -28,10 +28,10 @@ class Mapper extends RequestResponseMapper<CloseRequest, void> {
   }
 
   @override
-  void mapResponse(CommandResult result) {}
+  void mapResponse(CommandResponse result) {}
 }
 
 class CloseFactory {
-  RequestHandler<CloseRequest, void> close(Operator o) =>
+  RequestHandler<CloseRequest, void> close(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

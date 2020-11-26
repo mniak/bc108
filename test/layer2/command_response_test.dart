@@ -1,12 +1,12 @@
-import 'package:bc108/src/layer2/read/command_result.dart';
-import 'package:bc108/src/layer2/read/exceptions.dart';
+import 'package:bc108/src/layer2/command_request.dart';
+import 'package:bc108/src/layer2/exceptions.dart';
 import 'package:bc108/src/layer2/status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('when is null should raise error', () {
-    expect(() => CommandResult.parse(null),
-        throwsA(isA<CommandResultParseException>()));
+    expect(() => CommandResponse.parse(null),
+        throwsA(isA<CommandResponseParseException>()));
   });
   group('happy scenario when there is code and status but no parameters', () {
     group('test status code mappings', () {
@@ -77,7 +77,7 @@ void main() {
         final statusCode = d[0] as String;
         final status = d[1] as Status;
         test('$statusCode -> $status', () {
-          final cmdResult = CommandResult.parse("CMD" + statusCode);
+          final cmdResult = CommandResponse.parse("CMD" + statusCode);
           expect(cmdResult.code, equals("CMD"));
           expect(cmdResult.status, equals(status));
           expect(cmdResult.parameters, isNotNull);
@@ -101,7 +101,7 @@ void main() {
         for (var s = range[0]; s <= range[1]; s++) {
           test('$s should be understood as status Unknown', () {
             final cmdResult =
-                CommandResult.parse("CMD" + s.toString().padLeft(3, '0'));
+                CommandResponse.parse("CMD" + s.toString().padLeft(3, '0'));
             expect(cmdResult.code, equals("CMD"));
             expect(cmdResult.status, equals(Status.PP_UNKNOWNSTAT));
             expect(cmdResult.parameters, isNotNull);
@@ -121,8 +121,8 @@ void main() {
     ];
     data.forEach((d) {
       test(d, () {
-        expect(() => CommandResult.parse(d),
-            throwsA(isA<CommandResultParseException>()));
+        expect(() => CommandResponse.parse(d),
+            throwsA(isA<CommandResponseParseException>()));
       });
     });
   });
@@ -137,14 +137,14 @@ void main() {
     ];
     data.forEach((d) {
       test(d, () {
-        expect(() => CommandResult.parse(d),
-            throwsA(isA<CommandResultParseException>()));
+        expect(() => CommandResponse.parse(d),
+            throwsA(isA<CommandResponseParseException>()));
       });
     });
   });
 
   test('happy scenario when there is code and status and one parameter', () {
-    final cmdResult = CommandResult.parse("CMD000010abcdefghij");
+    final cmdResult = CommandResponse.parse("CMD000010abcdefghij");
     expect(cmdResult.code, equals("CMD"));
     expect(cmdResult.status, equals(Status.PP_OK));
     expect(cmdResult.parameters, isNotNull);
@@ -168,7 +168,7 @@ void main() {
       for (var s = range[0]; s <= range[1]; s++) {
         test('$s should be understood as status Unknown', () {
           final cmdResult =
-              CommandResult.parse("CMD" + s.toString().padLeft(3, '0'));
+              CommandResponse.parse("CMD" + s.toString().padLeft(3, '0'));
           expect(cmdResult.code, equals("CMD"));
           expect(cmdResult.status, equals(Status.PP_UNKNOWNSTAT));
           expect(cmdResult.parameters, isNotNull);
@@ -181,8 +181,8 @@ void main() {
   test(
       'when there is code and status and one parameter but the parameter size is greater thant the remaining string, should raise error',
       () {
-    expect(() => CommandResult.parse("CMD000010abcde"),
-        throwsA(isA<CommandResultParseException>()));
+    expect(() => CommandResponse.parse("CMD000010abcde"),
+        throwsA(isA<CommandResponseParseException>()));
   });
 
   group('when matches pattern but remaining bytes are only 1 or 2', () {
@@ -192,8 +192,8 @@ void main() {
     ];
     data.forEach((d) {
       test(d, () {
-        expect(() => CommandResult.parse(d),
-            throwsA(isA<CommandResultParseException>()));
+        expect(() => CommandResponse.parse(d),
+            throwsA(isA<CommandResponseParseException>()));
       });
     });
   });

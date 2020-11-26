@@ -1,5 +1,5 @@
 import 'package:bc108/src/layer2/exports.dart';
-import 'package:bc108/src/layer2/operator.dart';
+import 'package:bc108/src/layer2/command_processor.dart';
 import 'package:bc108/src/layer3/commands/close.dart';
 import 'exports.dart';
 
@@ -8,12 +8,13 @@ import 'factory.dart';
 import 'pinpad_result.dart';
 
 class Pinpad {
-  Operator _operator;
+  CommandProcessor _operator;
   RequestHandlerFactory _factory;
 
   Pinpad(this._operator, this._factory);
   Pinpad.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
-      : this(Operator.fromStreamAndSink(stream, sink), RequestHandlerFactory());
+      : this(CommandProcessor.fromStreamAndSink(stream, sink),
+            RequestHandlerFactory());
 
   void done() => _operator.close();
 

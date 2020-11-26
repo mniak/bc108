@@ -6,7 +6,7 @@ import 'package:bc108/src/layer3/pinpad_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class OperatorMock extends Mock implements Operator {}
+class OperatorMock extends Mock implements CommandProcessor {}
 
 class RequestHandlerFactoryMock extends Mock implements RequestHandlerFactory {}
 
@@ -16,7 +16,7 @@ class RequestHandlerMock<TRequest, TResponse> extends Mock
 class PinpadResultMock<T> extends Mock implements PinpadResult<T> {}
 
 class SUT {
-  Operator oper;
+  CommandProcessor oper;
   RequestHandlerFactory handlerFactory;
   Pinpad pinpad;
 

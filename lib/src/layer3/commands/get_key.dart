@@ -8,17 +8,17 @@ class GetKeyResponse {}
 
 class Mapper extends RequestResponseMapper<void, void> {
   @override
-  Command mapRequest(void request) {
-    return Command("GKY", []);
+  CommandRequest mapRequest(void request) {
+    return CommandRequest("GKY", []);
   }
 
   @override
-  void mapResponse(CommandResult result) {
+  void mapResponse(CommandResponse result) {
     return null;
   }
 }
 
 class GetKeyFactory {
-  RequestHandler<void, void> getKey(Operator o) =>
+  RequestHandler<void, void> getKey(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

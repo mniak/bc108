@@ -1,10 +1,10 @@
 import 'package:bc108/src/layer1/read/frame_acknowledgement.dart';
 import 'package:bc108/src/layer1/read/frame_result.dart';
 
-import '../status.dart';
+import 'status.dart';
 import 'exceptions.dart';
 
-class CommandResult {
+class CommandResponse {
   String _code;
   Status _status;
   Iterable<String> _parameters;
@@ -13,31 +13,31 @@ class CommandResult {
   Status get status => _status;
   List<String> get parameters => List.of(_parameters);
 
-  CommandResult.fromStatus(Status status) {
+  CommandResponse.fromStatus(Status status) {
     _code = "ERR";
     _status = status;
     _parameters = [];
   }
-  factory CommandResult.fromResultFrame(FrameResult frame) {
-    if (frame.tryAgain) return CommandResult.fromStatus(Status.PP_COMMERR);
-    if (frame.timeout) return CommandResult.fromStatus(Status.PP_COMMTOUT);
-    return CommandResult.parse(frame.data);
+  factory CommandResponse.fromResultFrame(FrameResult frame) {
+    if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
+    if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
+    return CommandResponse.parse(frame.data);
   }
 
-  factory CommandResult.fromAcknowledgementFrame(FrameAcknowledgement frame) {
-    if (frame.tryAgain) return CommandResult.fromStatus(Status.PP_COMMERR);
-    if (frame.timeout) return CommandResult.fromStatus(Status.PP_COMMTOUT);
-    return CommandResult.fromStatus(Status.PP_OK);
+  factory CommandResponse.fromAcknowledgementFrame(FrameAcknowledgement frame) {
+    if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
+    if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
+    return CommandResponse.fromStatus(Status.PP_OK);
   }
 
-  CommandResult.parse(String payload) {
+  CommandResponse.parse(String payload) {
     if (payload == null)
-      throw CommandResultParseException("The payload must cannot be null.");
+      throw CommandResponseParseException("The payload must cannot be null.");
 
     final pattern = RegExp(r"(\w{3})(\d{3})");
     final match = pattern.matchAsPrefix(payload);
     if (match == null) {
-      throw CommandResultParseException(
+      throw CommandResponseParseException(
           "Could not find the command code or the status code.");
     }
 
@@ -50,11 +50,11 @@ class CommandResult {
       final size = int.tryParse(remaining.substring(0, 3));
       remaining = remaining.substring(3);
       if (size == null || size < 0)
-        throw CommandResultParseException(
+        throw CommandResponseParseException(
             "The size of a parameter is invalid: '$size'.");
 
       if (size > remaining.length)
-        throw CommandResultParseException(
+        throw CommandResponseParseException(
             "The size of a parameter is greater than the remaining count: '$size' > ${remaining.length}.");
 
       final param = remaining.substring(0, size);
@@ -63,7 +63,7 @@ class CommandResult {
     }
 
     if (remaining.isNotEmpty) {
-      throw CommandResultParseException(
+      throw CommandResponseParseException(
           "The payload still has data after all the parameters were parsed.");
     }
 

@@ -1,3 +1,16 @@
+abstract class CommandResponseException implements Exception {}
+
+class CommandResponseParseException implements CommandResponseException {
+  String message;
+  CommandResponseParseException(String reason) {
+    this.message = "The result is invalid. $reason";
+  }
+
+  String toString() {
+    return "CommandResponseParseException: $message";
+  }
+}
+
 abstract class CommandException implements Exception {}
 
 class InvalidCommandLengthException implements CommandException {
