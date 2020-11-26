@@ -2,7 +2,7 @@ import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer1/read/ack_frame.dart';
 import 'package:bc108/src/layer1/read/result_frame.dart';
 
-import '../log.dart';
+import 'log.dart';
 
 class Operator {
   FrameReceiver _receiver;
@@ -16,14 +16,14 @@ class Operator {
       : this(FrameReceiver(stream.asEventReader()), FrameSender(sink));
 
   Future<AckFrame> send(String frame) async {
+    log("Resetting buffer before sending frame");
+    await _receiver.reset();
     var ackResult = AckFrame.tryAgain();
-
-    log("Frame sent: '$frame'");
-
     for (var remainingTries = 3;
         ackResult.tryAgain && remainingTries > 0;
         remainingTries--) {
       _sender.send(frame);
+      log("Frame sent: '$frame'");
       ackResult = await _receiver.receiveAck(ackTimeout);
     }
     return ackResult;

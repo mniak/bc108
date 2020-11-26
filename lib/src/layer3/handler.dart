@@ -2,7 +2,7 @@ import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer2/command_processor.dart';
 
 import 'mapper.dart';
-import 'pinpad_result.dart';
+import '../layer1/pinpad_result.dart';
 
 class RequestHandler<TRequest, TResponse> {
   CommandProcessor _operator;

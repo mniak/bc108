@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer1/operator.dart';
+import 'package:bc108/src/layer1/read/result_frame.dart';
 import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/command_response.dart';
+
+import 'log.dart';
 
 class CommandProcessor {
   Operator _operator;
@@ -26,10 +29,13 @@ class CommandProcessor {
     CommandResponse response;
     do {
       final frameResult = await _operator.receive(blocking: blocking);
-      response = CommandResponse.parse(frameResult.data);
+      response = CommandResponse.fromDataFrame(frameResult);
       if (response.code == "NTM") {
-        _notificationController.sink.add(response.parameters[0]);
+        final message = response.parameters[0];
+        log('Notification received: $message');
+        _notificationController.sink.add(message);
       } else {
+        log('Command response received: ${response.code} ${response.status} ${response.parameters.join(", ")}');
         return response;
       }
     } while (true);

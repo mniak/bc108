@@ -11,11 +11,20 @@ class FrameReceiver {
   Duration _ackTimeout;
 
   FrameReceiver(Stream<ReaderEvent> stream) {
+    // final ackStream  = stream.where((x) => x.isDataEvent).map((x) => DataFrame.data(x.data));
+    // final dataStream  = stream.where((x) => x.isDataEvent).map((x) => DataFrame.data(x.data));
     this._queue = StreamQueue<ReaderEvent>(stream);
   }
 
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
+
+  Future reset() async {
+    while (await _queue.hasNext.timeout(Duration(milliseconds: 5),
+        onTimeout: () => Future.value((false)))) {
+      await _queue.next;
+    }
+  }
 
   Future<AckFrame> receiveAck(Duration timeout) async {
     try {

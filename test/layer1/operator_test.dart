@@ -42,6 +42,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isFalse);
 
+      verify(sut.receiver.reset()).called(1);
       verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(1);
     });
 
@@ -58,6 +59,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isTrue);
 
+      verify(sut.receiver.reset()).called(1);
       verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(1);
     });
 
@@ -74,6 +76,7 @@ void main() {
       expect(result.tryAgain, isTrue);
       expect(result.ok, isFalse);
 
+      verify(sut.receiver.reset()).called(1);
       verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(3);
     });
 
@@ -96,6 +99,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isFalse);
 
+      verify(sut.receiver.reset()).called(1);
       verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(2);
     });
 
@@ -119,6 +123,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isFalse);
 
+      verify(sut.receiver.reset()).called(1);
       verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(3);
     });
   });

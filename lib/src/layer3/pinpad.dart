@@ -5,7 +5,7 @@ import 'exports.dart';
 
 import 'commands/get_info.dart';
 import 'factory.dart';
-import 'pinpad_result.dart';
+import '../layer1/pinpad_result.dart';
 
 class Pinpad {
   CommandProcessor _operator;
