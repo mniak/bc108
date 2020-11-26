@@ -16,26 +16,23 @@ class CommandProcessor {
   CommandProcessor.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(Operator.fromStreamAndSink(stream, sink));
 
-  Future<CommandResponse> _receive() async {
-    CommandResponse result;
-    do {
-      final frameResult = await _operator.receive();
-      result = CommandResponse.parse(frameResult.data);
-      if (result.code == "NTM") {
-        _notificationController.sink.add(result.parameters[0]);
-      } else {
-        return result;
-      }
-    } while (true);
-  }
-
   Future<CommandResponse> send(CommandRequest request) async {
     final ackFrame = await _operator.send(request.payload);
-    if (ackFrame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
-    if (ackFrame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
+    if (ackFrame.tryAgain)
+      return CommandResponse.fromStatus(Status.PP_COMMERR, request.code);
+    if (ackFrame.timeout)
+      return CommandResponse.fromStatus(Status.PP_COMMTOUT, request.code);
 
-    final response = await _receive();
-    return response;
+    CommandResponse response;
+    do {
+      final frameResult = await _operator.receive();
+      response = CommandResponse.parse(frameResult.data);
+      if (response.code == "NTM") {
+        _notificationController.sink.add(response.parameters[0]);
+      } else {
+        return response;
+      }
+    } while (true);
   }
 
   void close() {

@@ -1,6 +1,6 @@
 import 'package:bc108/bc108.dart';
-import 'package:bc108/src/layer1/read/frame_acknowledgement.dart';
-import 'package:bc108/src/layer1/read/frame_result.dart';
+import 'package:bc108/src/layer1/read/ack_frame.dart';
+import 'package:bc108/src/layer1/read/result_frame.dart';
 
 import '../log.dart';
 
@@ -12,8 +12,8 @@ class Operator {
   Operator.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(FrameReceiver(stream.asEventReader()), FrameSender(sink));
 
-  Future<FrameAcknowledgement> send(String frame) async {
-    var ackResult = FrameAcknowledgement.tryAgain();
+  Future<AckFrame> send(String frame) async {
+    var ackResult = AckFrame.tryAgain();
 
     log("Frame sent: '$frame'");
 
@@ -21,12 +21,12 @@ class Operator {
         ackResult.tryAgain && remainingTries > 0;
         remainingTries--) {
       _sender.send(frame);
-      ackResult = await _receiver.receiveAcknowledgement();
+      ackResult = await _receiver.receiveAck();
     }
     return ackResult;
   }
 
-  Future<FrameResult> receive() async {
+  Future<ResultFrame> receive() async {
     final frame = await _receiver.receive();
     log("Data frame received: $frame");
     return frame;

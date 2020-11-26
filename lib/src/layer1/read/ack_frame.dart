@@ -1,19 +1,18 @@
-//TODO: rename to AcknowledgementFrame
-class FrameAcknowledgement {
+class AckFrame {
   bool _tryAgain = false;
-  FrameAcknowledgement.tryAgain() {
+  AckFrame.tryAgain() {
     this._tryAgain = true;
   }
   bool get tryAgain => _tryAgain;
 
   bool _timeout = false;
-  FrameAcknowledgement.timeout() {
+  AckFrame.timeout() {
     this._timeout = true;
   }
   bool get timeout => _timeout;
 
   bool _ok = false;
-  FrameAcknowledgement.ok() {
+  AckFrame.ok() {
     _ok = true;
   }
   bool get ok => _ok;

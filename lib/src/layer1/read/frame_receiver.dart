@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:async/async.dart';
 
 import 'exceptions.dart';
-import 'frame_result.dart';
+import 'result_frame.dart';
 import 'reader.dart';
-import 'frame_acknowledgement.dart';
+import 'ack_frame.dart';
 
 class FrameReceiver {
   StreamQueue<ReaderEvent> _queue;
@@ -21,30 +21,30 @@ class FrameReceiver {
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future<FrameAcknowledgement> receiveAcknowledgement() async {
+  Future<AckFrame> receiveAck() async {
     try {
       final event = await _nextEvent(_ackTimeout);
       if (!event.ack && !event.nak) {
         throw ExpectingAckOrNakException(event);
       }
       if (event.nak) {
-        return FrameAcknowledgement.tryAgain();
+        return AckFrame.tryAgain();
       }
-      return FrameAcknowledgement.ok();
+      return AckFrame.ok();
     } on TimeoutException {
-      return FrameAcknowledgement.timeout();
+      return AckFrame.timeout();
     }
   }
 
-  Future<FrameResult> receive() async {
+  Future<ResultFrame> receive() async {
     try {
       final event = await _nextEvent(_responseTimeout);
       if (!event.isDataEvent) {
         throw ExpectingDataEventException(event);
       }
-      return FrameResult.data(event.data);
+      return ResultFrame.data(event.data);
     } on TimeoutException {
-      return FrameResult.timeout();
+      return ResultFrame.timeout();
     }
   }
 }

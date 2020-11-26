@@ -1,5 +1,5 @@
-import 'package:bc108/src/layer1/read/frame_acknowledgement.dart';
-import 'package:bc108/src/layer1/read/frame_result.dart';
+import 'package:bc108/src/layer1/read/ack_frame.dart';
+import 'package:bc108/src/layer1/read/result_frame.dart';
 
 import 'status.dart';
 import 'exceptions.dart';
@@ -13,18 +13,18 @@ class CommandResponse {
   Status get status => _status;
   List<String> get parameters => List.of(_parameters);
 
-  CommandResponse.fromStatus(Status status) {
-    _code = "ERR";
+  CommandResponse.fromStatus(Status status, [String code = "ERR"]) {
+    _code = code;
     _status = status;
     _parameters = [];
   }
-  factory CommandResponse.fromResultFrame(FrameResult frame) {
+  factory CommandResponse.fromResultFrame(ResultFrame frame) {
     if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
     if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
     return CommandResponse.parse(frame.data);
   }
 
-  factory CommandResponse.fromAcknowledgementFrame(FrameAcknowledgement frame) {
+  factory CommandResponse.fromAckFrame(AckFrame frame) {
     if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
     if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
     return CommandResponse.fromStatus(Status.PP_OK);

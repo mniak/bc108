@@ -1,19 +1,18 @@
-// TODO: rename to ResultFrame
-class FrameResult {
+class ResultFrame {
   bool _tryAgain = false;
-  FrameResult.tryAgain() {
+  ResultFrame.tryAgain() {
     this._tryAgain = true;
   }
   bool get tryAgain => _tryAgain;
 
   bool _timeout = false;
-  FrameResult.timeout() {
+  ResultFrame.timeout() {
     this._timeout = true;
   }
   bool get timeout => _timeout;
 
   String _data;
-  FrameResult.data(String data) {
+  ResultFrame.data(String data) {
     if (data == null) throw ArgumentError.notNull('data');
     this._data = data;
   }
