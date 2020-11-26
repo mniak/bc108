@@ -18,7 +18,7 @@ class CommandResponse {
     _status = status;
     _parameters = [];
   }
-  factory CommandResponse.fromResultFrame(ResultFrame frame) {
+  factory CommandResponse.fromDataFrame(DataFrame frame) {
     if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
     if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
     return CommandResponse.parse(frame.data);

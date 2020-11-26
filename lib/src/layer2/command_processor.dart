@@ -16,7 +16,7 @@ class CommandProcessor {
   CommandProcessor.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(Operator.fromStreamAndSink(stream, sink));
 
-  Future<CommandResponse> send(CommandRequest request) async {
+  Future<CommandResponse> send(CommandRequest request, {bool blocking}) async {
     final ackFrame = await _operator.send(request.payload);
     if (ackFrame.tryAgain)
       return CommandResponse.fromStatus(Status.PP_COMMERR, request.code);
@@ -25,7 +25,7 @@ class CommandProcessor {
 
     CommandResponse response;
     do {
-      final frameResult = await _operator.receive();
+      final frameResult = await _operator.receive(blocking: blocking);
       response = CommandResponse.parse(frameResult.data);
       if (response.code == "NTM") {
         _notificationController.sink.add(response.parameters[0]);

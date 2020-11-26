@@ -9,6 +9,9 @@ class Operator {
   FrameSender _sender;
   Operator(this._receiver, this._sender);
 
+  Duration ackTimeout = Duration(seconds: 2);
+  Duration dataTimeout = Duration(seconds: 10);
+
   Operator.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(FrameReceiver(stream.asEventReader()), FrameSender(sink));
 
@@ -21,13 +24,13 @@ class Operator {
         ackResult.tryAgain && remainingTries > 0;
         remainingTries--) {
       _sender.send(frame);
-      ackResult = await _receiver.receiveAck();
+      ackResult = await _receiver.receiveAck(ackTimeout);
     }
     return ackResult;
   }
 
-  Future<ResultFrame> receive() async {
-    final frame = await _receiver.receive();
+  Future<DataFrame> receive({bool blocking}) async {
+    final frame = await _receiver.receiveData(dataTimeout);
     log("Data frame received: $frame");
     return frame;
   }

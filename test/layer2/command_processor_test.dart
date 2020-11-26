@@ -70,8 +70,8 @@ void main() {
         .thenAnswer((_) => Future.value(AckFrame.ok()));
 
     final answers = [
-      ResultFrame.data("NTM" + "000" + "321" + message),
-      ResultFrame.data(request.code + "000" + "123" + responseData)
+      DataFrame.data("NTM" + "000" + "321" + message),
+      DataFrame.data(request.code + "000" + "123" + responseData)
     ];
 
     when(sut.oper.receive())

@@ -5,33 +5,33 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('constructors', () {
     test('try again', () {
-      final sut = ResultFrame.tryAgain();
+      final sut = DataFrame.tryAgain();
       expect(sut.tryAgain, isTrue);
       expect(sut.timeout, isFalse);
-      expect(sut.isDataResult, isFalse);
+      expect(sut.hasData, isFalse);
       expect(sut.data, isNull);
     });
 
     test('timeout', () {
-      final sut = ResultFrame.timeout();
+      final sut = DataFrame.timeout();
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isTrue);
-      expect(sut.isDataResult, isFalse);
+      expect(sut.hasData, isFalse);
       expect(sut.data, isNull);
     });
 
     test('data', () {
       final data = faker.lorem.sentence();
 
-      final sut = ResultFrame.data(data);
+      final sut = DataFrame.data(data);
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isFalse);
-      expect(sut.isDataResult, isTrue);
+      expect(sut.hasData, isTrue);
       expect(sut.data, equals(data));
     });
 
     test('data null', () {
-      expect(() => ResultFrame.data(null), throwsArgumentError);
+      expect(() => DataFrame.data(null), throwsArgumentError);
     });
   });
 }

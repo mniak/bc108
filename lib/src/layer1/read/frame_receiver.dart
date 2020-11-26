@@ -9,21 +9,17 @@ import 'ack_frame.dart';
 class FrameReceiver {
   StreamQueue<ReaderEvent> _queue;
   Duration _ackTimeout;
-  Duration _responseTimeout;
 
-  FrameReceiver(Stream<ReaderEvent> stream,
-      {Duration ackTimeout, Duration responseTimeout}) {
+  FrameReceiver(Stream<ReaderEvent> stream) {
     this._queue = StreamQueue<ReaderEvent>(stream);
-    this._ackTimeout = ackTimeout ?? Duration(seconds: 2);
-    this._responseTimeout = responseTimeout ?? Duration(seconds: 10);
   }
 
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future<AckFrame> receiveAck() async {
+  Future<AckFrame> receiveAck(Duration timeout) async {
     try {
-      final event = await _nextEvent(_ackTimeout);
+      final event = await _nextEvent(timeout);
       if (!event.ack && !event.nak) {
         throw ExpectingAckOrNakException(event);
       }
@@ -36,15 +32,15 @@ class FrameReceiver {
     }
   }
 
-  Future<ResultFrame> receive() async {
+  Future<DataFrame> receiveData(Duration timeout) async {
     try {
-      final event = await _nextEvent(_responseTimeout);
+      final event = await _nextEvent(timeout);
       if (!event.isDataEvent) {
         throw ExpectingDataEventException(event);
       }
-      return ResultFrame.data(event.data);
+      return DataFrame.data(event.data);
     } on TimeoutException {
-      return ResultFrame.timeout();
+      return DataFrame.timeout();
     }
   }
 }
