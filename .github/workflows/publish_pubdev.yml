@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build for Android
+    name: Publish Library to pub.dev
     runs-on: ubuntu-latest
 
     steps:
