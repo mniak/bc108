@@ -1,3 +1,9 @@
+## [0.1.2] - Features
+- Blocking Command infrastructure
+- Command `getKey`
+- Command `open`
+- Command `close`
+
 ## [0.1.1] - General improvements
 - Pinpad now requires an `Stream<int>` instead of `Stream<ReaderEvent>`
 - Documentation fixes
@@ -7,9 +13,9 @@
 ## Release Notes
 - Basic communication
   - Retries
-- Command `PP_Display`
-- Command `PP_GetInfo` _(general information only)_ 
-- Command `PP_TableLoadInit`
-- Command `PP_TableLoadRec`
-- Command `PP_TableLoadEnd`
-- Command `PP_GetTimestamp`
+- Command `display`
+- Command `getInfo00` _(for general information)_ 
+- Command `tableLoadInit`
+- Command `tableLoadRec`
+- Command `tableLoadEnd`
+- Command `getTimestamp`

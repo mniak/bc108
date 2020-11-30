@@ -1,9 +1,9 @@
 import 'exceptions.dart';
 
-class Command {
+class CommandRequest {
   String _code;
   Iterable<String> _parameters;
-  Command(this._code, this._parameters) {
+  CommandRequest(this._code, this._parameters) {
     if (_code.length != 3) throw InvalidCommandLengthException(_code.length);
 
     final invalidLengths =
@@ -21,7 +21,6 @@ class Command {
       sb.write(parameter.length.toString().padLeft(3, '0'));
       sb.write(parameter);
     });
-    if (parameters.isEmpty) sb.write("000");
     final text = sb.toString();
     return text;
   }

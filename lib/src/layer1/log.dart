@@ -18,6 +18,6 @@ void log(
     zone: zone,
     error: error,
     stackTrace: stackTrace,
-    name: 'net.mniak.bc108',
+    name: 'net.mniak.bc108.layer1',
   );
 }

@@ -96,7 +96,8 @@ void main() {
     for (var b in bytes) {
       sut.controller.sink.add(b);
     }
-    expectLater(sut.eventStream, emitsError(TypeMatcher<ChecksumException>()));
+    expectLater(sut.eventStream,
+        emits(predicate<ReaderEvent>((x) => !x.isDataEvent && x.badCRC)));
   });
 
   group('when byte in payload section is out of range, should raise error', () {

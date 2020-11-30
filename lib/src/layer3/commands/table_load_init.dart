@@ -13,14 +13,14 @@ class TableLoadInitRequest {
 }
 
 class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
-  static final _requestField = new CompositeField([
+  static final _requestField = CompositeField([
     NumericField(2),
     NumericField(10),
   ]);
 
   @override
-  Command mapRequest(TableLoadInitRequest request) {
-    return Command("TLI", [
+  CommandRequest mapRequest(TableLoadInitRequest request) {
+    return CommandRequest("TLI", [
       _requestField.serialize([
         request.acquirer,
         request.timestamp,
@@ -29,10 +29,11 @@ class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
   }
 
   @override
-  void mapResponse(CommandResult result) {}
+  void mapResponse(CommandResponse result) {}
 }
 
 class TableLoadInitFactory {
-  RequestHandler<TableLoadInitRequest, void> tableLoadInit(Operator o) =>
+  RequestHandler<TableLoadInitRequest, void> tableLoadInit(
+          CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

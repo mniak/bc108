@@ -6,14 +6,14 @@ import '../mapper.dart';
 class Mapper extends RequestResponseMapper<void, void> {
   @override
   CommandRequest mapRequest(void request) {
-    return CommandRequest("TLE", []);
+    return CommandRequest("OPN", []);
   }
 
   @override
   void mapResponse(CommandResponse result) {}
 }
 
-class TableLoadEndFactory {
-  RequestHandler<void, void> tableLoadEnd(CommandProcessor o) =>
+class OpenFactory {
+  RequestHandler<void, void> open(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

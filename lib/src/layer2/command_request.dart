@@ -1,7 +1,10 @@
-import '../status.dart';
+import 'package:bc108/src/layer1/read/ack_frame.dart';
+import 'package:bc108/src/layer1/read/result_frame.dart';
+
+import 'status.dart';
 import 'exceptions.dart';
 
-class CommandResult {
+class CommandResponse {
   String _code;
   Status _status;
   Iterable<String> _parameters;
@@ -10,20 +13,31 @@ class CommandResult {
   Status get status => _status;
   List<String> get parameters => List.of(_parameters);
 
-  CommandResult.fromStatus(Status status) {
-    _code = "ERR";
+  CommandResponse.fromStatus(Status status, [String code = "ERR"]) {
+    _code = code;
     _status = status;
     _parameters = [];
   }
+  factory CommandResponse.fromDataFrame(DataFrame frame) {
+    if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
+    if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
+    return CommandResponse.parse(frame.data);
+  }
 
-  CommandResult.parse(String payload) {
+  factory CommandResponse.fromAckFrame(AckFrame frame) {
+    if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
+    if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
+    return CommandResponse.fromStatus(Status.PP_OK);
+  }
+
+  CommandResponse.parse(String payload) {
     if (payload == null)
-      throw CommandResultParseException("The payload must cannot be null.");
+      throw CommandResponseParseException("The payload must cannot be null.");
 
     final pattern = RegExp(r"(\w{3})(\d{3})");
     final match = pattern.matchAsPrefix(payload);
     if (match == null) {
-      throw CommandResultParseException(
+      throw CommandResponseParseException(
           "Could not find the command code or the status code.");
     }
 
@@ -36,11 +50,11 @@ class CommandResult {
       final size = int.tryParse(remaining.substring(0, 3));
       remaining = remaining.substring(3);
       if (size == null || size < 0)
-        throw CommandResultParseException(
+        throw CommandResponseParseException(
             "The size of a parameter is invalid: '$size'.");
 
       if (size > remaining.length)
-        throw CommandResultParseException(
+        throw CommandResponseParseException(
             "The size of a parameter is greater than the remaining count: '$size' > ${remaining.length}.");
 
       final param = remaining.substring(0, size);
@@ -49,7 +63,7 @@ class CommandResult {
     }
 
     if (remaining.isNotEmpty) {
-      throw CommandResultParseException(
+      throw CommandResponseParseException(
           "The payload still has data after all the parameters were parsed.");
     }
 

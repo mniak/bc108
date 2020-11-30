@@ -1,37 +1,37 @@
-import 'package:bc108/src/layer1/read/frame_result.dart';
+import 'package:bc108/src/layer1/read/result_frame.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('constructors', () {
     test('try again', () {
-      final sut = FrameResult.tryAgain();
+      final sut = DataFrame.tryAgain();
       expect(sut.tryAgain, isTrue);
       expect(sut.timeout, isFalse);
-      expect(sut.isDataResult, isFalse);
+      expect(sut.hasData, isFalse);
       expect(sut.data, isNull);
     });
 
     test('timeout', () {
-      final sut = FrameResult.timeout();
+      final sut = DataFrame.timeout();
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isTrue);
-      expect(sut.isDataResult, isFalse);
+      expect(sut.hasData, isFalse);
       expect(sut.data, isNull);
     });
 
     test('data', () {
       final data = faker.lorem.sentence();
 
-      final sut = FrameResult.data(data);
+      final sut = DataFrame.data(data);
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isFalse);
-      expect(sut.isDataResult, isTrue);
+      expect(sut.hasData, isTrue);
       expect(sut.data, equals(data));
     });
 
     test('data null', () {
-      expect(() => FrameResult.data(null), throwsArgumentError);
+      expect(() => DataFrame.data(null), throwsArgumentError);
     });
   });
 }

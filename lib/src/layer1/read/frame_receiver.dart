@@ -1,43 +1,57 @@
 import 'dart:async';
 import 'package:async/async.dart';
 
+import '../log.dart';
 import 'exceptions.dart';
-import 'frame_result.dart';
+import 'result_frame.dart';
 import 'reader.dart';
+import 'ack_frame.dart';
 
 class FrameReceiver {
+  Stream<ReaderEvent> _stream;
   StreamQueue<ReaderEvent> _queue;
-  Duration _ackTimeout;
-  Duration _responseTimeout;
 
-  FrameReceiver(Stream<ReaderEvent> stream,
-      {Duration ackTimeout, Duration responseTimeout}) {
-    this._queue = StreamQueue<ReaderEvent>(stream);
-    this._ackTimeout = ackTimeout ?? Duration(seconds: 2);
-    this._responseTimeout = responseTimeout ?? Duration(seconds: 10);
+  FrameReceiver(this._stream) {
+    if (!_stream.isBroadcast) _stream = _stream.asBroadcastStream();
+    _reset();
   }
 
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future<FrameResult> receiveNonBlocking() async {
+  Future _reset() {
+    if (_queue != null) _queue.cancel();
+    _queue = StreamQueue<ReaderEvent>(_stream);
+  }
+
+  Future<AckFrame> receiveAck(Duration timeout) async {
     try {
-      final event1 = await _nextEvent(_ackTimeout);
-      if (!event1.ack && !event1.nak) {
-        throw ExpectingAckOrNakException(event1);
+      final event = await _nextEvent(timeout);
+      if (!event.ack && !event.nak) {
+        throw ExpectingAckOrNakException(event);
       }
-      if (event1.nak) {
-        return FrameResult.tryAgain();
+      if (event.nak) {
+        return AckFrame.tryAgain();
       }
-
-      final event2 = await _nextEvent(_responseTimeout);
-      if (!event2.isDataEvent) {
-        throw ExpectingDataEventException(event2);
-      }
-
-      return FrameResult.data(event2.data);
+      return AckFrame.ok();
     } on TimeoutException {
-      return FrameResult.timeout();
+      log('Expecting ack/nak, received timout. Resetting buffer.');
+      _reset();
+      return AckFrame.timeout();
+    }
+  }
+
+  Future<DataFrame> receiveData(Duration timeout) async {
+    try {
+      final event = await _nextEvent(timeout);
+      if (!event.isDataEvent) {
+        throw ExpectingDataEventException(event);
+      }
+      return DataFrame.data(event.data);
+    } on TimeoutException {
+      log('Expecting data, received timout. Resetting buffer.');
+      _reset();
+      return DataFrame.timeout();
     }
   }
 }

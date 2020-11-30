@@ -19,7 +19,7 @@ class GetInfo00Response {
 class Mapper extends RequestResponseMapper<void, GetInfo00Response> {
   static final _requestField = NumericField(2);
 
-  static final _responseField = new CompositeField([
+  static final _responseField = CompositeField([
     AlphanumericField(20),
     AlphanumericField(19),
     AlphanumericField(1),
@@ -30,12 +30,12 @@ class Mapper extends RequestResponseMapper<void, GetInfo00Response> {
   ]);
 
   @override
-  Command mapRequest(void request) {
-    return Command("GIN", [_requestField.serialize(0)]);
+  CommandRequest mapRequest(void request) {
+    return CommandRequest("GIN", [_requestField.serialize(0)]);
   }
 
   @override
-  GetInfo00Response mapResponse(CommandResult result) {
+  GetInfo00Response mapResponse(CommandResponse result) {
     final parsed = _responseField.parse(result.parameters[0]);
     return GetInfo00Response()
       ..manufacturer = parsed.data[0]
@@ -49,6 +49,6 @@ class Mapper extends RequestResponseMapper<void, GetInfo00Response> {
 }
 
 class GetInfo00Factory {
-  RequestHandler<void, GetInfo00Response> getInfo(Operator o) =>
+  RequestHandler<void, GetInfo00Response> getInfo(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

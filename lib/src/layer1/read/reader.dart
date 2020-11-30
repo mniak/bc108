@@ -47,6 +47,11 @@ class ReaderEvent {
     this._interrupt = 2;
   }
   bool get nak => this._interrupt == 2;
+
+  ReaderEvent.badCRC() {
+    this._interrupt = 3;
+  }
+  bool get badCRC => this._interrupt == 3;
 }
 
 class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
@@ -130,7 +135,7 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
         final crcIsValid =
             _checksumAlgorithm.validate(payloadWithETB, crcInMessage);
         if (!crcIsValid) {
-          sink.addError(ChecksumException(crcInMessage));
+          sink.add(ReaderEvent.badCRC());
         } else {
           final text = ascii.decode(state.payload);
           sink.add(ReaderEvent.data(text));

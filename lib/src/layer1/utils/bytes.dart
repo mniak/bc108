@@ -7,7 +7,7 @@ enum Byte {
   Other,
 }
 
-extension ByteToIntConverter on Byte {
+extension ByteExtensions on Byte {
   int toInt() {
     switch (this) {
       case Byte.ACK:
@@ -26,7 +26,7 @@ extension ByteToIntConverter on Byte {
   }
 }
 
-extension IntToByteConverter on int {
+extension IntExtensions on int {
   Byte toByte() {
     switch (this) {
       case 0x06:

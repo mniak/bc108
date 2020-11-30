@@ -18,8 +18,8 @@ class Mapper implements RequestResponseMapper<DisplayRequest, void> {
   ]);
 
   @override
-  Command mapRequest(DisplayRequest request) {
-    return Command("DSP", [
+  CommandRequest mapRequest(DisplayRequest request) {
+    return CommandRequest("DSP", [
       _requestField.serialize([
         request.line1 ?? "",
         request.line2 ?? "",
@@ -28,10 +28,10 @@ class Mapper implements RequestResponseMapper<DisplayRequest, void> {
   }
 
   @override
-  void mapResponse(CommandResult result) {}
+  void mapResponse(CommandResponse result) {}
 }
 
 class DisplayFactory {
-  RequestHandler<DisplayRequest, void> display(Operator o) =>
+  RequestHandler<DisplayRequest, void> display(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }
