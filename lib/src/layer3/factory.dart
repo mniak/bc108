@@ -5,7 +5,7 @@ import 'commands/get_info.dart';
 import 'commands/display.dart';
 import 'commands/get_key.dart';
 
-import 'commands/get_card.dart';
+// import 'commands/get_card.dart';
 
 import 'commands/table_load_init.dart';
 import 'commands/table_load_rec.dart';

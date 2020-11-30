@@ -11,8 +11,8 @@ class FrameReceiverMock extends Mock implements FrameReceiver {}
 
 class FrameSenderMock extends Mock implements FrameSender {}
 
-final ACK_TIMEOUT = Duration(milliseconds: 50);
-final DATA_TIMEOUT = Duration(milliseconds: 50);
+final ackTimeout = Duration(milliseconds: 50);
+final dataTimeout = Duration(milliseconds: 50);
 
 class SUT {
   FrameReceiver receiver;
@@ -22,8 +22,8 @@ class SUT {
     receiver = FrameReceiverMock();
     sender = FrameSenderMock();
     oper = Operator(receiver, sender);
-    oper.ackTimeout = ACK_TIMEOUT;
-    oper.dataTimeout = DATA_TIMEOUT;
+    oper.ackTimeout = ackTimeout;
+    oper.dataTimeout = dataTimeout;
   }
 }
 
@@ -33,7 +33,7 @@ void main() {
       final sut = SUT();
       final frame = faker.lorem.sentence();
 
-      when(sut.receiver.receiveAck(ACK_TIMEOUT))
+      when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(AckFrame.timeout()));
 
       final result = await sut.oper.send(frame);
@@ -43,14 +43,14 @@ void main() {
       expect(result.ok, isFalse);
 
       verify(sut.receiver.reset()).called(1);
-      verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(1);
+      verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
 
     test('when receive ok, should not be retried', () async {
       final sut = SUT();
       final frame = faker.lorem.sentence();
 
-      when(sut.receiver.receiveAck(ACK_TIMEOUT))
+      when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(AckFrame.ok()));
 
       final result = await sut.oper.send(frame);
@@ -60,14 +60,14 @@ void main() {
       expect(result.ok, isTrue);
 
       verify(sut.receiver.reset()).called(1);
-      verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(1);
+      verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
 
     test('when receive try again, should retry 2 more times', () async {
       final sut = SUT();
       final frame = faker.lorem.sentence();
 
-      when(sut.receiver.receiveAck(ACK_TIMEOUT))
+      when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(AckFrame.tryAgain()));
       final result = await sut.oper.send(frame);
 
@@ -77,7 +77,7 @@ void main() {
       expect(result.ok, isFalse);
 
       verify(sut.receiver.reset()).called(1);
-      verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(3);
+      verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
 
     test(
@@ -90,7 +90,7 @@ void main() {
         AckFrame.tryAgain(),
         AckFrame.timeout(),
       ];
-      when(sut.receiver.receiveAck(ACK_TIMEOUT))
+      when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(answers.removeAt(0)));
 
       final result = await sut.oper.send(frame);
@@ -100,7 +100,7 @@ void main() {
       expect(result.ok, isFalse);
 
       verify(sut.receiver.reset()).called(1);
-      verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(2);
+      verify(sut.receiver.receiveAck(ackTimeout)).called(2);
     });
 
     test(
@@ -114,7 +114,7 @@ void main() {
         AckFrame.tryAgain(),
         AckFrame.timeout(),
       ];
-      when(sut.receiver.receiveAck(ACK_TIMEOUT))
+      when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(answers.removeAt(0)));
 
       final result = await sut.oper.send(frame);
@@ -124,7 +124,7 @@ void main() {
       expect(result.ok, isFalse);
 
       verify(sut.receiver.reset()).called(1);
-      verify(sut.receiver.receiveAck(ACK_TIMEOUT)).called(3);
+      verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
   });
 
@@ -132,7 +132,7 @@ void main() {
     test('when receive timeout, should not be retried', () async {
       final sut = SUT();
 
-      when(sut.receiver.receiveData(DATA_TIMEOUT))
+      when(sut.receiver.receiveData(dataTimeout))
           .thenAnswer((_) => Future.value(DataFrame.timeout()));
 
       final result = await sut.oper.receive();
@@ -142,14 +142,14 @@ void main() {
       expect(result.hasData, isFalse);
       expect(result.data, isNull);
 
-      verify(sut.receiver.receiveData(DATA_TIMEOUT)).called(1);
+      verify(sut.receiver.receiveData(dataTimeout)).called(1);
     });
 
     test('when receive data, should not be retried', () async {
       final sut = SUT();
       final data = faker.lorem.sentence();
 
-      when(sut.receiver.receiveData(DATA_TIMEOUT))
+      when(sut.receiver.receiveData(dataTimeout))
           .thenAnswer((_) => Future.value(DataFrame.data(data)));
 
       final result = await sut.oper.receive();
@@ -159,13 +159,13 @@ void main() {
       expect(result.hasData, isTrue);
       expect(result.data, equals(data));
 
-      verify(sut.receiver.receiveData(DATA_TIMEOUT)).called(1);
+      verify(sut.receiver.receiveData(dataTimeout)).called(1);
     });
 
     test('when receive try again, should not be retried', () async {
       final sut = SUT();
 
-      when(sut.receiver.receiveData(DATA_TIMEOUT))
+      when(sut.receiver.receiveData(dataTimeout))
           .thenAnswer((_) => Future.value(DataFrame.tryAgain()));
       final result = await sut.oper.receive();
 
@@ -175,7 +175,7 @@ void main() {
       expect(result.hasData, isFalse);
       expect(result.data, isNull);
 
-      verify(sut.receiver.receiveData(DATA_TIMEOUT)).called(1);
+      verify(sut.receiver.receiveData(dataTimeout)).called(1);
     });
   });
 }

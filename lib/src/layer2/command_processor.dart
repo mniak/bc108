@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer1/operator.dart';
-import 'package:bc108/src/layer1/read/result_frame.dart';
 import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/command_response.dart';
 

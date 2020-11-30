@@ -6,6 +6,9 @@ import 'package:bc108/src/layer1/read/reader.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+final ackTimeout = Duration(milliseconds: 50);
+final dataTimeout = Duration(milliseconds: 50);
+
 class SUT {
   // ignore: close_sinks
   StreamController<ReaderEvent> controller;
@@ -18,15 +21,12 @@ class SUT {
   }
 }
 
-final ACK_TIMEOUT = Duration(milliseconds: 50);
-final DATA_TIMEOUT = Duration(milliseconds: 50);
-
 void main() {
   group('ack', () {
     test('when receive ACK, should return ok', () async {
       final sut = SUT();
       sut.controller.sink.add(ReaderEvent.ack());
-      final result = await sut.receiver.receiveAck(ACK_TIMEOUT);
+      final result = await sut.receiver.receiveAck(ackTimeout);
 
       expect(result, isNotNull);
       expect(result.timeout, isFalse);
@@ -36,7 +36,7 @@ void main() {
 
     test('when does not receive anything, should return timeout', () async {
       final sut = SUT();
-      final result = await sut.receiver.receiveAck(ACK_TIMEOUT);
+      final result = await sut.receiver.receiveAck(ackTimeout);
 
       expect(result, isNotNull);
       expect(result.timeout, isTrue);
@@ -48,8 +48,7 @@ void main() {
       final sut = SUT();
       final error = faker.lorem.sentence();
       sut.controller.sink.addError(error);
-      expect(
-          () => sut.receiver.receiveAck(ACK_TIMEOUT), throwsA(equals(error)));
+      expect(() => sut.receiver.receiveAck(ackTimeout), throwsA(equals(error)));
     });
   });
   group('data', () {
@@ -57,7 +56,7 @@ void main() {
       final sut = SUT();
       final data = faker.lorem.sentence();
       sut.controller.sink.add(ReaderEvent.data(data));
-      final result = await sut.receiver.receiveData(DATA_TIMEOUT);
+      final result = await sut.receiver.receiveData(dataTimeout);
 
       expect(result, isNotNull);
       expect(result.timeout, isFalse);
@@ -68,7 +67,7 @@ void main() {
 
     test('when does not receive anything, should return timeout', () async {
       final sut = SUT();
-      final result = await sut.receiver.receiveData(DATA_TIMEOUT);
+      final result = await sut.receiver.receiveData(dataTimeout);
 
       expect(result, isNotNull);
       expect(result.timeout, isTrue);
@@ -82,14 +81,14 @@ void main() {
       test('ACK', () async {
         final sut = SUT();
         sut.controller.sink.add(ReaderEvent.ack());
-        expect(() => sut.receiver.receiveData(DATA_TIMEOUT),
+        expect(() => sut.receiver.receiveData(dataTimeout),
             throwsA(isA<ExpectingDataEventException>()));
       });
 
       test('NAK', () async {
         final sut = SUT();
         sut.controller.sink.add(ReaderEvent.nak());
-        expect(() => sut.receiver.receiveData(DATA_TIMEOUT),
+        expect(() => sut.receiver.receiveData(dataTimeout),
             throwsA(isA<ExpectingDataEventException>()));
       });
     });
@@ -99,7 +98,7 @@ void main() {
       final error = faker.lorem.sentence();
       sut.controller.sink.addError(error);
       expect(
-          () => sut.receiver.receiveData(DATA_TIMEOUT), throwsA(equals(error)));
+          () => sut.receiver.receiveData(dataTimeout), throwsA(equals(error)));
     });
   });
 }

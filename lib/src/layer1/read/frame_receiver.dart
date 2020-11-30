@@ -8,7 +8,6 @@ import 'ack_frame.dart';
 
 class FrameReceiver {
   StreamQueue<ReaderEvent> _queue;
-  Duration _ackTimeout;
 
   FrameReceiver(Stream<ReaderEvent> stream) {
     // final ackStream  = stream.where((x) => x.isDataEvent).map((x) => DataFrame.data(x.data));
