@@ -19,7 +19,7 @@ class FrameReceiver {
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future _reset() {
+  void _reset() {
     if (_queue != null) _queue.cancel();
     _queue = StreamQueue<ReaderEvent>(_stream);
   }
