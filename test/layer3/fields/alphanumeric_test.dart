@@ -49,4 +49,34 @@ void main() {
       expect(result, equals(data.length));
     });
   });
+
+  group('FixedVariableAlphanumericField', () {
+    test('serialize adds size header and pads with white spaces', () {
+      final sut = FixedVariableAlphanumericField(3, 10);
+      final data = "123456";
+      final result = sut.serialize(data);
+      expect(result, equals("006" + data + "  " + "  "));
+    });
+
+    group(
+        'parse ignores the data that exceeds the size indicated by the header',
+        () {
+      final data = [
+        ["003ABCDEFGHIJhij", "ABC", "hij"],
+        ["006ABCDEFGHIJhij", "ABCDEF", "hij"],
+      ];
+      data.forEach((d) {
+        final string = d[0];
+        final data = d[1];
+        final remaining = d[2];
+
+        test('$string => $data + $remaining', () {
+          final sut = FixedVariableAlphanumericField(3, 10);
+          final result = sut.parse(string);
+          expect(result.data, equals(data));
+          expect(result.remaining, equals(remaining));
+        });
+      });
+    });
+  });
 }
