@@ -27,9 +27,9 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 ```
 
 ## Commands
-- ❌ `open` _(not applicable)_
-- ❌ `close` _(not applicable)_
-- ✅ `display` 
+- ✅ `open`
+- ✅ `close`
+- ✅ `display`
 - ⬜ `displayEx`
 - ✅ `getKey`
 - ⬜ `startGetPIN` / `getPIN`
