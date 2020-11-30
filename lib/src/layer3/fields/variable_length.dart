@@ -24,6 +24,7 @@ abstract class VariableLengthField<TField extends FixedLengthField<T>, T>
 
     final fieldLength =
         _inclusive ? header.data - _headerField.length : header.data;
+
     return getField(fieldLength).parse(header.remaining);
   }
 

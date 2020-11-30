@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:bc108/bc108.dart';
-import 'package:bc108/src/layer1/operator.dart';
-import 'package:bc108/src/layer2/command_request.dart';
-import 'package:bc108/src/layer2/command_response.dart';
+import 'package:bc108/src/layer1/exports.dart';
+
+import 'command_request.dart';
+import 'command_response.dart';
 
 import 'log.dart';
+import 'status.dart';
 
 class CommandProcessor {
   Operator _operator;

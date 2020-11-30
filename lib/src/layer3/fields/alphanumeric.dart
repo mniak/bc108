@@ -1,7 +1,6 @@
-import 'package:bc108/src/layer3/fields/composite.dart';
-import 'package:bc108/src/layer3/fields/field_result.dart';
-import 'package:bc108/src/layer3/fields/numeric.dart';
-
+import 'composite.dart';
+import 'field_result.dart';
+import 'numeric.dart';
 import 'field.dart';
 import 'fixed_length.dart';
 import 'variable_length.dart';
