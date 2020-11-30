@@ -18,7 +18,6 @@ jobs:
       - uses: subosito/flutter-action@v1
       - run: flutter pub get
       - run: flutter test
-      - run: flutter build apk --build-name ${{ github.ref }}
       - name: "Publish"
         uses: k-paxian/dart-package-publisher@master
         with:
