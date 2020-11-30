@@ -48,4 +48,7 @@ class Pinpad {
 
   Future<PinpadResult<GetCardResponse>> getCard(GetCardRequest request) =>
       _factory.getCard(_operator).handle(request);
+
+  Future<PinpadResult<GetCardResponse>> resumeGetCard() =>
+      _factory.resumeGetCard(_operator).handle(null);
 }

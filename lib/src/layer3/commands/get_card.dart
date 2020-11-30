@@ -43,36 +43,6 @@ class GetCardResponse {
   String acquirerSpecificData;
 }
 
-class GetCardRequestMapper implements RequestMapper<GetCardRequest> {
-  static final _requestField = CompositeField([
-    NumericField(2),
-    NumericField(2),
-    NumericField(12),
-    DateTimeField(),
-    NumericField(10),
-    ListField(
-        2,
-        CompositeField([
-          NumericField(2),
-          NumericField(2),
-        ])),
-  ]);
-
-  @override
-  CommandRequest mapRequest(GetCardRequest request) {
-    return CommandRequest("GCR", [
-      _requestField.serialize([
-        request.acquirer,
-        request.application,
-        request.amount,
-        request.datetime,
-        request.timestamp,
-        request.applications,
-      ])
-    ]);
-  }
-}
-
 class GetCardResponseMapper implements ResponseMapper<GetCardResponse> {
   static final _responseField = CompositeField([
     NumericField(2),
@@ -120,18 +90,51 @@ class GetCardResponseMapper implements ResponseMapper<GetCardResponse> {
   }
 }
 
-class ResumeGetCardRequestMapper implements RequestMapper<void> {
+class GetCardMapper
+    with GetCardResponseMapper
+    implements RequestResponseMapper<GetCardRequest, GetCardResponse> {
+  static final _requestField = CompositeField([
+    NumericField(2),
+    NumericField(2),
+    NumericField(12),
+    DateTimeField(),
+    NumericField(10),
+    ListField(
+        2,
+        CompositeField([
+          NumericField(2),
+          NumericField(2),
+        ])),
+  ]);
+
+  @override
+  CommandRequest mapRequest(GetCardRequest request) {
+    return CommandRequest("GCR", [
+      _requestField.serialize([
+        request.acquirer,
+        request.application,
+        request.amount,
+        request.datetime,
+        request.timestamp,
+        request.applications,
+      ])
+    ]);
+  }
+}
+
+class ResumeGetCardMapper
+    with GetCardResponseMapper
+    implements RequestResponseMapper<void, GetCardResponse> {
   @override
   CommandRequest mapRequest(void request) {
     return CommandRequest("GCR", []);
   }
 }
 
-class GetCardMapper
-    with GetCardRequestMapper, GetCardResponseMapper
-    implements RequestResponseMapper<GetCardRequest, GetCardResponse> {}
-
 class GetCardFactory {
   RequestHandler<GetCardRequest, GetCardResponse> getCard(CommandProcessor o) =>
       RequestHandler.fromMapper(o, GetCardMapper());
+
+  RequestHandler<void, GetCardResponse> resumeGetCard(CommandProcessor o) =>
+      RequestHandler.fromMapper(o, ResumeGetCardMapper());
 }
