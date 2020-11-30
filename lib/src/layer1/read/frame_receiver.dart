@@ -1,28 +1,27 @@
 import 'dart:async';
 import 'package:async/async.dart';
 
+import '../log.dart';
 import 'exceptions.dart';
 import 'result_frame.dart';
 import 'reader.dart';
 import 'ack_frame.dart';
 
 class FrameReceiver {
+  Stream<ReaderEvent> _stream;
   StreamQueue<ReaderEvent> _queue;
 
-  FrameReceiver(Stream<ReaderEvent> stream) {
-    // final ackStream  = stream.where((x) => x.isDataEvent).map((x) => DataFrame.data(x.data));
-    // final dataStream  = stream.where((x) => x.isDataEvent).map((x) => DataFrame.data(x.data));
-    this._queue = StreamQueue<ReaderEvent>(stream);
+  FrameReceiver(this._stream) {
+    if (!_stream.isBroadcast) _stream = _stream.asBroadcastStream();
+    _reset();
   }
 
   Future<ReaderEvent> _nextEvent(Duration timeout) =>
       _queue.next.timeout(timeout);
 
-  Future reset() async {
-    while (await _queue.hasNext.timeout(Duration(milliseconds: 5),
-        onTimeout: () => Future.value((false)))) {
-      await _queue.next;
-    }
+  Future _reset() {
+    if (_queue != null) _queue.cancel();
+    _queue = StreamQueue<ReaderEvent>(_stream);
   }
 
   Future<AckFrame> receiveAck(Duration timeout) async {
@@ -36,6 +35,8 @@ class FrameReceiver {
       }
       return AckFrame.ok();
     } on TimeoutException {
+      log('Expecting ack/nak, received timout. Resetting buffer.');
+      _reset();
       return AckFrame.timeout();
     }
   }
@@ -48,6 +49,8 @@ class FrameReceiver {
       }
       return DataFrame.data(event.data);
     } on TimeoutException {
+      log('Expecting data, received timout. Resetting buffer.');
+      _reset();
       return DataFrame.timeout();
     }
   }
