@@ -16,7 +16,7 @@ class GetInfo00Response {
   String serialNumber;
 }
 
-class Mapper extends RequestResponseMapper<void, GetInfo00Response> {
+class Mapper implements RequestResponseMapper<void, GetInfo00Response> {
   static final _requestField = NumericField(2);
 
   static final _responseField = CompositeField([

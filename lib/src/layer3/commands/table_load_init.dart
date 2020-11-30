@@ -12,7 +12,7 @@ class TableLoadInitRequest {
   TableLoadInitRequest([this.acquirer, this.timestamp]);
 }
 
-class Mapper extends RequestResponseMapper<TableLoadInitRequest, void> {
+class Mapper implements RequestResponseMapper<TableLoadInitRequest, void> {
   static final _requestField = CompositeField([
     NumericField(2),
     NumericField(10),

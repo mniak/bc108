@@ -6,7 +6,7 @@ class GetKeyRequest {}
 
 class GetKeyResponse {}
 
-class Mapper extends RequestResponseMapper<void, void> {
+class Mapper implements RequestResponseMapper<void, void> {
   @override
   CommandRequest mapRequest(void request) {
     return CommandRequest("GKY", []);

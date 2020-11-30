@@ -1,7 +1,7 @@
 import 'fixed_length.dart';
 
 class DateTimeField extends FixedLengthField<DateTime> {
-  DateTimeField() : super(6);
+  DateTimeField() : super(12);
 
   @override
   String serialize(DateTime data) {

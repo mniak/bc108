@@ -10,7 +10,7 @@ class TableLoadRecRequest {
   TableLoadRecRequest([this.records]);
 }
 
-class Mapper extends RequestResponseMapper<TableLoadRecRequest, void> {
+class Mapper implements RequestResponseMapper<TableLoadRecRequest, void> {
   static final _requestField = ListField(
     2,
     VariableAlphanumericField(3, inclusive: true),

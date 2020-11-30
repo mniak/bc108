@@ -1,3 +1,6 @@
+## [0.1.3] - Get Card
+Implements commands `getCard` and `resumeGetCard`
+
 ## [0.1.2] - Features
 - Blocking Command infrastructure
 - Command `getKey`
