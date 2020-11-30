@@ -31,7 +31,7 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ❌ `close` _(not applicable)_
 - ✅ `display` 
 - ⬜ `displayEx`
-- ⬜ `startGetKey` / `getKey`
+- ✅ `getKey`
 - ⬜ `startGetPIN` / `getPIN`
 - ⬜ `startRemoveCard` / `removeCard`
 - ⬜ `startGenericCmd` / `genericCmd`
