@@ -36,7 +36,7 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ⬜ `startRemoveCard` / `removeCard`
 - ⬜ `startGenericCmd` / `genericCmd`
 - ⬜ `startCheckEvent` / `checkEvent`
-- ⬜ `startGetCard` / `getCard` / `resumeGetCard`
+- ✅ `getCard` / `resumeGetCard`
 - ⬜ `startGoOnChip` / `goOnChip`
 - ⬜ `finishChip`
 - ⬜ `chipDirect`
