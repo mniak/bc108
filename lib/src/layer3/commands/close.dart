@@ -11,7 +11,7 @@ class CloseRequest {
   CloseRequest(this.idleMessageLine1, this.idleMessageLine2);
 }
 
-class Mapper extends RequestResponseMapper<CloseRequest, void> {
+class Mapper implements RequestResponseMapper<CloseRequest, void> {
   static final _requestField = CompositeField([
     AlphanumericField(16),
     AlphanumericField(16),

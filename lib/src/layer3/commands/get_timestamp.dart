@@ -14,7 +14,8 @@ class GetTimestampResponse {
 }
 
 class Mapper
-    extends RequestResponseMapper<GetTimestampRequest, GetTimestampResponse> {
+    implements
+        RequestResponseMapper<GetTimestampRequest, GetTimestampResponse> {
   static final _requestField = NumericField(2);
 
   static final _responseField = NumericField(10);

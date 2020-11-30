@@ -46,6 +46,6 @@ class Pinpad {
           GetTimestampRequest request) =>
       _factory.getTimestamp(_operator).handle(request);
 
-  // Future<PinpadResult<GetCardResponse>> getCard(GetCardRequest request) =>
-  //     _factory.getCard(_operator).handle(request);
+  Future<PinpadResult<GetCardResponse>> getCard(GetCardRequest request) =>
+      _factory.getCard(_operator).handle(request);
 }

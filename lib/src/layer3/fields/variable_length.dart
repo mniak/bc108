@@ -12,7 +12,7 @@ abstract class VariableLengthField<TField extends FixedLengthField<T>, T>
   TField getField(int length);
   int getLength(T data);
 
-  VariableLengthField(int headerLength, {bool inclusive}) {
+  VariableLengthField(int headerLength, {bool inclusive = false}) {
     _headerField = NumericField(headerLength);
     _inclusive = inclusive;
   }
