@@ -52,10 +52,10 @@ void main() {
 
   group('FixedVariableAlphanumericField', () {
     test('serialize adds size header and pads with white spaces', () {
-      final sut = FixedVariableAlphanumericField(3, 10);
-      final data = "123456";
+      final sut = FixedVariableAlphanumericField(3, 100);
+      final data = faker.randomGenerator.string(20, min: 20);
       final result = sut.serialize(data);
-      expect(result, equals("006" + data + "  " + "  "));
+      expect(result, equals("020" + data + (" " * 80)));
     });
 
     group(
