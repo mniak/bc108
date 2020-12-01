@@ -54,8 +54,7 @@ class GoOnChipResponse {
 }
 
 class Mapper
-// implements RequestResponseMapper<GoOnChipRequest, GoOnChipResponse>
-{
+    implements RequestResponseMapper<GoOnChipRequest, GoOnChipResponse> {
   static final _inputField = CompositeField([
     NumericField(12),
     NumericField(12),
@@ -131,18 +130,3 @@ class Mapper
       ..acquirerSpecificData = parsed.data[9] as String;
   }
 }
-
-/*
-  int decision = 0;
-  bool requireSignature = false;
-  bool pinValidatedOffline = false;
-  int invalidOfflinePinAttempts = 0;
-  bool offlinePinBlocked = false;
-  bool pinOnline = false;
-  Iterable<int> encryptedPin;
-  Iterable<int> keySerialNumber;
-
-  Map<String, Iterable<int>> tags;
-
-  String acquirerSpecificData;
-*/
