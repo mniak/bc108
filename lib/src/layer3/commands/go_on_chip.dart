@@ -166,7 +166,7 @@ class Mapper
   }
 }
 
-extension IntExtension on int {
+extension GoOnChipIntExtension on int {
   EncryptionMode get asEncryptionMode {
     switch (this) {
       case 1:

@@ -45,6 +45,29 @@ enum CardType {
   ContactlessEmv,
 }
 
+extension CardTypeExtension on CardType {
+  int get value {
+    switch (this) {
+      case CardType.ModedeiroTibc1:
+        return 1;
+      case CardType.ModedeiroTibc3:
+        return 2;
+      case CardType.Emv:
+        return 3;
+      case CardType.EasyEntryTibc1:
+        return 4;
+      case CardType.ContactlessSimulatingStripe:
+        return 5;
+      case CardType.ContactlessEmv:
+        return 6;
+
+      case CardType.MagStripe:
+      default:
+        return 0;
+    }
+  }
+}
+
 enum LastReadStatus {
   /// Successful (or another status that does not imply a fallback)
   ///
@@ -65,6 +88,21 @@ enum LastReadStatus {
   /// magnetic card, even if it has an indication of the presence of a chip
   /// (depends on the definitions of the acquiring network).
   RequiredApplicationNotSupported,
+}
+
+extension LastReadStatusExtension on LastReadStatus {
+  int get value {
+    switch (this) {
+      case LastReadStatus.FallbackError:
+        return 1;
+      case LastReadStatus.RequiredApplicationNotSupported:
+        return 2;
+
+      case LastReadStatus.Successful:
+      default:
+        return 0;
+    }
+  }
 }
 
 class GetCardResponse {
@@ -189,4 +227,40 @@ class GetCardFactory {
 
   RequestHandler<void, GetCardResponse> resumeGetCard(CommandProcessor o) =>
       RequestHandler.fromMapper(o, ResumeGetCardMapper());
+}
+
+extension GetCardIntExtensions on int {
+  CardType get asCardType {
+    switch (this) {
+      case 1:
+        return CardType.ModedeiroTibc1;
+      case 2:
+        return CardType.ModedeiroTibc3;
+      case 3:
+        return CardType.Emv;
+      case 4:
+        return CardType.EasyEntryTibc1;
+      case 5:
+        return CardType.ContactlessSimulatingStripe;
+      case 6:
+        return CardType.ContactlessEmv;
+
+      case 0:
+      default:
+        return CardType.MagStripe;
+    }
+  }
+
+  LastReadStatus get asLastReadStatus {
+    switch (this) {
+      case 1:
+        return LastReadStatus.FallbackError;
+      case 2:
+        return LastReadStatus.RequiredApplicationNotSupported;
+
+      case 0:
+      default:
+        return LastReadStatus.Successful;
+    }
+  }
 }

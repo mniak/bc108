@@ -6,4 +6,4 @@ export 'write/frame_sender.dart';
 export 'write/frame_builder.dart';
 export 'operator.dart';
 
-export 'utils/bytes.dart' show IntExtensions;
+export 'utils/bytes.dart' show BytesIntExtensions;
