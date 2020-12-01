@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bc108/src/layer2/exports.dart';
 import 'package:convert/convert.dart';
 
@@ -22,7 +24,7 @@ class GoOnChipRequest {
   bool requirePin;
   int encryption;
   int masterKeyIndex;
-  Iterable<int> workingKey;
+  Uint8List workingKey;
 
   bool enableRiskManagement;
   int floorLimit;
@@ -42,11 +44,10 @@ class GoOnChipResponse {
   int invalidOfflinePinAttempts;
   bool offlinePinBlocked;
   bool pinOnline;
-  Iterable<int> encryptedPin;
-  Iterable<int> keySerialNumber;
+  Uint8List encryptedPin;
+  Uint8List keySerialNumber;
 
-  int bit55DataLength;
-  String bit55Data;
+  Map<String, Uint8List> tags;
 
   String acquirerSpecificData;
 }
