@@ -9,12 +9,37 @@ import '../fields/boolean.dart';
 import '../fields/composite.dart';
 import '../fields/hexadecimal.dart';
 import '../fields/numeric.dart';
+import '../handler.dart';
 import '../mapper.dart';
 
-class GoOnChipRequestBiasedRandomSelection {
+class BiasedRandomSelection {
   int targetPercentage = 0;
   int thresholdValue = 0;
   int maxTargetPercentage = 0;
+}
+
+enum EncryptionMode {
+  MasterKeyDes,
+  MasterKey3Des,
+  DukptDes,
+  Dukpt3Des,
+}
+
+extension EncryptionModeExtension on EncryptionMode {
+  int get value {
+    switch (this) {
+      case EncryptionMode.MasterKey3Des:
+        return 1;
+      case EncryptionMode.DukptDes:
+        return 2;
+      case EncryptionMode.Dukpt3Des:
+        return 3;
+
+      case EncryptionMode.MasterKeyDes:
+      default:
+        return 0;
+    }
+  }
 }
 
 class GoOnChipRequest {
@@ -23,33 +48,33 @@ class GoOnChipRequest {
   bool blacklisted = false;
   bool requireOnlineAuthorization = false;
   bool requirePin = false;
-  int encryption = 0;
-  int masterKeyIndex = 0;
+  EncryptionMode encryptionMode = EncryptionMode.MasterKeyDes;
+  int keyIndex = 0;
   Iterable<int> workingKey = [];
-
   bool enableRiskManagement = false;
   int floorLimit = 0;
-  GoOnChipRequestBiasedRandomSelection biasedRandomSelection =
-      GoOnChipRequestBiasedRandomSelection();
-
+  BiasedRandomSelection biasedRandomSelection = BiasedRandomSelection();
   String acquirerSpecificData = "";
-
   List<String> tags = List<String>();
   List<String> optionalTags = List<String>();
 }
 
+enum ChipDecision {
+  ApprovedOffline,
+  Denied,
+  RequireOnlineAuthorization,
+}
+
 class GoOnChipResponse {
-  int decision = 0;
-  bool requireSignature = false;
-  bool pinValidatedOffline = false;
-  int invalidOfflinePinAttempts = 0;
-  bool offlinePinBlocked = false;
-  bool pinOnline = false;
+  ChipDecision decision;
+  bool requireSignature;
+  bool pinValidatedOffline;
+  int invalidOfflinePinAttempts;
+  bool offlinePinBlocked;
+  bool pinOnline;
   Iterable<int> encryptedPin;
   Iterable<int> keySerialNumber;
-
-  Map<String, Iterable<int>> tags = Map<String, Iterable<int>>();
-
+  Map<String, Iterable<int>> tags;
   String acquirerSpecificData;
 }
 
@@ -82,8 +107,8 @@ class Mapper
         request.blacklisted,
         request.requireOnlineAuthorization,
         request.requirePin,
-        request.encryption,
-        request.masterKeyIndex,
+        request.encryptionMode.value,
+        request.keyIndex,
         request.workingKey,
         request.enableRiskManagement,
         request.floorLimit.int32Binary,
@@ -118,7 +143,7 @@ class Mapper
     final binaryData = parsed.data[8] as Iterable<int>;
     final parsedTags = tagsField.parse(hex.encode(binaryData).toUpperCase());
     return GoOnChipResponse()
-      ..decision = parsed.data[0] as int
+      ..decision = (parsed.data[0] as int).asChipDecision
       ..requireSignature = parsed.data[1] as bool
       ..pinValidatedOffline = parsed.data[2] as bool
       ..invalidOfflinePinAttempts = parsed.data[3] as int
@@ -129,4 +154,40 @@ class Mapper
       ..tags = parsedTags.data
       ..acquirerSpecificData = parsed.data[9] as String;
   }
+}
+
+extension IntExtension on int {
+  EncryptionMode get asEncryptionMode {
+    switch (this) {
+      case 1:
+        return EncryptionMode.MasterKey3Des;
+      case 2:
+        return EncryptionMode.DukptDes;
+      case 3:
+        return EncryptionMode.Dukpt3Des;
+
+      case 0:
+      default:
+        return EncryptionMode.MasterKeyDes;
+    }
+  }
+
+  ChipDecision get asChipDecision {
+    switch (this) {
+      case 1:
+        return ChipDecision.Denied;
+      case 2:
+        return ChipDecision.RequireOnlineAuthorization;
+
+      case 0:
+      default:
+        return ChipDecision.ApprovedOffline;
+    }
+  }
+}
+
+class GoOnChipFactory {
+  RequestHandler<GoOnChipRequest, GoOnChipResponse> goOnChip(
+          CommandProcessor o) =>
+      RequestHandler.fromMapper(o, Mapper());
 }
