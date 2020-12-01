@@ -29,7 +29,7 @@ class Mapper implements RequestResponseMapper<TableLoadInitRequest, void> {
   }
 
   @override
-  void mapResponse(CommandResponse result) {}
+  void mapResponse(TableLoadInitRequest request, CommandResponse result) {}
 }
 
 class TableLoadInitFactory {

@@ -28,7 +28,7 @@ class Mapper implements RequestResponseMapper<DisplayRequest, void> {
   }
 
   @override
-  void mapResponse(CommandResponse result) {}
+  void mapResponse(DisplayRequest request, CommandResponse result) {}
 }
 
 class DisplayFactory {

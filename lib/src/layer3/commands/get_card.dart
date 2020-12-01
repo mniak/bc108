@@ -43,7 +43,7 @@ class GetCardResponse {
   String acquirerSpecificData;
 }
 
-class GetCardResponseMapper implements ResponseMapper<GetCardResponse> {
+class GetCardResponseMapper {
   static final _responseField = CompositeField([
     NumericField(2),
     NumericField(1),
@@ -65,8 +65,7 @@ class GetCardResponseMapper implements ResponseMapper<GetCardResponse> {
     VariableAlphanumericField(3),
   ]);
 
-  @override
-  GetCardResponse mapResponse(CommandResponse result) {
+  GetCardResponse map(CommandResponse result) {
     final parsed = _responseField.parse(result.parameters[0]);
     return GetCardResponse()
       ..cardType = parsed.data[0]
@@ -120,6 +119,10 @@ class GetCardMapper
       ])
     ]);
   }
+
+  @override
+  GetCardResponse mapResponse(GetCardRequest request, CommandResponse result) =>
+      super.map(result);
 }
 
 class ResumeGetCardMapper
@@ -129,6 +132,10 @@ class ResumeGetCardMapper
   CommandRequest mapRequest(void request) {
     return CommandRequest("GCR", []);
   }
+
+  @override
+  GetCardResponse mapResponse(void request, CommandResponse result) =>
+      super.map(result);
 }
 
 class GetCardFactory {

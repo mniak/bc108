@@ -7,7 +7,7 @@ import '../layer1/pinpad_result.dart';
 class RequestHandler<TRequest, TResponse> {
   CommandProcessor _operator;
   RequestMapper<TRequest> _requestMapper;
-  ResponseMapper<TResponse> _responseMapper;
+  ResponseMapper<TRequest, TResponse> _responseMapper;
 
   Stream<String> get notifications => _operator.notifications;
 
@@ -20,7 +20,7 @@ class RequestHandler<TRequest, TResponse> {
   Future<PinpadResult<TResponse>> handle(TRequest request) async {
     final command = _requestMapper.mapRequest(request);
     final result = await _operator.send(command);
-    final response = _responseMapper.mapResponse(result);
+    final response = _responseMapper.mapResponse(request, result);
     return PinpadResult(result.status, response);
   }
 }

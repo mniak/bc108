@@ -28,7 +28,7 @@ class Mapper implements RequestResponseMapper<CloseRequest, void> {
   }
 
   @override
-  void mapResponse(CommandResponse result) {}
+  void mapResponse(CloseRequest request, CommandResponse result) {}
 }
 
 class CloseFactory {
