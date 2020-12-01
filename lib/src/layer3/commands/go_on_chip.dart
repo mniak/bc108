@@ -1,4 +1,5 @@
 import 'package:bc108/src/layer2/exports.dart';
+import 'package:convert/convert.dart';
 
 import '../fields/alphanumeric.dart';
 import '../fields/boolean.dart';
@@ -21,7 +22,7 @@ class GoOnChipRequest {
   bool requirePin;
   int encryption;
   int masterKeyIndex;
-  String workingKey;
+  Iterable<int> workingKey;
 
   bool enableRiskManagement;
   int floorLimit;
@@ -30,8 +31,8 @@ class GoOnChipRequest {
 
   String acquirerSpecificData;
 
-  List<Iterable<int>> tags = List<Iterable<int>>();
-  List<Iterable<int>> optionalTags = List<Iterable<int>>();
+  List<String> tags = List<String>();
+  List<String> optionalTags = List<String>();
 }
 
 class GoOnChipResponse {
@@ -58,24 +59,40 @@ class Mapper
     BooleanField(),
     BooleanField(),
     BooleanField(),
-    BooleanField(),
+    NumericField(1),
     NumericField(2),
     BinaryField(16),
     BooleanField(),
-    BinaryField(8),
+    BinaryField(4),
     NumericField(2),
-    BinaryField(8),
+    BinaryField(4),
     NumericField(2),
-    VariableAlphanumericField(3, inclusive: true)
+    VariableAlphanumericField(3),
   ]);
-  static final _tagsField = CompositeField([]);
-  static final _optionalTagsField = CompositeField([]);
+  static final _tagsField = VariableBinaryField(3);
+  static final _optionalTagsField = VariableBinaryField(3);
   @override
   CommandRequest mapRequest(GoOnChipRequest request) {
     return CommandRequest("GOC", [
-      _inputField.serialize([]),
-      _tagsField.serialize([]),
-      _optionalTagsField.serialize([]),
+      _inputField.serialize([
+        request.amount,
+        request.secondaryAmount,
+        request.blacklisted,
+        request.requireOnlineAuthorization,
+        request.requirePin,
+        request.encryption,
+        request.masterKeyIndex,
+        request.workingKey,
+        request.enableRiskManagement,
+        request.floorLimit.int32Binary,
+        request.biasedRandomSelection.targetPercentage,
+        request.biasedRandomSelection.thresholdValue.int32Binary,
+        request.biasedRandomSelection.maxTargetPercentage,
+        request.acquirerSpecificData,
+      ]),
+      _tagsField.serialize(request.tags.expand((x) => hex.decode(x))),
+      _optionalTagsField
+          .serialize(request.optionalTags.expand((x) => hex.decode(x))),
     ]);
   }
 

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
 
 import 'fixed_length.dart';
@@ -10,8 +12,10 @@ class BinaryField extends FixedLengthField<Iterable<int>> {
   Iterable<int> simpleParse(String text) => hex.decode(text);
 
   @override
-  String serialize(Iterable<int> data) =>
-      hex.encode(List.from(data.take(length))).padRight(length * 2, '0');
+  String serialize(Iterable<int> data) => hex
+      .encode(List.from(data.take(length)))
+      .toUpperCase()
+      .padLeft(length, '0');
 }
 
 class VariableBinaryField
@@ -24,4 +28,9 @@ class VariableBinaryField
 
   @override
   int getLength(Iterable<int> data) => data.length;
+}
+
+extension IntExtension on int {
+  Uint8List get int32Binary =>
+      Uint8List(4)..buffer.asByteData().setInt32(0, this, Endian.big);
 }
