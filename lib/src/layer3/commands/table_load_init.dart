@@ -6,8 +6,8 @@ import '../mapper.dart';
 import '../handler.dart';
 
 class TableLoadInitRequest {
-  int acquirer;
-  int timestamp;
+  int acquirer = 0;
+  int timestamp = 0;
 
   TableLoadInitRequest([this.acquirer, this.timestamp]);
 }

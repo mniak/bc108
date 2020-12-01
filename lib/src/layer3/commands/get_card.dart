@@ -1,4 +1,5 @@
 import 'package:bc108/bc108.dart';
+import 'package:bc108/src/layer3/fields/boolean.dart';
 import 'package:bc108/src/layer3/fields/date.dart';
 import 'package:bc108/src/layer3/fields/date_time.dart';
 import 'package:bc108/src/layer3/fields/list.dart';
@@ -14,12 +15,13 @@ class GetCardRequestListItem {
 }
 
 class GetCardRequest {
-  int acquirer;
+  int acquirer = 0;
   int application = 99;
-  int amount;
-  DateTime datetime;
-  int timestamp;
+  int amount = 0;
+  DateTime datetime = DateTime.now();
+  int timestamp = 0;
   List<GetCardRequestListItem> applications = List<GetCardRequestListItem>();
+  bool enableContactless = false;
 }
 
 class GetCardResponse {

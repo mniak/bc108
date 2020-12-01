@@ -5,7 +5,7 @@ import '../handler.dart';
 import '../mapper.dart';
 
 class GetTimestampRequest {
-  int acquirer;
+  int acquirer = 0;
   GetTimestampRequest([this.acquirer]);
 }
 

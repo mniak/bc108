@@ -6,7 +6,7 @@ import '../handler.dart';
 import '../mapper.dart';
 
 class TableLoadRecRequest {
-  Iterable<String> records;
+  Iterable<String> records = [];
   TableLoadRecRequest([this.records]);
 }
 
