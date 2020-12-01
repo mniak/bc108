@@ -127,6 +127,29 @@ enum CardType {
   ContactlessEmv,
 }
 
+extension CardTypeExtension on CardType {
+  int get value {
+    switch (this) {
+      case CardType.ModedeiroTibc1:
+        return 1;
+      case CardType.ModedeiroTibc3:
+        return 2;
+      case CardType.Emv:
+        return 3;
+      case CardType.EasyEntryTibc1:
+        return 4;
+      case CardType.ContactlessSimulatingStripe:
+        return 5;
+      case CardType.ContactlessEmv:
+        return 6;
+
+      case CardType.MagStripe:
+      default:
+        return 0;
+    }
+  }
+}
+
 enum LastReadStatus {
   /// Successful (or another status that does not imply a fallback)
   ///
@@ -147,6 +170,21 @@ enum LastReadStatus {
   /// magnetic card, even if it has an indication of the presence of a chip
   /// (depends on the definitions of the acquiring network).
   RequiredApplicationNotSupported,
+}
+
+extension LastReadStatusExtension on LastReadStatus {
+  int get value {
+    switch (this) {
+      case LastReadStatus.FallbackError:
+        return 1;
+      case LastReadStatus.RequiredApplicationNotSupported:
+        return 2;
+
+      case LastReadStatus.Successful:
+      default:
+        return 0;
+    }
+  }
 }
 
 class GetCardResponse {
