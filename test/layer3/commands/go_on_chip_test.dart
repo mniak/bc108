@@ -11,8 +11,8 @@ void main() {
       ..blacklisted = false
       ..requireOnlineAuthorization = false
       ..requirePin = true
-      ..encryption = 2
-      ..masterKeyIndex = 7
+      ..encryptionMode = EncryptionMode.DukptDes
+      ..keyIndex = 7
       ..workingKey = List.filled(16, 0)
       ..enableRiskManagement = true
       ..floorLimit = 10000

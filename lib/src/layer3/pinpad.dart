@@ -1,6 +1,7 @@
 import 'package:bc108/src/layer2/exports.dart';
 import 'package:bc108/src/layer2/command_processor.dart';
 import 'package:bc108/src/layer3/commands/close.dart';
+import 'package:bc108/src/layer3/commands/go_on_chip.dart';
 import 'exports.dart';
 
 import 'commands/get_info.dart';
@@ -51,4 +52,7 @@ class Pinpad {
 
   Future<PinpadResult<GetCardResponse>> resumeGetCard() =>
       _factory.resumeGetCard(_operator).handle(null);
+
+  Future<PinpadResult<GoOnChipResponse>> goOnChip(GoOnChipRequest request) =>
+      _factory.goOnChip(_operator).handle(request);
 }

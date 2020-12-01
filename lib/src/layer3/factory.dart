@@ -1,3 +1,5 @@
+import 'package:bc108/src/layer3/commands/go_on_chip.dart';
+
 import 'commands/open.dart';
 import 'commands/close.dart';
 
@@ -26,7 +28,7 @@ class RequestHandlerFactory
         // Card Processing
         GetCardFactory,
         // ChangeParameterFactory,
-        // GoOnChipFactory,
+        GoOnChipFactory,
 
         // Table Maintenance
         TableLoadInitFactory,
