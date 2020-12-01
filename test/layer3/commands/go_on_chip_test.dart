@@ -43,12 +43,12 @@ void main() {
         "GOC0001422000018D540BCF3001577AFFFF9876543210E0000C0479F2701809F260804CA8F1428AB5901950580000100009B02E8009F34030201009F100706011A039000005F28020076000";
     final mapper = Mapper();
 
-    final request = mapper.mapRequest(GoOnChipRequest()
+    final request = GoOnChipRequest()
       ..tags = ["9F27", "9F26", "95", "9B", "9F34", "9F10"]
-      ..optionalTags = ["5F20", "5F28"]);
+      ..optionalTags = ["5F20", "5F28"];
 
-    final response =
-        mapper.mapResponse(CommandResponse.fromDataFrame(DataFrame.data(data)));
+    final response = mapper.mapResponse(
+        request, CommandResponse.fromDataFrame(DataFrame.data(data)));
 
     expect(response.decision, equals(2));
     expect(response.requireSignature, equals(false));
@@ -62,7 +62,17 @@ void main() {
         response.keySerialNumber,
         orderedEquals(
             [0xFF, 0xFF, 0x98, 0x76, 0x54, 0x32, 0x10, 0xE0, 0x00, 0x0C]));
-    expect(response.tags, equals(0000000000000));
+    expect(
+        response.tags,
+        equals({
+          "9F27": [0x80],
+          "9F26": [0x04, 0xCA, 0x8F, 0x14, 0x28, 0xAB, 0x59, 0x01],
+          "95": [0x80, 0x00, 0x01, 0x00, 0x00],
+          "9B": [0xE8, 0x00],
+          "9F34": [0x02, 0x01, 0x00],
+          "9F10": [0x06, 0x01, 0x1A, 0x03, 0x90, 0x00, 0x00],
+          "5F28": [0x00, 0x76],
+        }));
     expect(response.acquirerSpecificData, equals(""));
   });
 }
