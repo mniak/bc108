@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bc108/src/layer2/exports.dart';
 import 'package:bc108/src/layer3/fields/tlv.dart';
 import 'package:convert/convert.dart';
@@ -19,9 +17,16 @@ class BiasedRandomSelection {
 }
 
 enum EncryptionMode {
+  /// Master Key / Working DES (8 bytes)
   MasterKeyDes,
+
+  ///  Master Key / Working 3DES (16 bytes)
   MasterKey3Des,
+
+  /// DUKPT DES
   DukptDes,
+
+  /// DUKPT 3DES
   Dukpt3Des,
 }
 
@@ -60,9 +65,14 @@ class GoOnChipRequest {
 }
 
 enum ChipDecision {
+  /// Transaction approved offline
   ApprovedOffline,
+
+  /// Transaction denied
   Denied,
-  RequireOnlineAuthorization,
+
+  /// Transaction requires online authorization
+  PerformOnlineAuthorization,
 }
 
 class GoOnChipResponse {
@@ -177,7 +187,7 @@ extension IntExtension on int {
       case 1:
         return ChipDecision.Denied;
       case 2:
-        return ChipDecision.RequireOnlineAuthorization;
+        return ChipDecision.PerformOnlineAuthorization;
 
       case 0:
       default:

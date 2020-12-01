@@ -1,5 +1,4 @@
 import 'package:bc108/bc108.dart';
-import 'package:bc108/src/layer3/fields/boolean.dart';
 import 'package:bc108/src/layer3/fields/date.dart';
 import 'package:bc108/src/layer3/fields/date_time.dart';
 import 'package:bc108/src/layer3/fields/list.dart';
@@ -104,6 +103,50 @@ extension LastReadStatusExtension on LastReadStatus {
         return 0;
     }
   }
+}
+
+enum CardType {
+  /// Magnetic
+  MagStripe,
+
+  /// Moedeiro VISA Cash over TIBC v1
+  ModedeiroTibc1,
+
+  /// Moedeiro VISA Cash over TIBC v3
+  ModedeiroTibc3,
+
+  /// EMV with contact
+  Emv,
+
+  /// Easy-Entry over TIBC v1
+  EasyEntryTibc1,
+  // Contactless chip simulating stripe
+  ContactlessSimulatingStripe,
+
+  /// Contactless EMV
+  ContactlessEmv,
+}
+
+enum LastReadStatus {
+  /// Successful (or another status that does not imply a fallback)
+  ///
+  /// In this case, the magnetic card indicating the presence of a chip must not
+  /// be accepted.
+  Successful,
+
+  /// Fallback error
+  ///
+  /// In this case, the TEF Server can request transaction approval with a
+  /// magnetic card, even if it has an indication of the presence of a chip
+  /// (depends on the definitions of the acquiring network)
+  FallbackError,
+
+  /// Required application not supported
+  ///
+  /// In this case, the TEF Server can request transaction approval with a
+  /// magnetic card, even if it has an indication of the presence of a chip
+  /// (depends on the definitions of the acquiring network).
+  RequiredApplicationNotSupported,
 }
 
 class GetCardResponse {
