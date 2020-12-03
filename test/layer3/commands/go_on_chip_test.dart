@@ -50,7 +50,7 @@ void main() {
     final response = mapper.mapResponse(
         request, CommandResponse.fromDataFrame(DataFrame.data(data)));
 
-    expect(response.decision, equals(2));
+    expect(response.decision, equals(ChipDecision.PerformOnlineAuthorization));
     expect(response.requireSignature, equals(false));
     expect(response.pinValidatedOffline, equals(false));
     expect(response.invalidOfflinePinAttempts, equals(0));
