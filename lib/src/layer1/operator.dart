@@ -1,8 +1,7 @@
-import 'package:bc108/bc108.dart';
-import 'package:bc108/src/layer1/read/ack_frame.dart';
-import 'package:bc108/src/layer1/read/result_frame.dart';
-
 import 'log.dart';
+import 'read/ack_frame.dart';
+import 'read/result_frame.dart';
+import '../../bc108.dart';
 
 class Operator {
   FrameReceiver _receiver;

@@ -26,7 +26,7 @@ extension ByteExtensions on Byte {
   }
 }
 
-extension IntExtensions on int {
+extension BytesIntExtensions on int {
   Byte toByte() {
     switch (this) {
       case 0x06:

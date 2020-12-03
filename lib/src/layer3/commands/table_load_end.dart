@@ -10,7 +10,7 @@ class Mapper implements RequestResponseMapper<void, void> {
   }
 
   @override
-  void mapResponse(CommandResponse result) {}
+  void mapResponse(void request, CommandResponse result) {}
 }
 
 class TableLoadEndFactory {

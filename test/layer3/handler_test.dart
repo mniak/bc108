@@ -38,7 +38,7 @@ void main() {
 
     when(sut.mapper.mapRequest(request)).thenReturn(cmd);
     when(sut.oper.send(cmd)).thenAnswer((_) => Future.value(cmdResult));
-    when(sut.mapper.mapResponse(cmdResult)).thenReturn(response);
+    when(sut.mapper.mapResponse(request, cmdResult)).thenReturn(response);
 
     final result = await sut.handler.handle(request);
     expect(result.status, equals(status));
