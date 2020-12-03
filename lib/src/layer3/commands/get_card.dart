@@ -1,4 +1,5 @@
 import 'package:bc108/bc108.dart';
+import 'package:bc108/src/layer3/fields/boolean.dart';
 import 'package:bc108/src/layer3/fields/date.dart';
 import 'package:bc108/src/layer3/fields/date_time.dart';
 import 'package:bc108/src/layer3/fields/list.dart';
@@ -20,7 +21,7 @@ class GetCardRequest {
   DateTime datetime = DateTime.now();
   int timestamp = 0;
   List<GetCardRequestListItem> applications = List<GetCardRequestListItem>();
-  bool enableContactless = false;
+  bool enableContactless = true;
 }
 
 enum CardType {
@@ -187,6 +188,7 @@ class GetCardMapper
           NumericField(2),
           NumericField(2),
         ])),
+    BooleanField(),
   ]);
 
   @override
@@ -199,6 +201,7 @@ class GetCardMapper
         request.datetime,
         request.timestamp,
         request.applications,
+        request.enableContactless,
       ])
     ]);
   }

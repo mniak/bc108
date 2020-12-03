@@ -75,4 +75,42 @@ void main() {
         }));
     expect(response.acquirerSpecificData, equals(""));
   });
+  group('EncryptionMode', () {
+    var data = [
+      [EncryptionMode.MasterKeyDes, 0],
+      [EncryptionMode.MasterKey3Des, 1],
+      [EncryptionMode.DukptDes, 2],
+      [EncryptionMode.Dukpt3Des, 3],
+    ];
+
+    data.forEach((d) {
+      final e = d[0] as EncryptionMode;
+      final i = d[1] as int;
+      test('$e => $i', () {
+        expect(e.value, i);
+      });
+      test('$i => $e', () {
+        expect(i.asEncryptionMode, e);
+      });
+    });
+  });
+
+  group('ChipDecision', () {
+    var data = [
+      [ChipDecision.ApprovedOffline, 0],
+      [ChipDecision.Denied, 1],
+      [ChipDecision.PerformOnlineAuthorization, 2],
+    ];
+
+    data.forEach((d) {
+      final e = d[0] as ChipDecision;
+      final i = d[1] as int;
+      test('$e => $i', () {
+        expect(e.value, i);
+      });
+      test('$i => $e', () {
+        expect(i.asChipDecision, e);
+      });
+    });
+  });
 }

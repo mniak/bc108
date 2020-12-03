@@ -12,7 +12,11 @@ class DateField extends FixedLengthField<DateTime> {
 
   @override
   DateTime simpleParse(String text) {
-    final year = int.parse(text.substring(0, 2));
+    var year = int.parse(text.substring(0, 2));
+    final yearNow = DateTime.now().year;
+    if (year < 1950) year += 1900;
+    while (yearNow - year >= 100) year += 100;
+
     final month = int.parse(text.substring(2, 4));
     final day = int.parse(text.substring(4, 6));
 

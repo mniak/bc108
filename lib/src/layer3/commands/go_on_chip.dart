@@ -47,6 +47,21 @@ extension EncryptionModeExtension on EncryptionMode {
   }
 }
 
+extension ChipDecisionExtension on ChipDecision {
+  int get value {
+    switch (this) {
+      case ChipDecision.Denied:
+        return 1;
+      case ChipDecision.PerformOnlineAuthorization:
+        return 2;
+
+      case ChipDecision.ApprovedOffline:
+      default:
+        return 0;
+    }
+  }
+}
+
 class GoOnChipRequest {
   int amount = 0;
   int secondaryAmount = 0;
