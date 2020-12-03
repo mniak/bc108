@@ -28,14 +28,16 @@ class TlvField implements Field<Map<String, BinaryData>> {
   @override
   FieldResult<TlvMap> parse(String text) {
     final map = Map<String, BinaryData>();
-    final raw = text;
+    final originalText = text;
     while (text.isNotEmpty) {
       final parsed = _parseSingleTag(text);
       text = parsed.remaining;
       if (parsed.data == null) break;
       map[parsed.data[0] as String] = parsed.data[1] as BinaryData;
     }
-    return FieldResult(TlvMap(map, raw), text);
+    final consumed =
+        originalText.substring(0, originalText.length - text.length);
+    return FieldResult(TlvMap(map, consumed), text);
   }
 
   @override

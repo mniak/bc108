@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/exceptions.dart';
 import 'package:bc108/src/layer2/status.dart';
@@ -98,7 +100,9 @@ void main() {
         [100, 999],
       ];
       ranges.forEach((range) {
-        for (var s = range[0]; s <= range[1]; s++) {
+        for (var s = range[0];
+            s <= range[1];
+            s += max((range[1] - range[0]) ~/ 11, 1)) {
           test('$s should be understood as status Unknown', () {
             final cmdResult =
                 CommandResponse.parse("CMD" + s.toString().padLeft(3, '0'));
@@ -165,7 +169,9 @@ void main() {
       [100, 999],
     ];
     ranges.forEach((range) {
-      for (var s = range[0]; s <= range[1]; s++) {
+      for (var s = range[0];
+          s <= range[1];
+          s += max((range[1] - range[0]) ~/ 11, 1)) {
         test('$s should be understood as status Unknown', () {
           final cmdResult =
               CommandResponse.parse("CMD" + s.toString().padLeft(3, '0'));
