@@ -39,8 +39,9 @@ class TlvField implements Field<Map<String, Iterable<int>>> {
   }
 
   @override
-  String serialize(Map<String, Iterable<int>> data) =>
-      data.entries.map((x) => x.key + _binaryField.serialize(x.value)).join();
+  String serialize(Map<String, Iterable<int>> data) => data.entries
+      .map((x) => x.key + _binaryField.serialize(BinaryData.fromBytes(x.value)))
+      .join();
 }
 
 class TlvMap extends MapBase<String, Iterable<int>> {

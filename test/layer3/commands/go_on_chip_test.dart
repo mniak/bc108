@@ -1,5 +1,6 @@
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/commands/go_on_chip.dart';
+import 'package:bc108/src/layer3/fields/binary.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

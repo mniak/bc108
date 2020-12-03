@@ -34,9 +34,9 @@ void main() {
 
     expect(response.cardType, equals(3));
     expect(response.statusLastChipRead, equals(0));
-    expect(response.applicationType, equals(01));
+    expect(response.applicationType, equals(1));
     expect(response.acquirer, equals(01));
-    expect(response.applicationIndex, equals(02));
+    expect(response.applicationIndex, equals(2));
     expect(response.track1, equals(""));
     expect(response.track2, equals("376436871651006=0305000523966"));
     expect(response.track3, equals(""));

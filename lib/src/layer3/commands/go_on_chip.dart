@@ -97,8 +97,8 @@ class GoOnChipResponse {
   int invalidOfflinePinAttempts;
   bool offlinePinBlocked;
   bool pinOnline;
-  Iterable<int> encryptedPin;
-  Iterable<int> keySerialNumber;
+  BinaryData encryptedPin;
+  BinaryData keySerialNumber;
   TlvMap tags;
   String acquirerSpecificData;
 }
@@ -134,17 +134,18 @@ class Mapper
         request.requirePin,
         request.encryptionMode.value,
         request.keyIndex,
-        request.workingKey,
+        BinaryData.fromBytes(request.workingKey),
         request.enableRiskManagement,
-        request.floorLimit.int32Binary,
+        BinaryData.fromBytes(request.floorLimit.int32Binary),
         request.biasedRandomSelection.targetPercentage,
-        request.biasedRandomSelection.thresholdValue.int32Binary,
+        BinaryData.fromBytes(
+            request.biasedRandomSelection.thresholdValue.int32Binary),
         request.biasedRandomSelection.maxTargetPercentage,
         request.acquirerSpecificData,
       ]),
-      _tagsField.serialize(request.tags.expand((x) => hex.decode(x))),
+      _tagsField.serialize(BinaryData.fromHex(request.tags.join())),
       _optionalTagsField
-          .serialize(request.optionalTags.expand((x) => hex.decode(x))),
+          .serialize(BinaryData.fromHex(request.optionalTags.join())),
     ]);
   }
 
@@ -174,8 +175,8 @@ class Mapper
       ..invalidOfflinePinAttempts = parsed.data[3] as int
       ..offlinePinBlocked = parsed.data[4] as bool
       ..pinOnline = parsed.data[5] as bool
-      ..encryptedPin = parsed.data[6] as Iterable<int>
-      ..keySerialNumber = parsed.data[7] as Iterable<int>
+      ..encryptedPin = parsed.data[6] as BinaryData
+      ..keySerialNumber = parsed.data[7] as BinaryData
       ..tags = parsedTags.data
       ..acquirerSpecificData = parsed.data[9] as String;
   }
