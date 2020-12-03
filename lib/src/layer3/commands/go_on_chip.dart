@@ -94,8 +94,8 @@ class GoOnChipResponse {
   bool requireSignature;
   bool pinValidatedOffline;
   int invalidOfflinePinAttempts;
-  bool offlinePinBlocked;
-  bool pinOnline;
+  bool pinBlockedOffline;
+  bool pinCapturedForOnlineValidation;
   BinaryData encryptedPin;
   BinaryData keySerialNumber;
   TlvMap tags;
@@ -172,8 +172,8 @@ class Mapper
       ..requireSignature = parsed.data[1] as bool
       ..pinValidatedOffline = parsed.data[2] as bool
       ..invalidOfflinePinAttempts = parsed.data[3] as int
-      ..offlinePinBlocked = parsed.data[4] as bool
-      ..pinOnline = parsed.data[5] as bool
+      ..pinBlockedOffline = parsed.data[4] as bool
+      ..pinCapturedForOnlineValidation = parsed.data[5] as bool
       ..encryptedPin = parsed.data[6] as BinaryData
       ..keySerialNumber = parsed.data[7] as BinaryData
       ..tags = parsedTags.data

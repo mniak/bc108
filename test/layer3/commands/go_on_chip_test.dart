@@ -54,8 +54,8 @@ void main() {
     expect(response.requireSignature, equals(false));
     expect(response.pinValidatedOffline, equals(false));
     expect(response.invalidOfflinePinAttempts, equals(0));
-    expect(response.offlinePinBlocked, equals(false));
-    expect(response.pinOnline, equals(true));
+    expect(response.pinBlockedOffline, equals(false));
+    expect(response.pinCapturedForOnlineValidation, equals(true));
     expect(response.encryptedPin.bytes,
         equals([0x8D, 0x54, 0x0B, 0xCF, 0x30, 0x01, 0x57, 0x7A]));
     expect(response.keySerialNumber.bytes,
