@@ -5,7 +5,7 @@ import 'package:convert/convert.dart';
 import '../fields/alphanumeric.dart';
 import '../fields/boolean.dart';
 import '../fields/composite.dart';
-import '../fields/hexadecimal.dart';
+import '../fields/binary.dart';
 import '../fields/numeric.dart';
 import '../handler.dart';
 import '../mapper.dart';
@@ -99,7 +99,7 @@ class GoOnChipResponse {
   bool pinOnline;
   Iterable<int> encryptedPin;
   Iterable<int> keySerialNumber;
-  Map<String, Iterable<int>> tags;
+  TlvMap tags;
   String acquirerSpecificData;
 }
 
