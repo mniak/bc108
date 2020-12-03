@@ -1,3 +1,6 @@
+## [0.1.4] - Go on Chip
+Implement command `goOnChip`
+
 ## [0.1.3] - Get Card
 Implements commands `getCard` and `resumeGetCard`
 
