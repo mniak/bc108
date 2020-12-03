@@ -1,6 +1,5 @@
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/commands/go_on_chip.dart';
-import 'package:bc108/src/layer3/fields/binary.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -57,14 +56,12 @@ void main() {
     expect(response.invalidOfflinePinAttempts, equals(0));
     expect(response.offlinePinBlocked, equals(false));
     expect(response.pinOnline, equals(true));
-    expect(response.encryptedPin,
-        orderedEquals([0x8D, 0x54, 0x0B, 0xCF, 0x30, 0x01, 0x57, 0x7A]));
+    expect(response.encryptedPin.bytes,
+        equals([0x8D, 0x54, 0x0B, 0xCF, 0x30, 0x01, 0x57, 0x7A]));
+    expect(response.keySerialNumber.bytes,
+        equals([0xFF, 0xFF, 0x98, 0x76, 0x54, 0x32, 0x10, 0xE0, 0x00, 0x0C]));
     expect(
-        response.keySerialNumber,
-        orderedEquals(
-            [0xFF, 0xFF, 0x98, 0x76, 0x54, 0x32, 0x10, 0xE0, 0x00, 0x0C]));
-    expect(
-        response.tags,
+        response.tags.map((key, value) => MapEntry(key, value.bytes)),
         equals({
           "9F27": [0x80],
           "9F26": [0x04, 0xCA, 0x8F, 0x14, 0x28, 0xAB, 0x59, 0x01],

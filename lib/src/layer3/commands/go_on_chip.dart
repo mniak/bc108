@@ -1,6 +1,5 @@
 import 'package:bc108/src/layer2/exports.dart';
 import 'package:bc108/src/layer3/fields/tlv.dart';
-import 'package:convert/convert.dart';
 
 import '../fields/alphanumeric.dart';
 import '../fields/boolean.dart';
@@ -166,8 +165,8 @@ class Mapper
       GoOnChipRequest request, CommandResponse result) {
     final parsed = _responseField.parse(result.parameters[0]);
     final tagsField = TlvField([...request.tags, ...request.optionalTags]);
-    final binaryData = parsed.data[8] as Iterable<int>;
-    final parsedTags = tagsField.parse(hex.encode(binaryData).toUpperCase());
+    final binaryData = parsed.data[8] as BinaryData;
+    final parsedTags = tagsField.parse(binaryData.hex);
     return GoOnChipResponse()
       ..decision = (parsed.data[0] as int).asChipDecision
       ..requireSignature = parsed.data[1] as bool
