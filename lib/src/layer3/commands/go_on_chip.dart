@@ -1,11 +1,10 @@
 import 'package:bc108/src/layer2/exports.dart';
 import 'package:bc108/src/layer3/fields/tlv.dart';
-import 'package:convert/convert.dart';
 
 import '../fields/alphanumeric.dart';
 import '../fields/boolean.dart';
 import '../fields/composite.dart';
-import '../fields/hexadecimal.dart';
+import '../fields/binary.dart';
 import '../fields/numeric.dart';
 import '../handler.dart';
 import '../mapper.dart';
@@ -95,11 +94,11 @@ class GoOnChipResponse {
   bool requireSignature;
   bool pinValidatedOffline;
   int invalidOfflinePinAttempts;
-  bool offlinePinBlocked;
-  bool pinOnline;
-  Iterable<int> encryptedPin;
-  Iterable<int> keySerialNumber;
-  Map<String, Iterable<int>> tags;
+  bool pinBlockedOffline;
+  bool pinCapturedForOnlineValidation;
+  BinaryData encryptedPin;
+  BinaryData keySerialNumber;
+  TlvMap tags;
   String acquirerSpecificData;
 }
 
@@ -134,17 +133,18 @@ class Mapper
         request.requirePin,
         request.encryptionMode.value,
         request.keyIndex,
-        request.workingKey,
+        BinaryData.fromBytes(request.workingKey),
         request.enableRiskManagement,
-        request.floorLimit.int32Binary,
+        BinaryData.fromBytes(request.floorLimit.int32Binary),
         request.biasedRandomSelection.targetPercentage,
-        request.biasedRandomSelection.thresholdValue.int32Binary,
+        BinaryData.fromBytes(
+            request.biasedRandomSelection.thresholdValue.int32Binary),
         request.biasedRandomSelection.maxTargetPercentage,
         request.acquirerSpecificData,
       ]),
-      _tagsField.serialize(request.tags.expand((x) => hex.decode(x))),
+      _tagsField.serialize(BinaryData.fromHex(request.tags.join())),
       _optionalTagsField
-          .serialize(request.optionalTags.expand((x) => hex.decode(x))),
+          .serialize(BinaryData.fromHex(request.optionalTags.join())),
     ]);
   }
 
@@ -165,17 +165,17 @@ class Mapper
       GoOnChipRequest request, CommandResponse result) {
     final parsed = _responseField.parse(result.parameters[0]);
     final tagsField = TlvField([...request.tags, ...request.optionalTags]);
-    final binaryData = parsed.data[8] as Iterable<int>;
-    final parsedTags = tagsField.parse(hex.encode(binaryData).toUpperCase());
+    final binaryData = parsed.data[8] as BinaryData;
+    final parsedTags = tagsField.parse(binaryData.hex);
     return GoOnChipResponse()
       ..decision = (parsed.data[0] as int).asChipDecision
       ..requireSignature = parsed.data[1] as bool
       ..pinValidatedOffline = parsed.data[2] as bool
       ..invalidOfflinePinAttempts = parsed.data[3] as int
-      ..offlinePinBlocked = parsed.data[4] as bool
-      ..pinOnline = parsed.data[5] as bool
-      ..encryptedPin = parsed.data[6] as Iterable<int>
-      ..keySerialNumber = parsed.data[7] as Iterable<int>
+      ..pinBlockedOffline = parsed.data[4] as bool
+      ..pinCapturedForOnlineValidation = parsed.data[5] as bool
+      ..encryptedPin = parsed.data[6] as BinaryData
+      ..keySerialNumber = parsed.data[7] as BinaryData
       ..tags = parsedTags.data
       ..acquirerSpecificData = parsed.data[9] as String;
   }

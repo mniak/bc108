@@ -27,7 +27,8 @@ class Operator {
   }
 
   Future<DataFrame> receive({bool blocking}) async {
-    final frame = await _receiver.receiveData(dataTimeout);
+    final timeout = blocking == true ? Duration(days: 1) : dataTimeout;
+    final frame = await _receiver.receiveData(timeout);
     log("Data frame received: $frame");
     return frame;
   }

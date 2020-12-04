@@ -1,8 +1,9 @@
 import 'package:bc108/src/layer3/fields/field.dart';
 import 'package:bc108/src/layer3/fields/field_result.dart';
-import 'package:bc108/src/layer3/fields/hexadecimal.dart';
+import 'package:bc108/src/layer3/fields/binary.dart';
+import 'dart:collection';
 
-class TlvField implements Field<Map<String, Iterable<int>>> {
+class TlvField implements Field<Map<String, BinaryData>> {
   List<String> _knownTags;
   TlvField(Iterable<String> knownTags) {
     _knownTags = List.from(knownTags);
@@ -25,18 +26,45 @@ class TlvField implements Field<Map<String, Iterable<int>>> {
   }
 
   @override
-  FieldResult<Map<String, Iterable<int>>> parse(String text) {
-    final result = Map<String, Iterable<int>>();
+  FieldResult<TlvMap> parse(String text) {
+    final map = Map<String, BinaryData>();
+    final originalText = text;
     while (text.isNotEmpty) {
       final parsed = _parseSingleTag(text);
       text = parsed.remaining;
       if (parsed.data == null) break;
-      result[parsed.data[0] as String] = parsed.data[1] as Iterable<int>;
+      map[parsed.data[0] as String] = parsed.data[1] as BinaryData;
     }
-    return FieldResult(result, text);
+    final consumed =
+        originalText.substring(0, originalText.length - text.length);
+    return FieldResult(TlvMap(map, consumed), text);
   }
 
   @override
-  String serialize(Map<String, Iterable<int>> data) =>
+  String serialize(Map<String, BinaryData> data) =>
       data.entries.map((x) => x.key + _binaryField.serialize(x.value)).join();
+}
+
+class TlvMap extends MapBase<String, BinaryData> {
+  Map<String, dynamic> _map;
+  String _raw;
+
+  TlvMap(this._map, this._raw);
+
+  String get raw => _raw;
+
+  @override
+  operator [](Object key) => _map[key];
+
+  @override
+  void operator []=(String key, value) => _map[key] = value;
+
+  @override
+  void clear() => _map.clear();
+
+  @override
+  Iterable<String> get keys => _map.keys;
+
+  @override
+  BinaryData remove(Object key) => _map.remove(key);
 }

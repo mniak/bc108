@@ -76,3 +76,7 @@ build/
 
 # Code coverage
 coverage/
+
+
+# Temporary merge/rebase files
+*.orig

@@ -32,7 +32,7 @@ class Pinpad {
       _factory.display(_operator).handle(request);
 
   Future<PinpadResult<void>> getKey() =>
-      _factory.getKey(_operator).handle(null);
+      _factory.getKey(_operator).handle(null, blocking: true);
 
   Future<PinpadResult<void>> tableLoadInit(TableLoadInitRequest request) =>
       _factory.tableLoadInit(_operator).handle(request);
@@ -48,11 +48,11 @@ class Pinpad {
       _factory.getTimestamp(_operator).handle(request);
 
   Future<PinpadResult<GetCardResponse>> getCard(GetCardRequest request) =>
-      _factory.getCard(_operator).handle(request);
+      _factory.getCard(_operator).handle(request, blocking: true);
 
   Future<PinpadResult<GetCardResponse>> resumeGetCard() =>
-      _factory.resumeGetCard(_operator).handle(null);
+      _factory.resumeGetCard(_operator).handle(null, blocking: true);
 
   Future<PinpadResult<GoOnChipResponse>> goOnChip(GoOnChipRequest request) =>
-      _factory.goOnChip(_operator).handle(request);
+      _factory.goOnChip(_operator).handle(request, blocking: true);
 }
