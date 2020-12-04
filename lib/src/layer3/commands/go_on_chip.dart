@@ -8,57 +8,13 @@ import '../fields/binary.dart';
 import '../fields/numeric.dart';
 import '../handler.dart';
 import '../mapper.dart';
+import 'enums/chip_decision.dart';
+import 'enums/encryption_mode.dart';
 
 class BiasedRandomSelection {
   int targetPercentage = 0;
   int thresholdValue = 0;
   int maxTargetPercentage = 0;
-}
-
-enum EncryptionMode {
-  /// Master Key / Working DES (8 bytes)
-  MasterKeyDes,
-
-  ///  Master Key / Working 3DES (16 bytes)
-  MasterKey3Des,
-
-  /// DUKPT DES
-  DukptDes,
-
-  /// DUKPT 3DES
-  Dukpt3Des,
-}
-
-extension EncryptionModeExtension on EncryptionMode {
-  int get value {
-    switch (this) {
-      case EncryptionMode.MasterKey3Des:
-        return 1;
-      case EncryptionMode.DukptDes:
-        return 2;
-      case EncryptionMode.Dukpt3Des:
-        return 3;
-
-      case EncryptionMode.MasterKeyDes:
-      default:
-        return 0;
-    }
-  }
-}
-
-extension ChipDecisionExtension on ChipDecision {
-  int get value {
-    switch (this) {
-      case ChipDecision.Denied:
-        return 1;
-      case ChipDecision.PerformOnlineAuthorization:
-        return 2;
-
-      case ChipDecision.ApprovedOffline:
-      default:
-        return 0;
-    }
-  }
 }
 
 class GoOnChipRequest {
@@ -76,17 +32,6 @@ class GoOnChipRequest {
   String acquirerSpecificData = "";
   List<String> tags = List<String>();
   List<String> optionalTags = List<String>();
-}
-
-enum ChipDecision {
-  /// Transaction approved offline
-  ApprovedOffline,
-
-  /// Transaction denied
-  Denied,
-
-  /// Transaction requires online authorization
-  PerformOnlineAuthorization,
 }
 
 class GoOnChipResponse {
@@ -148,23 +93,24 @@ class Mapper
     ]);
   }
 
-  static final _responseField = CompositeField([
-    NumericField(1),
-    BooleanField(),
-    BooleanField(),
-    NumericField(1),
-    BooleanField(),
-    BooleanField(),
-    BinaryField(8),
-    BinaryField(10),
-    VariableBinaryField(3),
-    VariableAlphanumericField(3),
-  ]);
   @override
   GoOnChipResponse mapResponse(
       GoOnChipRequest request, CommandResponse result) {
-    final parsed = _responseField.parse(result.parameters[0]);
-    final tagsField = TlvField([...request.tags, ...request.optionalTags]);
+    final responseField = CompositeField([
+      NumericField(1),
+      BooleanField(),
+      BooleanField(),
+      NumericField(1),
+      BooleanField(),
+      BooleanField(),
+      BinaryField(8),
+      BinaryField(10),
+      TlvField([...request.tags, ...request.optionalTags]).withHeader(3),
+      VariableAlphanumericField(3),
+    ]);
+
+    final parsed = responseField.parse(result.parameters[0]);
+    final tagsField = ;
     final binaryData = parsed.data[8] as BinaryData;
     final parsedTags = tagsField.parse(binaryData.hex);
     return GoOnChipResponse()
@@ -178,36 +124,6 @@ class Mapper
       ..keySerialNumber = parsed.data[7] as BinaryData
       ..tags = parsedTags.data
       ..acquirerSpecificData = parsed.data[9] as String;
-  }
-}
-
-extension GoOnChipIntExtension on int {
-  EncryptionMode get asEncryptionMode {
-    switch (this) {
-      case 1:
-        return EncryptionMode.MasterKey3Des;
-      case 2:
-        return EncryptionMode.DukptDes;
-      case 3:
-        return EncryptionMode.Dukpt3Des;
-
-      case 0:
-      default:
-        return EncryptionMode.MasterKeyDes;
-    }
-  }
-
-  ChipDecision get asChipDecision {
-    switch (this) {
-      case 1:
-        return ChipDecision.Denied;
-      case 2:
-        return ChipDecision.PerformOnlineAuthorization;
-
-      case 0:
-      default:
-        return ChipDecision.ApprovedOffline;
-    }
   }
 }
 
