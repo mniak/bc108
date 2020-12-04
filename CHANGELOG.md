@@ -1,4 +1,5 @@
 ## Next Version
+- Bug fixes
 - Make TLV raw data visible
 
 ## [0.1.4] - Go on Chip
