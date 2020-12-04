@@ -1,4 +1,5 @@
 export 'commands/close.dart' show CloseRequest;
+export 'commands/remove_card.dart' show RemoveCardRequest;
 export 'commands/get_card.dart'
     show
         GetCardRequest,
@@ -21,4 +22,5 @@ export 'commands/table_load_rec.dart' show TableLoadRecRequest;
 export 'commands/get_timestamp.dart'
     show GetTimestampRequest, GetTimestampResponse;
 
+export 'factory.dart';
 export 'pinpad.dart';

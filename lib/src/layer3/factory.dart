@@ -1,13 +1,13 @@
-import 'package:bc108/src/layer3/commands/go_on_chip.dart';
-
 import 'commands/open.dart';
 import 'commands/close.dart';
 
 import 'commands/get_info.dart';
 import 'commands/display.dart';
 import 'commands/get_key.dart';
+import 'commands/remove_card.dart';
 
 import 'commands/get_card.dart';
+import 'commands/go_on_chip.dart';
 
 import 'commands/table_load_init.dart';
 import 'commands/table_load_rec.dart';
@@ -19,16 +19,25 @@ class RequestHandlerFactory
         // Control
         OpenFactory,
         CloseFactory,
+        // AbortFactory
 
         // Basic
-        GetInfo00Factory,
+        GetInfoFactory,
         DisplayFactory,
         GetKeyFactory,
+        // GetPinFactory
+        // CheckEventFactory
+        // EncryptBufferFactory
+        // GetDukptFactory
+        // ChipDirectFactory
+        RemoveCardFactory,
+        // GenericCmdFactory
 
         // Card Processing
         GetCardFactory,
         // ChangeParameterFactory,
         GoOnChipFactory,
+        // FinishChipFactory
 
         // Table Maintenance
         TableLoadInitFactory,

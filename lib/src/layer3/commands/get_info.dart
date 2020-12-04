@@ -48,7 +48,7 @@ class Mapper implements RequestResponseMapper<void, GetInfo00Response> {
   }
 }
 
-class GetInfo00Factory {
+class GetInfoFactory {
   RequestHandler<void, GetInfo00Response> getInfo(CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());
 }

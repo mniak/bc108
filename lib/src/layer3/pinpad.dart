@@ -1,12 +1,7 @@
-import 'package:bc108/src/layer2/exports.dart';
-import 'package:bc108/src/layer2/command_processor.dart';
-import 'package:bc108/src/layer3/commands/close.dart';
-import 'package:bc108/src/layer3/commands/go_on_chip.dart';
-import 'exports.dart';
+import '../layer1/exports.dart';
+import '../layer2/command_processor.dart';
 
-import 'commands/get_info.dart';
-import 'factory.dart';
-import '../layer1/pinpad_result.dart';
+import 'exports.dart';
 
 class Pinpad {
   CommandProcessor _operator;
@@ -33,6 +28,9 @@ class Pinpad {
 
   Future<PinpadResult<void>> getKey() =>
       _factory.getKey(_operator).handle(null, blocking: true);
+
+  Future<PinpadResult<void>> removeCard(RemoveCardRequest request) =>
+      _factory.removeCard(_operator).handle(request, blocking: true);
 
   Future<PinpadResult<void>> tableLoadInit(TableLoadInitRequest request) =>
       _factory.tableLoadInit(_operator).handle(request);
