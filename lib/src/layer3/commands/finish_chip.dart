@@ -1,45 +1,75 @@
+import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer2/exports.dart';
+import 'package:bc108/src/layer3/commands/enums/communication_status.dart';
 import 'package:bc108/src/layer3/fields/alphanumeric.dart';
+import 'package:bc108/src/layer3/fields/binary.dart';
 import 'package:bc108/src/layer3/fields/composite.dart';
 import 'package:bc108/src/layer3/fields/numeric.dart';
-import 'package:bc108/src/layer3/fields/field.dart';
 import '../handler.dart';
 import '../mapper.dart';
 import '../fields/tlv.dart';
+import 'enums/finish_chip_decision.dart';
 
 class FinishChipRequest {
-  bool communicationSuccessful = false;
-  int issuerType = 0;
+  CommunicationStatus status = CommunicationStatus.Successful;
+  IssuerType issuerType = IssuerType.EmvFullGrade;
   String authorizationResponseCode = "";
   TlvMap tags = TlvMap.empty();
   String acquirerSpecificData = "";
 
-  List<String> tagList = [];
+  List<String> requiredTagsList = [];
 }
 
-class FinishChipResponse {}
+class FinishChipResponse {
+  FinishChipDecision decision;
+  TlvMap tags;
+  BinaryData issuerScriptResults;
+  String acquirerSpecificData;
+}
 
 class Mapper
     implements RequestResponseMapper<FinishChipRequest, FinishChipResponse> {
-  @override
   static final _requestField = CompositeField([
     NumericField(1),
     NumericField(1),
     AlphanumericField(2),
-    TlvField([]).withHeader(3, (x) => x.length),
+    TlvFieldWithHeader(3, []),
   ]);
+
+  @override
   CommandRequest mapRequest(FinishChipRequest request) {
-    return CommandRequest("FNC", []);
+    return CommandRequest("FNC", [
+      _requestField.serialize([
+        request.status.value,
+        request.issuerType.value,
+        request.authorizationResponseCode,
+        request.tags,
+        request.acquirerSpecificData,
+        request.requiredTagsList,
+      ])
+    ]);
   }
 
   @override
   FinishChipResponse mapResponse(
       FinishChipRequest request, CommandResponse result) {
-    return FinishChipResponse();
+    final _responseField = CompositeField([
+      NumericField(1),
+      TlvFieldWithHeader(3, [...request.requiredTagsList]),
+      VariableBinaryField(2),
+      VariableAlphanumericField(3),
+    ]);
+
+    final parsed = _responseField.parse(result.parameters[0]);
+    return FinishChipResponse()
+      ..decision = (parsed.data[0] as int).asFinishChipDecision
+      ..tags = parsed.data[1] as TlvMap
+      ..issuerScriptResults = parsed.data[2] as BinaryData
+      ..acquirerSpecificData = parsed.data[3] as String;
   }
 }
 
-class FinishChipChipFactory {
+class FinishChipFactory {
   RequestHandler<FinishChipRequest, FinishChipResponse> finishChip(
           CommandProcessor o) =>
       RequestHandler.fromMapper(o, Mapper());

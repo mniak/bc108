@@ -3,7 +3,30 @@ import 'package:bc108/src/layer3/fields/field_result.dart';
 import 'package:bc108/src/layer3/fields/binary.dart';
 import 'dart:collection';
 
-class TlvField implements Field<Map<String, BinaryData>> {
+class TlvFieldWithHeader implements Field<TlvMap> {
+  VariableBinaryField _outer;
+  TlvField _inner;
+
+  TlvFieldWithHeader(int headerLength, Iterable<String> knownTags,
+      {bool inclusive = false}) {
+    _outer = VariableBinaryField(headerLength);
+    _inner = TlvField(knownTags);
+  }
+
+  @override
+  FieldResult<TlvMap> parse(String text) {
+    final parsed = _outer.parse(text);
+    final result = _inner.parse(parsed.data.hex);
+    return FieldResult(result.data, parsed.remaining);
+  }
+
+  @override
+  String serialize(TlvMap data) {
+    return _outer.serialize(BinaryData.fromHex(_inner.serialize(data)));
+  }
+}
+
+class TlvField implements Field<TlvMap> {
   List<String> _knownTags;
   TlvField(Iterable<String> knownTags) {
     _knownTags = List.from(knownTags);
@@ -50,6 +73,9 @@ class TlvMap extends MapBase<String, BinaryData> {
   String _raw;
 
   TlvMap(this._map, this._raw);
+  TlvMap.fromMap(this._map) {}
+
+  TlvMap.empty() : this(Map<String, dynamic>(), "");
 
   String get raw => _raw;
 

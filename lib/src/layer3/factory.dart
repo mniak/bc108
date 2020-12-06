@@ -8,6 +8,7 @@ import 'commands/remove_card.dart';
 
 import 'commands/get_card.dart';
 import 'commands/go_on_chip.dart';
+import 'commands/finish_chip.dart';
 
 import 'commands/table_load_init.dart';
 import 'commands/table_load_rec.dart';
@@ -37,7 +38,7 @@ class RequestHandlerFactory
         GetCardFactory,
         // ChangeParameterFactory,
         GoOnChipFactory,
-        // FinishChipFactory
+        FinishChipFactory,
 
         // Table Maintenance
         TableLoadInitFactory,

@@ -1,3 +1,5 @@
+import 'package:bc108/src/layer3/commands/finish_chip.dart';
+
 import '../layer1/exports.dart';
 import '../layer2/command_processor.dart';
 
@@ -53,4 +55,8 @@ class Pinpad {
 
   Future<PinpadResult<GoOnChipResponse>> goOnChip(GoOnChipRequest request) =>
       _factory.goOnChip(_operator).handle(request, blocking: true);
+
+  Future<PinpadResult<FinishChipResponse>> finishChip(
+          FinishChipRequest request) =>
+      _factory.finishChip(_operator).handle(request);
 }

@@ -1,15 +1,15 @@
 import 'package:bc108/src/layer2/exports.dart';
-import 'package:bc108/src/layer3/fields/tlv.dart';
 
 import '../fields/alphanumeric.dart';
+import '../fields/binary.dart';
 import '../fields/boolean.dart';
 import '../fields/composite.dart';
-import '../fields/binary.dart';
 import '../fields/numeric.dart';
+import '../fields/tlv.dart';
 import '../handler.dart';
 import '../mapper.dart';
-import 'enums/chip_decision.dart';
 import 'enums/encryption_mode.dart';
+import 'enums/go_on_chip_decision.dart';
 
 class BiasedRandomSelection {
   int targetPercentage = 0;
@@ -35,7 +35,7 @@ class GoOnChipRequest {
 }
 
 class GoOnChipResponse {
-  ChipDecision decision;
+  GoOnChipDecision decision;
   bool requireSignature;
   bool pinValidatedOffline;
   int invalidOfflinePinAttempts;
@@ -96,7 +96,7 @@ class Mapper
   @override
   GoOnChipResponse mapResponse(
       GoOnChipRequest request, CommandResponse result) {
-    final responseField = CompositeField([
+    final _responseField = CompositeField([
       NumericField(1),
       BooleanField(),
       BooleanField(),
@@ -105,16 +105,12 @@ class Mapper
       BooleanField(),
       BinaryField(8),
       BinaryField(10),
-      TlvField([...request.tags, ...request.optionalTags]).withHeader(3),
+      TlvFieldWithHeader(3, [...request.tags, ...request.optionalTags]),
       VariableAlphanumericField(3),
     ]);
-
-    final parsed = responseField.parse(result.parameters[0]);
-    final tagsField = ;
-    final binaryData = parsed.data[8] as BinaryData;
-    final parsedTags = tagsField.parse(binaryData.hex);
+    final parsed = _responseField.parse(result.parameters[0]);
     return GoOnChipResponse()
-      ..decision = (parsed.data[0] as int).asChipDecision
+      ..decision = (parsed.data[0] as int).asGoOnChipDecision
       ..requireSignature = parsed.data[1] as bool
       ..pinValidatedOffline = parsed.data[2] as bool
       ..invalidOfflinePinAttempts = parsed.data[3] as int
@@ -122,7 +118,7 @@ class Mapper
       ..pinCapturedForOnlineValidation = parsed.data[5] as bool
       ..encryptedPin = parsed.data[6] as BinaryData
       ..keySerialNumber = parsed.data[7] as BinaryData
-      ..tags = parsedTags.data
+      ..tags = parsed.data[8] as TlvMap
       ..acquirerSpecificData = parsed.data[9] as String;
   }
 }

@@ -50,7 +50,7 @@ void main() {
     final response = mapper.mapResponse(
         request, CommandResponse.fromDataFrame(DataFrame.data(data)));
 
-    expect(response.decision, equals(ChipDecision.PerformOnlineAuthorization));
+    expect(response.decision, equals(GoOnChipDecision.Denied));
     expect(response.requireSignature, equals(false));
     expect(response.pinValidatedOffline, equals(false));
     expect(response.invalidOfflinePinAttempts, equals(0));
@@ -93,21 +93,21 @@ void main() {
     });
   });
 
-  group('ChipDecision', () {
+  group('GoOnChipDecision', () {
     var data = [
-      [ChipDecision.ApprovedOffline, 0],
-      [ChipDecision.Denied, 1],
-      [ChipDecision.PerformOnlineAuthorization, 2],
+      [GoOnChipDecision.ApprovedOffline, 0],
+      [GoOnChipDecision.Denied, 1],
+      [GoOnChipDecision.PerformOnlineAuthorization, 2],
     ];
 
     data.forEach((d) {
-      final e = d[0] as ChipDecision;
+      final e = d[0] as GoOnChipDecision;
       final i = d[1] as int;
       test('$e => $i', () {
         expect(e.value, i);
       });
       test('$i => $e', () {
-        expect(i.asChipDecision, e);
+        expect(i.asGoOnChipDecision, e);
       });
     });
   });
