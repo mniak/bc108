@@ -73,8 +73,6 @@ class TlvMap extends MapBase<String, BinaryData> {
   String _raw;
 
   TlvMap(this._map, this._raw);
-  TlvMap.fromMap(this._map) {}
-
   TlvMap.empty() : this(Map<String, dynamic>(), "");
 
   String get raw => _raw;
