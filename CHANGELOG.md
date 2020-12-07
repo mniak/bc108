@@ -1,6 +1,9 @@
 ## Next Version
 - Bug fixes
 - Make TLV raw data visible
+- Locking mechanism to avoid two pinpads race conditions
+- Command `removeCard`
+- Command `finishChip`
 
 ## [0.1.4] - Go on Chip
 Implement command `goOnChip`
