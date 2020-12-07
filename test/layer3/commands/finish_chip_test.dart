@@ -16,6 +16,7 @@ void main() {
       ..requiredTagsList = ["9F27", "9F26"]);
 
     expect(command.code, equals("FNC"));
+    expect(command.parameters, hasLength(2));
 
     expect(command.parameters.elementAt(0),
         equals("00000109108330D56C80029FC3A000"));

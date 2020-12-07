@@ -51,46 +51,4 @@ void main() {
     expect(response.issuerCountryCode, equals(76));
     expect(response.acquirerSpecificData, equals(""));
   });
-
-  group('CardType', () {
-    var data = [
-      [CardType.MagStripe, 0],
-      [CardType.ModedeiroTibc1, 1],
-      [CardType.ModedeiroTibc3, 2],
-      [CardType.Emv, 3],
-      [CardType.EasyEntryTibc1, 4],
-      [CardType.ContactlessSimulatingStripe, 5],
-      [CardType.ContactlessEmv, 6],
-    ];
-
-    data.forEach((d) {
-      final e = d[0] as CardType;
-      final i = d[1] as int;
-      test('$e => $i', () {
-        expect(e.value, i);
-      });
-      test('$i => $e', () {
-        expect(i.asCardType, e);
-      });
-    });
-  });
-
-  group('LastReadStatus', () {
-    var data = [
-      [LastReadStatus.Successful, 0],
-      [LastReadStatus.FallbackError, 1],
-      [LastReadStatus.RequiredApplicationNotSupported, 2],
-    ];
-
-    data.forEach((d) {
-      final e = d[0] as LastReadStatus;
-      final i = d[1] as int;
-      test('$e => $i', () {
-        expect(e.value, i);
-      });
-      test('$i => $e', () {
-        expect(i.asLastReadStatus, e);
-      });
-    });
-  });
 }

@@ -4,6 +4,7 @@ import 'package:bc108/src/layer3/commands/enums/communication_status.dart';
 import 'package:bc108/src/layer3/fields/alphanumeric.dart';
 import 'package:bc108/src/layer3/fields/binary.dart';
 import 'package:bc108/src/layer3/fields/composite.dart';
+import 'package:bc108/src/layer3/fields/list.dart';
 import 'package:bc108/src/layer3/fields/numeric.dart';
 import '../handler.dart';
 import '../mapper.dart';
@@ -34,8 +35,11 @@ class Mapper
     NumericField(1),
     AlphanumericField(2),
     TlvFieldWithHeader(3, []),
+    VariableAlphanumericField(3),
   ]);
 
+
+ static final _requestTagsList = BinaryField(3);
   @override
   CommandRequest mapRequest(FinishChipRequest request) {
     return CommandRequest("FNC", [
@@ -45,7 +49,9 @@ class Mapper
         request.authorizationResponseCode,
         request.tags,
         request.acquirerSpecificData,
-        request.requiredTagsList,
+      ]),
+      
+      _requestTagsList.serialize(BinaryData.fromHex(request.requiredTagsList.join())),
       ])
     ]);
   }
