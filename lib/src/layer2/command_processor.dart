@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:synchronized/synchronized.dart';
 
 import 'package:bc108/src/layer1/exports.dart';
 
@@ -11,6 +12,7 @@ import 'status.dart';
 class CommandProcessor {
   Operator _operator;
   StreamController<String> _notificationController = StreamController<String>();
+  Lock _lock = Lock();
 
   Stream<String> get notifications => _notificationController.stream;
 
@@ -20,6 +22,10 @@ class CommandProcessor {
       : this(Operator.fromStreamAndSink(stream, sink));
 
   Future<CommandResponse> send(CommandRequest request, {bool blocking}) async {
+    return await _lock.synchronized(() => _send(request, blocking: blocking));
+  }
+
+  Future<CommandResponse> _send(CommandRequest request, {bool blocking}) async {
     final ackFrame = await _operator.send(request.payload);
     if (ackFrame.tryAgain)
       return CommandResponse.fromStatus(Status.PP_COMMERR, request.code);
