@@ -11,7 +11,7 @@ import '../fields/tlv.dart';
 import 'enums/finish_chip_decision.dart';
 
 class FinishChipRequest {
-  CommunicationStatus status = CommunicationStatus.Successful;
+  CommunicationStatus status = CommunicationStatus.Success;
   IssuerType issuerType = IssuerType.EmvFullGrade;
   String authorizationResponseCode = "";
   TlvMap tags = TlvMap.empty();
