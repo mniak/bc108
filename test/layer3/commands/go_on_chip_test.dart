@@ -3,7 +3,7 @@ import 'package:bc108/src/layer3/commands/go_on_chip.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('serialize', () {
+  test('serialize request', () {
     final mapper = Mapper();
     final cmdRequest = mapper.mapRequest(GoOnChipRequest()
       ..amount = 27465
@@ -38,7 +38,7 @@ void main() {
             "GOC086000000027465000000007100001207000000000000000000000000000000001000027102000001388750000230109F279F26959B9F349F100110045F205F28"));
   });
 
-  test('parse', () {
+  test('parse response', () {
     final data =
         "GOC0001422000018D540BCF3001577AFFFF9876543210E0000C0479F2701809F260804CA8F1428AB5901950580000100009B02E8009F34030201009F100706011A039000005F28020076000";
     final mapper = Mapper();
@@ -50,7 +50,8 @@ void main() {
     final response = mapper.mapResponse(
         request, CommandResponse.fromDataFrame(DataFrame.data(data)));
 
-    expect(response.decision, equals(GoOnChipDecision.Denied));
+    expect(
+        response.decision, equals(GoOnChipDecision.PerformOnlineAuthorization));
     expect(response.requireSignature, equals(false));
     expect(response.pinValidatedOffline, equals(false));
     expect(response.invalidOfflinePinAttempts, equals(0));

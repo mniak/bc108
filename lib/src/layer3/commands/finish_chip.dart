@@ -38,8 +38,7 @@ class Mapper
     VariableAlphanumericField(3),
   ]);
 
-
- static final _requestTagsList = BinaryField(3);
+  static final _requestTagsList = VariableBinaryField(3);
   @override
   CommandRequest mapRequest(FinishChipRequest request) {
     return CommandRequest("FNC", [
@@ -50,9 +49,8 @@ class Mapper
         request.tags,
         request.acquirerSpecificData,
       ]),
-      
-      _requestTagsList.serialize(BinaryData.fromHex(request.requiredTagsList.join())),
-      ])
+      _requestTagsList
+          .serialize(BinaryData.fromHex(request.requiredTagsList.join())),
     ]);
   }
 
