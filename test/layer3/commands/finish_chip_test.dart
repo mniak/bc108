@@ -23,4 +23,19 @@ void main() {
 
     expect(command.parameters.elementAt(1), equals("0049F279F26"));
   });
+
+  test('parse response', () {
+    final sut = Mapper();
+
+    final commandResponse = CommandResponse.fromDataFrame(
+        DataFrame.data("FNC00000159F2701409F260819C5D08A4419BBD900000"));
+
+    final response = sut.mapResponse(FinishChipRequest(), commandResponse);
+
+    expect(response.decision, equals(FinishChipDecision.Approved));
+    expect(response.tags,
+        equals(BinaryData.fromHex("9F2701409F260819C5D08A4419BBD9")));
+    expect(response.issuerScriptResults, isEmpty);
+    expect(response.acquirerSpecificData, isEmpty);
+  });
 }

@@ -23,13 +23,13 @@ void main() {
     expect(command.parameters, hasLength(1));
 
     expect(command.parameters.elementAt(0),
-        equals("VICTORIA        SUPERMARKET    "));
+        equals("VICTORIA        SUPERMARKET     "));
   });
 
   test('serialize request with very long text', () {
     final sut = Mapper();
 
-    final request = DisplayRequest('Vic' * 20, "Market");
+    final request = DisplayRequest('Vic' * 20, "Market" * 20);
 
     final command = sut.mapRequest(request);
 
