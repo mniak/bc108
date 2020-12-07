@@ -23,14 +23,15 @@ void main() {
   });
 
   test('parse', () {
-    final data =
-        "GCR00034203001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000";
     final mapper = GetCardMapper();
 
     final request = GetCardRequest();
 
     final response = mapper.mapResponse(
-        request, CommandResponse.fromDataFrame(DataFrame.data(data)));
+        request,
+        CommandResponse("GCR", Status.PP_OK, [
+          "34203001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000"
+        ]));
 
     expect(response.cardType, equals(3));
     expect(response.statusLastChipRead, equals(0));

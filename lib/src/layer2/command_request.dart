@@ -12,11 +12,11 @@ class CommandResponse {
   Status get status => _status;
   List<String> get parameters => List.of(_parameters);
 
-  CommandResponse.fromStatus(Status status, [String code = "ERR"]) {
-    _code = code;
-    _status = status;
-    _parameters = [];
-  }
+  CommandResponse(this._code, this._status, this._parameters);
+
+  CommandResponse.fromStatus(Status status, [String code = "ERR"])
+      : this(code, status, []);
+
   factory CommandResponse.fromDataFrame(DataFrame frame) {
     if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
     if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);

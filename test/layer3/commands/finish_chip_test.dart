@@ -27,14 +27,20 @@ void main() {
   test('parse response', () {
     final sut = Mapper();
 
-    final commandResponse = CommandResponse.fromDataFrame(
-        DataFrame.data("FNC00000159F2701409F260819C5D08A4419BBD900000"));
+    final request = FinishChipRequest()..requiredTagsList = ["9F27", "9F26"];
 
-    final response = sut.mapResponse(FinishChipRequest(), commandResponse);
+    final commandResponse = CommandResponse(
+        "FNC", Status.PP_OK, ["00159F2701409F260819C5D08A4419BBD900000"]);
+
+    final response = sut.mapResponse(request, commandResponse);
 
     expect(response.decision, equals(FinishChipDecision.Approved));
-    expect(response.tags,
-        equals(BinaryData.fromHex("9F2701409F260819C5D08A4419BBD9")));
+    expect(
+        response.tags,
+        equals(TlvMap({
+          "9F27": BinaryData.fromHex("40"),
+          "9F26": BinaryData.fromHex("19C5D08A4419BBD9"),
+        }, "9F2701409F260819C5D08A4419BBD9")));
     expect(response.issuerScriptResults, isEmpty);
     expect(response.acquirerSpecificData, isEmpty);
   });
