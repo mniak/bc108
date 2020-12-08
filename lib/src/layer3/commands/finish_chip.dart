@@ -4,7 +4,6 @@ import 'package:bc108/src/layer3/commands/enums/communication_status.dart';
 import 'package:bc108/src/layer3/fields/alphanumeric.dart';
 import 'package:bc108/src/layer3/fields/binary.dart';
 import 'package:bc108/src/layer3/fields/composite.dart';
-import 'package:bc108/src/layer3/fields/list.dart';
 import 'package:bc108/src/layer3/fields/numeric.dart';
 import '../handler.dart';
 import '../mapper.dart';

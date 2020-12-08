@@ -52,4 +52,6 @@ class BinaryData {
   bool operator ==(o) => o is BinaryData && this._bytes == o._bytes;
   @override
   int get hashCode => _bytes.hashCode;
+  @override
+  String toString() => "{0x$hex}";
 }

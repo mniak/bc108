@@ -30,7 +30,7 @@ void main() {
     final response = mapper.mapResponse(
         request,
         CommandResponse("GCR", Status.PP_OK, [
-          "34203001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000"
+          "03001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000"
         ]));
 
     expect(response.cardType, equals(3));

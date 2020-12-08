@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bc108/src/layer3/fields/field.dart';
 import 'package:bc108/src/layer3/fields/field_result.dart';
 import 'package:bc108/src/layer3/fields/binary.dart';
@@ -91,4 +93,16 @@ class TlvMap extends MapBase<String, BinaryData> {
 
   @override
   BinaryData remove(Object key) => _map.remove(key);
+
+  bool operator ==(o) =>
+      o is TlvMap && this._map == o._map && this._raw == o._raw;
+  @override
+  int get hashCode {
+    final hashCodeOfMap = _map.entries
+        .fold(17, (v, e) => (v * 37 + e.key.hashCode) * 37 + e.value.hashCode);
+    return (hashCodeOfMap * 37 + _raw.hashCode * pow(37, 2)) % 2147483647;
+  }
+
+  // @override
+  String toString() => "{_map, RAW=$_raw}";
 }
