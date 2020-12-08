@@ -1,4 +1,5 @@
 import 'package:bc108/src/layer3/fields/binary.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -101,6 +102,31 @@ void main() {
       expect(result.data.hex, equals("20204142"));
       expect(result.data.bytes, equals([32, 32, 65, 66]));
       expect(result.data.string, equals("  AB"));
+    });
+  });
+
+  group('BinaryData', () {
+    test('equality test', () {
+      final bytes = faker.randomGenerator.numbers(255, 100);
+
+      final a = BinaryData.fromBytes(bytes);
+      final b = BinaryData.fromBytes(bytes);
+
+      expect(a, equals(b));
+      expect(b, equals(a));
+      expect(a.hashCode, equals(b.hashCode));
+      expect(b.hashCode, equals(a.hashCode));
+    });
+
+    test('not equality test', () {
+      final bytesA = faker.randomGenerator.numbers(255, 100);
+      final bytesB = faker.randomGenerator.numbers(255, 100);
+
+      final a = BinaryData.fromBytes(bytesA);
+      final b = BinaryData.fromBytes(bytesB);
+
+      expect(a, isNot(equals(b)));
+      expect(b, isNot(equals(a)));
     });
   });
 }

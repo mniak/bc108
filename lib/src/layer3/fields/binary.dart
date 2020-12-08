@@ -48,4 +48,8 @@ class BinaryData {
   Iterable<int> get bytes => _bytes;
   String get hex => convert.hex.encode(bytes).toUpperCase();
   String get string => utf8.decode(_bytes);
+
+  bool operator ==(o) => o is BinaryData && this._bytes == o._bytes;
+  @override
+  int get hashCode => _bytes.hashCode;
 }
