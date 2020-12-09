@@ -39,9 +39,8 @@ void main() {
       "9F27": BinaryData.fromHex("40"),
       "9F26": BinaryData.fromHex("19C5D08A4419BBD9"),
     }, "9F2701409F260819C5D08A4419BBD9");
-    expect(response.tags.values.elementAt(0),
-        equals(expectedTags.values.elementAt(0)));
-    // expect(response.issuerScriptResults, isEmpty);
-    // expect(response.acquirerSpecificData, isEmpty);
+    expect(response.tags, equals(expectedTags));
+    expect(response.issuerScriptResults, isEmpty);
+    expect(response.acquirerSpecificData, isEmpty);
   });
 }

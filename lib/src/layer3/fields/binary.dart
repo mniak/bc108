@@ -61,4 +61,7 @@ class BinaryData {
 
   @override
   String toString() => "{0x$hex}";
+
+  bool get isEmpty => _bytes.isEmpty;
+  bool get isNotEmpty => _bytes.isNotEmpty;
 }
