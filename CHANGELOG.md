@@ -1,7 +1,7 @@
-## Next Version
+## [0.1.4]
 - Bug fixes
 - Make TLV raw data visible
-- Locking mechanism to avoid two pinpads race conditions
+- Locking mechanism to avoid race conditions
 - Command `removeCard`
 - Command `finishChip`
 
