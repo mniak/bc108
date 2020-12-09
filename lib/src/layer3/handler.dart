@@ -26,31 +26,3 @@ class RequestHandler<TRequest, TResponse> {
     return PinpadResult(result.status, response);
   }
 }
-
-// class RequestHandlerWithSynchronization<TRequest, TResponse>
-//     implements RequestHandler<TRequest, TResponse> {
-//   Lock _lock;
-//   RequestHandler<TRequest, TResponse> _inner;
-//   RequestHandlerWithSynchronization(this._lock, this._inner);
-
-//   @override
-//   Future<PinpadResult<TResponse>> handle(TRequest request,
-//       {bool blocking}) async {
-//     PinpadResult<TResponse> result;
-//     await _lock.synchronized(() async {
-//       result = await _inner.handle(request, blocking: blocking);
-//     });
-//     return result;
-//   }
-
-//   @override
-//   Stream<String> get notifications => _inner.notifications;
-
-//   noSuchMethod(Invocation i) => super.noSuchMethod(i);
-// }
-
-// extension RequestHandlerExtension on RequestHandler {
-//   RequestHandlerWithSynchronization syncA(Lock lock) {
-//     return this;
-//   }
-// }

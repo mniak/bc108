@@ -96,6 +96,7 @@ class Mapper
   @override
   GoOnChipResponse mapResponse(
       GoOnChipRequest request, CommandResponse result) {
+    if (result.status != Status.PP_OK) return null;
     final _responseField = CompositeField([
       NumericField(1),
       BooleanField(),
