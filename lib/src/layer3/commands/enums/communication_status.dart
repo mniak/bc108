@@ -1,5 +1,5 @@
 enum CommunicationStatus {
-  Successful,
+  Success,
   Failure,
 }
 
@@ -11,7 +11,7 @@ extension CommunicationStatusIntExtension on int {
 
       case 0:
       default:
-        return CommunicationStatus.Successful;
+        return CommunicationStatus.Success;
     }
   }
 }
@@ -22,7 +22,7 @@ extension CommunicationStatusExtension on CommunicationStatus {
       case CommunicationStatus.Failure:
         return 1;
 
-      case CommunicationStatus.Successful:
+      case CommunicationStatus.Success:
       default:
         return 0;
     }

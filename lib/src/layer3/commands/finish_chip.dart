@@ -11,7 +11,7 @@ import '../fields/tlv.dart';
 import 'enums/finish_chip_decision.dart';
 
 class FinishChipRequest {
-  CommunicationStatus status = CommunicationStatus.Successful;
+  CommunicationStatus status = CommunicationStatus.Success;
   IssuerType issuerType = IssuerType.EmvFullGrade;
   String authorizationResponseCode = "";
   TlvMap tags = TlvMap.empty();
@@ -34,8 +34,10 @@ class Mapper
     NumericField(1),
     AlphanumericField(2),
     TlvFieldWithHeader(3, []),
+    VariableAlphanumericField(3),
   ]);
 
+  static final _requestTagsList = VariableBinaryField(3);
   @override
   CommandRequest mapRequest(FinishChipRequest request) {
     return CommandRequest("FNC", [
@@ -45,14 +47,16 @@ class Mapper
         request.authorizationResponseCode,
         request.tags,
         request.acquirerSpecificData,
-        request.requiredTagsList,
-      ])
+      ]),
+      _requestTagsList
+          .serialize(BinaryData.fromHex(request.requiredTagsList.join())),
     ]);
   }
 
   @override
   FinishChipResponse mapResponse(
       FinishChipRequest request, CommandResponse result) {
+    if (result.status != Status.PP_OK) return null;
     final _responseField = CompositeField([
       NumericField(1),
       TlvFieldWithHeader(3, [...request.requiredTagsList]),

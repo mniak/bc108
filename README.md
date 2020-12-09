@@ -32,13 +32,13 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ✅ `display`
 - ⬜ `displayEx`
 - ✅ `getKey`
-- ⬜ `startGetPIN` / `getPIN`
-- ⬜ `startRemoveCard` / `removeCard`
-- ⬜ `startGenericCmd` / `genericCmd`
-- ⬜ `startCheckEvent` / `checkEvent`
+- ⬜ `getPIN`
+- ✅ `removeCard`
+- ⬜ `genericCmd`
+- ⬜ `checkEvent`
 - ✅ `getCard` / `resumeGetCard`
 - ✅ `goOnChip`
-- ⬜ `finishChip`
+- ✅ `finishChip`
 - ⬜ `chipDirect`
 - ⬜ `changeParameter`
 - ✅ `getInfo00`

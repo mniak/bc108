@@ -68,6 +68,7 @@ class GetCardResponseMapper {
   ]);
 
   GetCardResponse map(CommandResponse result) {
+    if (result.status != Status.PP_OK) return null;
     final parsed = _responseField.parse(result.parameters[0]);
     return GetCardResponse()
       ..cardType = parsed.data[0]

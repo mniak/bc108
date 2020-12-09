@@ -28,6 +28,7 @@ class Mapper
   @override
   GetTimestampResponse mapResponse(
       GetTimestampRequest request, CommandResponse result) {
+    if (result.status != Status.PP_OK) return null;
     final parsed = _responseField.parse(result.parameters[0]);
     return GetTimestampResponse()..timestamp = parsed.data;
   }

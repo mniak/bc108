@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/commands/get_card.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,14 +24,15 @@ void main() {
   });
 
   test('parse', () {
-    final data =
-        "GCR00034203001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000";
     final mapper = GetCardMapper();
 
     final request = GetCardRequest();
 
     final response = mapper.mapResponse(
-        request, CommandResponse.fromDataFrame(DataFrame.data(data)));
+        request,
+        CommandResponse("GCR", Status.PP_OK, [
+          "03001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000"
+        ]));
 
     expect(response.cardType, equals(3));
     expect(response.statusLastChipRead, equals(0));
@@ -52,45 +54,15 @@ void main() {
     expect(response.acquirerSpecificData, equals(""));
   });
 
-  group('CardType', () {
-    var data = [
-      [CardType.MagStripe, 0],
-      [CardType.ModedeiroTibc1, 1],
-      [CardType.ModedeiroTibc3, 2],
-      [CardType.Emv, 3],
-      [CardType.EasyEntryTibc1, 4],
-      [CardType.ContactlessSimulatingStripe, 5],
-      [CardType.ContactlessEmv, 6],
-    ];
+  test('mapResponse when status is not OK, should return null', () {
+    final statusesNotOk = Statuses.where((x) => x != Status.PP_OK);
 
-    data.forEach((d) {
-      final e = d[0] as CardType;
-      final i = d[1] as int;
-      test('$e => $i', () {
-        expect(e.value, i);
-      });
-      test('$i => $e', () {
-        expect(i.asCardType, e);
-      });
-    });
-  });
-
-  group('LastReadStatus', () {
-    var data = [
-      [LastReadStatus.Successful, 0],
-      [LastReadStatus.FallbackError, 1],
-      [LastReadStatus.RequiredApplicationNotSupported, 2],
-    ];
-
-    data.forEach((d) {
-      final e = d[0] as LastReadStatus;
-      final i = d[1] as int;
-      test('$e => $i', () {
-        expect(e.value, i);
-      });
-      test('$i => $e', () {
-        expect(i.asLastReadStatus, e);
-      });
-    });
+    for (var status in statusesNotOk) {
+      final request = GetCardRequest();
+      final sut = GetCardMapper();
+      final response =
+          sut.mapResponse(request, CommandResponse("GRC", status, []));
+      expect(response, isNull);
+    }
   });
 }
