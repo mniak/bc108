@@ -1,4 +1,4 @@
-## [0.1.4]
+## [0.1.5]
 - Bug fixes
 - Make TLV raw data visible
 - Locking mechanism to avoid race conditions
