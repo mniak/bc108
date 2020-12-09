@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:convert/convert.dart' as convert;
 
 import 'fixed_length.dart';
@@ -49,9 +51,14 @@ class BinaryData {
   String get hex => convert.hex.encode(bytes).toUpperCase();
   String get string => utf8.decode(_bytes);
 
-  bool operator ==(o) => o is BinaryData && this._bytes == o._bytes;
+  static final Function _listEquality = ListEquality().equals;
+  bool operator ==(o) =>
+      o is BinaryData && _listEquality(this._bytes, o._bytes);
   @override
-  int get hashCode => _bytes.hashCode;
+  int get hashCode =>
+      _bytes.fold(17, (v, e) => (v * 37 + e.hashCode) * 37 + e.hashCode) %
+      2147483647;
+
   @override
   String toString() => "{0x$hex}";
 }

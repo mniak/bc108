@@ -41,7 +41,7 @@ void main() {
       expect(b.hashCode, equals(a.hashCode));
     });
 
-    test('not equality test with different data but same raw', () {
+    test('not-equality test with different data but same raw', () {
       final key = faker.lorem.word();
       final raw = faker.lorem.sentence();
       final bytesA = faker.randomGenerator.numbers(255, 100);
@@ -58,7 +58,7 @@ void main() {
       expect(b, isNot(equals(a)));
     });
 
-    test('not equality test with same data but different raw', () {
+    test('not-equality test with same data but different raw', () {
       final key = faker.lorem.word();
       final rawA = faker.lorem.sentence();
       final rawB = faker.lorem.sentence();

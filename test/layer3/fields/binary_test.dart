@@ -1,4 +1,5 @@
 import 'package:bc108/src/layer3/fields/binary.dart';
+import 'package:convert/convert.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -106,7 +107,20 @@ void main() {
   });
 
   group('BinaryData', () {
-    test('equality test', () {
+    test('equality test constructing with hexadecimal', () {
+      final data =
+          hex.encode(faker.randomGenerator.numbers(255, 3)).toUpperCase();
+
+      final a = BinaryData.fromHex(data);
+      final b = BinaryData.fromHex(data);
+
+      expect(a, equals(b));
+      expect(b, equals(a));
+      expect(a.hashCode, equals(b.hashCode));
+      expect(b.hashCode, equals(a.hashCode));
+    });
+
+    test('equality test constructing with bytes', () {
       final bytes = faker.randomGenerator.numbers(255, 100);
 
       final a = BinaryData.fromBytes(bytes);
@@ -118,7 +132,7 @@ void main() {
       expect(b.hashCode, equals(a.hashCode));
     });
 
-    test('not equality test', () {
+    test('not-equality test', () {
       final bytesA = faker.randomGenerator.numbers(255, 100);
       final bytesB = faker.randomGenerator.numbers(255, 100);
 
