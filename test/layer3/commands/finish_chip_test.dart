@@ -35,12 +35,11 @@ void main() {
     final response = sut.mapResponse(request, commandResponse);
 
     expect(response.decision, equals(FinishChipDecision.Approved));
-    expect(
-        response.tags,
-        equals(TlvMap({
-          "9F27": BinaryData.fromHex("40"),
-          "9F26": BinaryData.fromHex("19C5D08A4419BBD9"),
-        }, "9F2701409F260819C5D08A4419BBD9")));
+    final expectedTags = TlvMap({
+      "9F27": BinaryData.fromHex("40"),
+      "9F26": BinaryData.fromHex("19C5D08A4419BBD9"),
+    }, "9F2701409F260819C5D08A4419BBD9");
+    expect(response.tags, equals(expectedTags));
     expect(response.issuerScriptResults, isEmpty);
     expect(response.acquirerSpecificData, isEmpty);
   });
