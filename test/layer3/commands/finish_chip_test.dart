@@ -43,4 +43,16 @@ void main() {
     expect(response.issuerScriptResults, isEmpty);
     expect(response.acquirerSpecificData, isEmpty);
   });
+
+  test('mapResponse when status is not OK, should return null', () {
+    final statusesNotOk = Statuses.where((x) => x != Status.PP_OK);
+
+    for (var status in statusesNotOk) {
+      final request = FinishChipRequest();
+      final sut = Mapper();
+      final response =
+          sut.mapResponse(request, CommandResponse("FNC", status, []));
+      expect(response, isNull);
+    }
+  });
 }

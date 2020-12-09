@@ -56,6 +56,7 @@ class Mapper
   @override
   FinishChipResponse mapResponse(
       FinishChipRequest request, CommandResponse result) {
+    if (result.status != Status.PP_OK) return null;
     final _responseField = CompositeField([
       NumericField(1),
       TlvFieldWithHeader(3, [...request.requiredTagsList]),

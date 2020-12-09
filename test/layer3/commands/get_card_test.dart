@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/commands/get_card.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -51,5 +52,17 @@ void main() {
     expect(response.moedeiroBalance, equals(0));
     expect(response.issuerCountryCode, equals(76));
     expect(response.acquirerSpecificData, equals(""));
+  });
+
+  test('mapResponse when status is not OK, should return null', () {
+    final statusesNotOk = Statuses.where((x) => x != Status.PP_OK);
+
+    for (var status in statusesNotOk) {
+      final request = GetCardRequest();
+      final sut = GetCardMapper();
+      final response =
+          sut.mapResponse(request, CommandResponse("GRC", status, []));
+      expect(response, isNull);
+    }
   });
 }

@@ -74,4 +74,16 @@ void main() {
         }));
     expect(response.acquirerSpecificData, equals(""));
   });
+
+  test('mapResponse when status is not OK, should return null', () {
+    final statusesNotOk = Statuses.where((x) => x != Status.PP_OK);
+
+    for (var status in statusesNotOk) {
+      final request = GoOnChipRequest();
+      final sut = Mapper();
+      final response =
+          sut.mapResponse(request, CommandResponse("GOC", status, []));
+      expect(response, isNull);
+    }
+  });
 }

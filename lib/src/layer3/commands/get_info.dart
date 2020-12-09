@@ -36,6 +36,8 @@ class Mapper implements RequestResponseMapper<void, GetInfo00Response> {
 
   @override
   GetInfo00Response mapResponse(void request, CommandResponse result) {
+    if (result.status != Status.PP_OK) return null;
+
     final parsed = _responseField.parse(result.parameters[0]);
     return GetInfo00Response()
       ..manufacturer = parsed.data[0]
