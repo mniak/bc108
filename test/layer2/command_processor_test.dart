@@ -46,6 +46,8 @@ void main() {
     when(sut.oper.send(request.payload))
         .thenAnswer((_) => Future.value(AckFrame.timeout()));
 
+    expectLater(sut.processor.notifications, neverEmits(anything));
+
     final result = await sut.processor.send(request);
 
     verify(sut.oper.send(request.payload)).called(1);
@@ -54,7 +56,6 @@ void main() {
         predicate<CommandResponse>(
             (x) => x.code == request.code && x.status == Status.PP_COMMTOUT));
 
-    expectLater(sut.processor.notifications, neverEmits(anything));
     sut.processor.close();
   });
 
@@ -77,6 +78,8 @@ void main() {
     when(sut.oper.receive())
         .thenAnswer((_) => Future.value(answers.removeAt(0)));
 
+    expectLater(sut.processor.notifications, emits(message));
+
     final result = await sut.processor.send(request);
 
     verify(sut.oper.send(request.payload)).called(1);
@@ -86,8 +89,6 @@ void main() {
             x.code == request.code &&
             x.status == Status.PP_OK &&
             x.parameters[0] == responseData));
-
-    expectLater(sut.processor.notifications, emits(message));
   });
 
   test('close should be bypassed', () {
@@ -95,5 +96,11 @@ void main() {
     sut.processor.close();
     verify(sut.oper.close()).called(1);
     expectLater(sut.processor.notifications, emitsDone);
+  });
+
+  test('notification stream should allow many listeners', () {
+    final sut = SUT();
+    sut.processor.notifications.listen((event) {});
+    sut.processor.notifications.listen((event) {});
   });
 }
