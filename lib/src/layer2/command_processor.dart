@@ -11,7 +11,8 @@ import 'status.dart';
 
 class CommandProcessor {
   Operator _operator;
-  StreamController<String> _notificationController = StreamController<String>();
+  StreamController<String> _notificationController =
+      StreamController.broadcast();
   Lock _lock = Lock();
 
   Stream<String> get notifications => _notificationController.stream;
