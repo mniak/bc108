@@ -52,7 +52,7 @@ void main() {
     });
   });
   group('data', () {
-    test('when receive ACK then Data, should return data', () async {
+    test('when receive Data, should return data', () async {
       final sut = SUT();
       final data = faker.lorem.sentence();
       sut.controller.sink.add(ReaderEvent.data(data));
@@ -99,6 +99,52 @@ void main() {
       sut.controller.sink.addError(error);
       expect(
           () => sut.receiver.receiveData(dataTimeout), throwsA(equals(error)));
+    });
+
+    test(
+        'when is waiting for ACK and receives ACK, then waiting for data and receives data, then should be ok',
+        () async {
+      final sut = SUT();
+
+      sut.controller.sink.add(ReaderEvent.ack());
+      final ackResult = await sut.receiver.receiveAck(ackTimeout);
+
+      expect(ackResult, isNotNull);
+      expect(ackResult.timeout, isFalse);
+      expect(ackResult.tryAgain, isFalse);
+      expect(ackResult.ok, isTrue);
+
+      final data = faker.lorem.sentence();
+      sut.controller.sink.add(ReaderEvent.data(data));
+      final dataResult = await sut.receiver.receiveData(dataTimeout);
+
+      expect(dataResult, isNotNull);
+      expect(dataResult.timeout, isFalse);
+      expect(dataResult.tryAgain, isFalse);
+      expect(dataResult.hasData, isTrue);
+      expect(dataResult.data, equals(data));
+    });
+
+    test('when call times out, the second should not raise error', () async {
+      final sut = SUT();
+
+      final ackResult =
+          await sut.receiver.receiveAck(Duration(milliseconds: 20));
+
+      expect(ackResult.timeout, isNotNull);
+      expect(ackResult.timeout, isTrue);
+      sut.controller.sink.add(ReaderEvent.ack());
+      await Future.delayed(Duration(milliseconds: 20));
+
+      final data = faker.lorem.sentence();
+      sut.controller.sink.add(ReaderEvent.data(data));
+      final dataResult = await sut.receiver.receiveData(dataTimeout);
+
+      expect(dataResult, isNotNull);
+      expect(dataResult.timeout, isFalse);
+      expect(dataResult.tryAgain, isFalse);
+      expect(dataResult.hasData, isTrue);
+      expect(dataResult.data, equals(data));
     });
   });
 }
