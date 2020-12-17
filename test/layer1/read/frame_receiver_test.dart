@@ -125,7 +125,7 @@ void main() {
       expect(dataResult.data, equals(data));
     });
 
-    test('when call times out, the second should not raise error', () async {
+    test('when a call times out, the second should not raise error', () async {
       final sut = SUT();
 
       final ackResult =

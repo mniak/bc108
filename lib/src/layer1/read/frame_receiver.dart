@@ -13,20 +13,12 @@ class FrameReceiver {
 
   FrameReceiver(this._stream) {
     if (!_stream.isBroadcast) _stream = _stream.asBroadcastStream();
-    _reset();
-  }
-
-  Future<ReaderEvent> _nextEvent(Duration timeout) =>
-      _queue.next.timeout(timeout);
-
-  void _reset() {
-    if (_queue != null) _queue.cancel();
-    _queue = StreamQueue<ReaderEvent>(_stream);
   }
 
   Future<AckFrame> receiveAck(Duration timeout) async {
+    final queue = StreamQueue<ReaderEvent>(_stream);
     try {
-      final event = await _nextEvent(timeout);
+      final event = await queue.next.timeout(timeout);
       if (!event.ack && !event.nak) {
         throw ExpectingAckOrNakException(event);
       }
@@ -36,22 +28,25 @@ class FrameReceiver {
       return AckFrame.ok();
     } on TimeoutException {
       log('Expecting ack/nak, received timout. Resetting buffer.');
-      _reset();
       return AckFrame.timeout();
+    } finally {
+      await queue.cancel(immediate: true);
     }
   }
 
   Future<DataFrame> receiveData(Duration timeout) async {
+    final queue = StreamQueue<ReaderEvent>(_stream);
     try {
-      final event = await _nextEvent(timeout);
+      final event = await queue.next.timeout(timeout);
       if (!event.isDataEvent) {
         throw ExpectingDataEventException(event);
       }
       return DataFrame.data(event.data);
     } on TimeoutException {
       log('Expecting data, received timout. Resetting buffer.');
-      _reset();
       return DataFrame.timeout();
+    } finally {
+      await queue.cancel(immediate: true);
     }
   }
 }
