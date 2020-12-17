@@ -52,4 +52,8 @@ class CommandProcessor {
     _operator.close();
     _notificationController.close();
   }
+
+  Future abort() async {
+    await _operator.abort();
+  }
 }

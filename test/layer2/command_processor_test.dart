@@ -1,6 +1,5 @@
 import 'package:bc108/src/layer1/operator.dart';
-import 'package:bc108/src/layer1/read/ack_frame.dart';
-import 'package:bc108/src/layer1/read/result_frame.dart';
+import 'package:bc108/src/layer1/read/frames.dart';
 import 'package:bc108/src/layer2/command_processor.dart';
 import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/command_response.dart';
@@ -28,7 +27,7 @@ void main() {
     final request = CommandRequest('CMD', []);
 
     when(sut.oper.send(request.payload))
-        .thenAnswer((_) => Future.value(AckFrame.tryAgain()));
+        .thenAnswer((_) => Future.value(UnitFrame.tryAgain()));
 
     final result = await sut.processor.send(request);
 
@@ -44,7 +43,7 @@ void main() {
     final request = CommandRequest('CMD', []);
 
     when(sut.oper.send(request.payload))
-        .thenAnswer((_) => Future.value(AckFrame.timeout()));
+        .thenAnswer((_) => Future.value(UnitFrame.timeout()));
 
     expectLater(sut.processor.notifications, neverEmits(anything));
 
@@ -68,11 +67,11 @@ void main() {
     final message = 'Y' * 321;
 
     when(sut.oper.send(request.payload))
-        .thenAnswer((_) => Future.value(AckFrame.ok()));
+        .thenAnswer((_) => Future.value(UnitFrame.ok()));
 
     final answers = [
-      DataFrame.data("NTM" + "000" + "321" + message),
-      DataFrame.data(request.code + "000" + "123" + responseData)
+      StringFrame.data("NTM" + "000" + "321" + message),
+      StringFrame.data(request.code + "000" + "123" + responseData)
     ];
 
     when(sut.oper.receive())
@@ -102,5 +101,28 @@ void main() {
     final sut = SUT();
     sut.processor.notifications.listen((event) {});
     sut.processor.notifications.listen((event) {});
+  });
+
+  test(
+      'when calling blocking command and abort() is called, should return PP_ABORT',
+      () async {
+    final sut = SUT();
+    final request = CommandRequest('CMD', []);
+
+    when(sut.oper.send(request.payload))
+        .thenAnswer((_) => Future.value(UnitFrame.ok()));
+    when(sut.oper.receive(blocking: true)).thenAnswer((_) async {
+      await Future.delayed(Duration(seconds: 10));
+      return StringFrame.data("CMD" + "000" + "000");
+    });
+    final future = sut.processor.send(request, blocking: true);
+
+    await Future.delayed(Duration(milliseconds: 20));
+    await sut.processor.abort();
+    await Future.delayed(Duration(milliseconds: 20));
+
+    final response = await future;
+
+    expect(response.status, Status.PP_CANCEL);
   });
 }

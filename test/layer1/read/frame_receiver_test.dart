@@ -31,7 +31,7 @@ void main() {
       expect(result, isNotNull);
       expect(result.timeout, isFalse);
       expect(result.tryAgain, isFalse);
-      expect(result.ok, isTrue);
+      expect(result.data, isTrue);
     });
 
     test('when does not receive anything, should return timeout', () async {
@@ -41,7 +41,7 @@ void main() {
       expect(result, isNotNull);
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.ok, isFalse);
+      expect(result.data, isFalse);
     });
 
     test('when receive any other error, should throw', () {
@@ -112,7 +112,7 @@ void main() {
       expect(ackResult, isNotNull);
       expect(ackResult.timeout, isFalse);
       expect(ackResult.tryAgain, isFalse);
-      expect(ackResult.ok, isTrue);
+      expect(ackResult.data, isTrue);
 
       final data = faker.lorem.sentence();
       sut.controller.sink.add(ReaderEvent.data(data));

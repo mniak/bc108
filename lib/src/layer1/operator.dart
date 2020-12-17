@@ -1,6 +1,5 @@
 import 'log.dart';
-import 'read/ack_frame.dart';
-import 'read/result_frame.dart';
+import 'read/frames.dart';
 import '../../bc108.dart';
 
 class Operator {
@@ -14,8 +13,8 @@ class Operator {
   Operator.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(FrameReceiver(stream.asEventReader()), FrameSender(sink));
 
-  Future<AckFrame> send(String frame) async {
-    var ackResult = AckFrame.tryAgain();
+  Future<UnitFrame> send(String frame) async {
+    var ackResult = UnitFrame.tryAgain();
     for (var remainingTries = 3;
         ackResult.tryAgain && remainingTries > 0;
         remainingTries--) {
@@ -26,7 +25,7 @@ class Operator {
     return ackResult;
   }
 
-  Future<DataFrame> receive({bool blocking}) async {
+  Future<StringFrame> receive({bool blocking}) async {
     final timeout = blocking == true ? Duration(days: 1) : dataTimeout;
     final frame = await _receiver.receiveData(timeout);
     log("Data frame received: $frame");
@@ -35,5 +34,17 @@ class Operator {
 
   void close() {
     _sender.close();
+  }
+
+  Future<UnitFrame> abort() async {
+    var ackResult = UnitFrame.tryAgain();
+    for (var remainingTries = 3;
+        ackResult.tryAgain && remainingTries > 0;
+        remainingTries--) {
+      // _sender.abort();
+      log("Abortion sent");
+      ackResult = await _receiver.receiveEot(ackTimeout);
+    }
+    return ackResult;
   }
 }

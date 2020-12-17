@@ -17,13 +17,13 @@ class CommandResponse {
   CommandResponse.fromStatus(Status status, [String code = "ERR"])
       : this(code, status, []);
 
-  factory CommandResponse.fromDataFrame(DataFrame frame) {
+  factory CommandResponse.fromDataFrame(StringFrame frame) {
     if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
     if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
     return CommandResponse.parse(frame.data);
   }
 
-  factory CommandResponse.fromAckFrame(AckFrame frame) {
+  factory CommandResponse.fromUnitFrame(UnitFrame frame) {
     if (frame.tryAgain) return CommandResponse.fromStatus(Status.PP_COMMERR);
     if (frame.timeout) return CommandResponse.fromStatus(Status.PP_COMMTOUT);
     return CommandResponse.fromStatus(Status.PP_OK);

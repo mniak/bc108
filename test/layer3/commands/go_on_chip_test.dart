@@ -48,7 +48,7 @@ void main() {
       ..optionalTags = ["5F20", "5F28"];
 
     final response = mapper.mapResponse(
-        request, CommandResponse.fromDataFrame(DataFrame.data(data)));
+        request, CommandResponse.fromDataFrame(StringFrame.data(data)));
 
     expect(
         response.decision, equals(GoOnChipDecision.PerformOnlineAuthorization));

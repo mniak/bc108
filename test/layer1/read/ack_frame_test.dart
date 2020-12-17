@@ -1,27 +1,27 @@
-import 'package:bc108/src/layer1/read/ack_frame.dart';
+import 'package:bc108/src/layer1/read/frames.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('constructors', () {
     test('try again', () {
-      final sut = AckFrame.tryAgain();
+      final sut = UnitFrame.tryAgain();
       expect(sut.tryAgain, isTrue);
       expect(sut.timeout, isFalse);
-      expect(sut.ok, isFalse);
+      expect(sut.data, isFalse);
     });
 
     test('timeout', () {
-      final sut = AckFrame.timeout();
+      final sut = UnitFrame.timeout();
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isTrue);
-      expect(sut.ok, isFalse);
+      expect(sut.data, isFalse);
     });
 
-    test('ok', () {
-      final sut = AckFrame.ok();
+    test('ok/data', () {
+      final sut = UnitFrame.ok();
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isFalse);
-      expect(sut.ok, isTrue);
+      expect(sut.data, isTrue);
     });
   });
 }

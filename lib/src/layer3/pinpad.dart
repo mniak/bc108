@@ -59,4 +59,8 @@ class Pinpad {
   Future<PinpadResult<FinishChipResponse>> finishChip(
           FinishChipRequest request) =>
       _factory.finishChip(_processor).handle(request);
+
+  Future abort() {
+    return _processor.abort();
+  }
 }

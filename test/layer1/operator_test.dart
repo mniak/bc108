@@ -1,7 +1,6 @@
 import 'package:bc108/src/layer1/operator.dart';
-import 'package:bc108/src/layer1/read/ack_frame.dart';
 import 'package:bc108/src/layer1/read/frame_receiver.dart';
-import 'package:bc108/src/layer1/read/result_frame.dart';
+import 'package:bc108/src/layer1/read/frames.dart';
 import 'package:bc108/src/layer1/write/frame_sender.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,13 +33,13 @@ void main() {
       final frame = faker.lorem.sentence();
 
       when(sut.receiver.receiveAck(ackTimeout))
-          .thenAnswer((_) => Future.value(AckFrame.timeout()));
+          .thenAnswer((_) => Future.value(UnitFrame.timeout()));
 
       final result = await sut.oper.send(frame);
 
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.ok, isFalse);
+      expect(result.data, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
@@ -50,13 +49,13 @@ void main() {
       final frame = faker.lorem.sentence();
 
       when(sut.receiver.receiveAck(ackTimeout))
-          .thenAnswer((_) => Future.value(AckFrame.ok()));
+          .thenAnswer((_) => Future.value(UnitFrame.ok()));
 
       final result = await sut.oper.send(frame);
 
       expect(result.timeout, isFalse);
       expect(result.tryAgain, isFalse);
-      expect(result.ok, isTrue);
+      expect(result.data, isTrue);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
@@ -66,13 +65,13 @@ void main() {
       final frame = faker.lorem.sentence();
 
       when(sut.receiver.receiveAck(ackTimeout))
-          .thenAnswer((_) => Future.value(AckFrame.tryAgain()));
+          .thenAnswer((_) => Future.value(UnitFrame.tryAgain()));
       final result = await sut.oper.send(frame);
 
       expect(result, isNotNull);
       expect(result.timeout, isFalse);
       expect(result.tryAgain, isTrue);
-      expect(result.ok, isFalse);
+      expect(result.data, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
@@ -84,8 +83,8 @@ void main() {
       final frame = faker.lorem.sentence();
 
       var answers = [
-        AckFrame.tryAgain(),
-        AckFrame.timeout(),
+        UnitFrame.tryAgain(),
+        UnitFrame.timeout(),
       ];
       when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(answers.removeAt(0)));
@@ -94,7 +93,7 @@ void main() {
 
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.ok, isFalse);
+      expect(result.data, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(2);
     });
@@ -106,9 +105,9 @@ void main() {
       final frame = faker.lorem.sentence();
 
       var answers = [
-        AckFrame.tryAgain(),
-        AckFrame.tryAgain(),
-        AckFrame.timeout(),
+        UnitFrame.tryAgain(),
+        UnitFrame.tryAgain(),
+        UnitFrame.timeout(),
       ];
       when(sut.receiver.receiveAck(ackTimeout))
           .thenAnswer((_) => Future.value(answers.removeAt(0)));
@@ -117,7 +116,7 @@ void main() {
 
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.ok, isFalse);
+      expect(result.data, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
@@ -128,7 +127,7 @@ void main() {
       final sut = SUT();
 
       when(sut.receiver.receiveData(dataTimeout))
-          .thenAnswer((_) => Future.value(DataFrame.timeout()));
+          .thenAnswer((_) => Future.value(StringFrame.timeout()));
 
       final result = await sut.oper.receive();
 
@@ -145,7 +144,7 @@ void main() {
       final data = faker.lorem.sentence();
 
       when(sut.receiver.receiveData(dataTimeout))
-          .thenAnswer((_) => Future.value(DataFrame.data(data)));
+          .thenAnswer((_) => Future.value(StringFrame.data(data)));
 
       final result = await sut.oper.receive();
 
@@ -161,7 +160,7 @@ void main() {
       final sut = SUT();
 
       when(sut.receiver.receiveData(dataTimeout))
-          .thenAnswer((_) => Future.value(DataFrame.tryAgain()));
+          .thenAnswer((_) => Future.value(StringFrame.tryAgain()));
       final result = await sut.oper.receive();
 
       expect(result, isNotNull);
