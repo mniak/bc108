@@ -2,10 +2,6 @@ import 'package:bc108/bc108.dart';
 import '../mapper.dart';
 import '../handler.dart';
 
-class GetKeyRequest {}
-
-class GetKeyResponse {}
-
 class Mapper implements RequestResponseMapper<void, void> {
   @override
   CommandRequest mapRequest(void request) {
