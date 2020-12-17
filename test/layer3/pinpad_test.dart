@@ -1,5 +1,4 @@
 import 'package:bc108/src/layer2/exports.dart';
-import 'package:bc108/src/layer3/commands/get_key.dart';
 import 'package:bc108/src/layer3/exports.dart';
 import 'package:bc108/src/layer3/factory.dart';
 import 'package:bc108/src/layer3/handler.dart';
@@ -109,11 +108,25 @@ void main() {
     final requestHandler = RequestHandlerMock<void, GetTimestampResponse>();
     final pinpadResult = PinpadResultMock<GetTimestampResponse>();
 
-    when(sut.handlerFactory.getTimestamp(sut.oper)).thenReturn(requestHandler);
     when(requestHandler.handle(request))
         .thenAnswer((_) => Future.value(pinpadResult));
+    when(sut.handlerFactory.getTimestamp(sut.oper)).thenReturn(requestHandler);
 
     final result = await sut.pinpad.getTimestamp(request);
     expect(result, equals(pinpadResult));
   });
+
+  // test('call blocking then abort then call something', () async {
+  //   final sut = SUT();
+  //   final request = GetCardRequest();
+
+  //   final getCardResponse1 =
+  //       await sut.pinpad.getCard(request).timeout(Duration(milliseconds: 20));
+
+  //   final getCardResponse2 =
+  //       await sut.pinpad.getCard(request).timeout(Duration(milliseconds: 20));
+  //   final getCardResponse3 =
+  //       await sut.pinpad.getCard(request).timeout(Duration(milliseconds: 20));
+
+  // });
 }
