@@ -1,6 +1,5 @@
 [![codecov.io](https://codecov.io/github/mniak/bc108/coverage.svg?branch=master)](https://codecov.io/github/mniak/bc108?branch=master)
 
-  
 `bc108`
 ===============
 Dart implementation of the specification _'Biblioteca Compartilhada v1.08a'_.
@@ -50,4 +49,10 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ⬜ `getDUKPT`
 - ⬜ `getTimeStamp`
 - ⬜ `defineWKPAN`
+
+## Donations
+
+Did you find this project useful? Consider making a donation.
+
+[![Donate via PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4K22SYGEXCS6Q)
 
