@@ -3,7 +3,7 @@ library utils;
 import 'bytes.dart';
 
 class BytesBuilder {
-  List<int> _bytes = List<int>();
+  List<int> _bytes = [];
 
   BytesBuilder addByte(int byte) {
     _bytes.add(byte);

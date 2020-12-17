@@ -20,7 +20,7 @@ class GetCardRequest {
   int amount = 0;
   DateTime datetime = DateTime.now();
   int timestamp = 0;
-  List<GetCardRequestListItem> applications = List<GetCardRequestListItem>();
+  List<GetCardRequestListItem> applications = [];
   bool enableContactless = true;
 }
 

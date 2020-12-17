@@ -15,7 +15,7 @@ enum _ReaderStage {
 }
 
 class ReaderState {
-  final payload = List<int>();
+  final List<int> payload = [];
   _ReaderStage stage;
   int crc1;
 

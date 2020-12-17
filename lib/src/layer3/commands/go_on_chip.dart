@@ -30,8 +30,8 @@ class GoOnChipRequest {
   int floorLimit = 0;
   BiasedRandomSelection biasedRandomSelection = BiasedRandomSelection();
   String acquirerSpecificData = "";
-  List<String> tags = List<String>();
-  List<String> optionalTags = List<String>();
+  List<String> tags = [];
+  List<String> optionalTags = [];
 }
 
 class GoOnChipResponse {

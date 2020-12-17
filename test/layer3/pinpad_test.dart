@@ -115,4 +115,18 @@ void main() {
     final result = await sut.pinpad.getTimestamp(request);
     expect(result, equals(pinpadResult));
   });
+
+  // test('call blocking then abort then call something', () async {
+  //   final sut = SUT();
+  //   final request = GetCardRequest();
+
+  //   final getCardResponse1 =
+  //       await sut.pinpad.getCard(request).timeout(Duration(milliseconds: 20));
+
+  //   final getCardResponse2 =
+  //       await sut.pinpad.getCard(request).timeout(Duration(milliseconds: 20));
+  //   final getCardResponse3 =
+  //       await sut.pinpad.getCard(request).timeout(Duration(milliseconds: 20));
+
+  // });
 }

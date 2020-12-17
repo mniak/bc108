@@ -1,4 +1,3 @@
-import 'package:async/async.dart';
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/commands/get_card.dart';
 import 'package:flutter_test/flutter_test.dart';

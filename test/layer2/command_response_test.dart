@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bc108/src/layer2/command_request.dart';
+import 'package:bc108/src/layer2/command_response.dart';
 import 'package:bc108/src/layer2/exceptions.dart';
 import 'package:bc108/src/layer2/status.dart';
 import 'package:flutter_test/flutter_test.dart';
