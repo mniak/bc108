@@ -30,7 +30,7 @@ class SUT {
 }
 
 void main() {
-  group('when bytes are well formatted message, should return string', () {
+  group('when bytes are well formatted message, should emit data event', () {
     final data = [
       "OPN000",
       "AAAAAAAA",
@@ -136,7 +136,7 @@ void main() {
         sut.eventStream, emitsError(TypeMatcher<PayloadTooLongException>()));
   });
 
-  group('when ACK/NAK are received, should raise event ACK/NAK', () {
+  group('when ACK/NAK are received, should emit ACK/NAK event', () {
     final data = [
       [Byte.ACK.toInt(), predicate((x) => !x.isDataEvent && x.ack)],
       [Byte.NAK.toInt(), predicate((x) => !x.isDataEvent && x.nak)],
@@ -173,12 +173,13 @@ void main() {
     });
   });
 
-  test('when EOT is received, should raise aborted error', () {
+  test('when EOT is received, should emit aborted event', () {
     final sut = SUT();
 
     sut.controller.sink.add(Byte.EOT.toInt());
 
-    expectLater(sut.eventStream, emitsError(TypeMatcher<AbortedException>()));
+    expectLater(sut.eventStream,
+        emits(predicate<ReaderEvent>((x) => !x.isDataEvent && x.aborted)));
   });
 
   test("error events are bypassed", () {
