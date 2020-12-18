@@ -1,6 +1,6 @@
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/commands/finish_chip.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('request mapping', () {

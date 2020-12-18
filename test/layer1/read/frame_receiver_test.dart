@@ -4,7 +4,7 @@ import 'package:bc108/src/layer1/read/frame_receiver.dart';
 import 'package:bc108/src/layer1/read/exceptions.dart';
 import 'package:bc108/src/layer1/read/reader.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 final ackTimeout = Duration(milliseconds: 50);
 final dataTimeout = Duration(milliseconds: 50);

@@ -1,7 +1,7 @@
 import 'package:bc108/bc108.dart';
 import 'package:bc108/src/layer3/fields/tlv.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:matcher/matcher.dart';
 
 void main() {

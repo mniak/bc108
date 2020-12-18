@@ -3,7 +3,7 @@ import 'package:bc108/src/layer3/exports.dart';
 import 'package:bc108/src/layer3/factory.dart';
 import 'package:bc108/src/layer3/handler.dart';
 import 'package:bc108/src/layer1/pinpad_result.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 
 class OperatorMock extends Mock implements CommandProcessor {}

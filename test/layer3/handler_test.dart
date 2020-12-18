@@ -5,7 +5,7 @@ import 'package:bc108/src/layer2/command_response.dart';
 import 'package:bc108/src/layer3/handler.dart';
 import 'package:bc108/src/layer3/mapper.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 
 class OperatorMock extends Mock implements CommandProcessor {}

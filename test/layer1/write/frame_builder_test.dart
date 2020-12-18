@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bc108/src/layer1/utils/checksum.dart';
 import 'package:bc108/src/layer1/write/frame_builder.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 
 class ChecksumMock extends Mock implements ChecksumAlgorithm {}

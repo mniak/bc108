@@ -4,8 +4,8 @@ import 'package:bc108/src/layer2/command_processor.dart';
 import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/command_response.dart';
 import 'package:bc108/src/layer2/status.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
 
 class OperatorMock extends Mock implements Operator {}
 

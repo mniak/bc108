@@ -1,7 +1,7 @@
 import 'package:bc108/src/layer3/fields/binary.dart';
 import 'package:convert/convert.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('BinaryField', () {

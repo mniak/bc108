@@ -1,6 +1,6 @@
 import 'package:bc108/src/layer1/read/reader.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('constructor', () {

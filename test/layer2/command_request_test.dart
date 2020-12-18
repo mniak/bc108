@@ -1,7 +1,7 @@
 import 'package:bc108/src/layer2/command_request.dart';
 import 'package:bc108/src/layer2/exceptions.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('format payload using random data', () {

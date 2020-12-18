@@ -2,7 +2,7 @@ import 'package:bc108/src/layer3/fields/field_result.dart';
 import 'package:bc108/src/layer3/fields/fixed_length.dart';
 import 'package:bc108/src/layer3/fields/variable_length.dart';
 import 'package:faker/faker.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 
 class VariableLengthFieldMock extends VariableLengthField with Mock {
