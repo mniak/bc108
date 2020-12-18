@@ -4,7 +4,7 @@ import 'package:async/async.dart';
 import '../log.dart';
 import 'exceptions.dart';
 import 'frames.dart';
-import 'reader.dart';
+import 'reader_event.dart';
 
 class FrameReceiver {
   Stream<ReaderEvent> _stream;

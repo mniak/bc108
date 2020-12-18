@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:bc108/src/layer1/read/reader_event.dart';
 import 'package:faker/faker.dart';
 import 'package:test/test.dart';
 import 'package:matcher/matcher.dart';

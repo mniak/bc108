@@ -1,4 +1,5 @@
-export 'read/reader.dart' show ReaderEvent, EventReaderExtension;
+export 'read/reader_event.dart';
+export 'read/reader.dart' show EventReaderExtension;
 export 'read/frames.dart';
 export 'read/frame_receiver.dart';
 export 'write/frame_sender.dart';

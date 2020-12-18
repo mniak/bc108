@@ -1,4 +1,4 @@
-import 'reader.dart';
+import 'reader_event.dart';
 
 abstract class FrameReceiverException implements Exception {}
 
