@@ -36,8 +36,16 @@ class StringFrame extends DataFrame<String> {
   }
 }
 
-class UnitFrame extends DataFrame<bool> {
-  UnitFrame.tryAgain() : super.tryAgain();
-  UnitFrame.timeout() : super.timeout();
-  UnitFrame.ok() : super.data(true);
+class UnitFrame extends DataFrame<void> {
+  final bool ok;
+
+  UnitFrame.tryAgain()
+      : ok = false,
+        super.tryAgain();
+  UnitFrame.timeout()
+      : ok = false,
+        super.timeout();
+  UnitFrame.ok()
+      : ok = true,
+        super.data(null);
 }

@@ -7,21 +7,21 @@ void main() {
       final sut = UnitFrame.tryAgain();
       expect(sut.tryAgain, isTrue);
       expect(sut.timeout, isFalse);
-      expect(sut.data, isFalse);
+      expect(sut.ok, isFalse);
     });
 
     test('timeout', () {
       final sut = UnitFrame.timeout();
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isTrue);
-      expect(sut.data, isFalse);
+      expect(sut.ok, isFalse);
     });
 
-    test('ok/data', () {
+    test('ok', () {
       final sut = UnitFrame.ok();
       expect(sut.tryAgain, isFalse);
       expect(sut.timeout, isFalse);
-      expect(sut.data, isTrue);
+      expect(sut.ok, isTrue);
     });
   });
 }

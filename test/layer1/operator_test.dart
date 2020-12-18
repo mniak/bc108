@@ -39,7 +39,7 @@ void main() {
 
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.data, isFalse);
+      expect(result.ok, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
@@ -55,7 +55,7 @@ void main() {
 
       expect(result.timeout, isFalse);
       expect(result.tryAgain, isFalse);
-      expect(result.data, isTrue);
+      expect(result.ok, isTrue);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
@@ -71,7 +71,7 @@ void main() {
       expect(result, isNotNull);
       expect(result.timeout, isFalse);
       expect(result.tryAgain, isTrue);
-      expect(result.data, isFalse);
+      expect(result.ok, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
@@ -93,7 +93,7 @@ void main() {
 
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.data, isFalse);
+      expect(result.ok, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(2);
     });
@@ -116,7 +116,7 @@ void main() {
 
       expect(result.timeout, isTrue);
       expect(result.tryAgain, isFalse);
-      expect(result.data, isFalse);
+      expect(result.ok, isFalse);
 
       verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
