@@ -35,16 +35,6 @@ class ExpectingDataEventException implements FrameReceiverException {
 
 abstract class ReaderException implements Exception {}
 
-class AbortedException implements ReaderException {
-  String message;
-  AbortedException() {
-    this.message = "Aborted because the byte EOT (0x04) was received";
-  }
-  String toString() {
-    return "AbortedException: $message";
-  }
-}
-
 class ByteOutOfRangeException implements ReaderException {
   String message;
   ByteOutOfRangeException(int byte) {
