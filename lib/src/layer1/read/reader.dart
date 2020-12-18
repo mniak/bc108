@@ -55,11 +55,11 @@ class ReaderTransformer implements StreamTransformer<int, ReaderEvent> {
 
   void _processBytes(int b, StreamSink<ReaderEvent> sink, ReaderState state) {
     final byte = b.toByte();
-    // if (byte == Byte.EOT) {
-    //   sink.addError(AbortedException());
-    //   state.reset();
-    //   return;
-    // }
+    if (byte == Byte.EOT) {
+      sink.add(ReaderEvent.aborted());
+      state.reset();
+      return;
+    }
     switch (state.stage) {
       case _ReaderStage.Initial:
         switch (byte) {

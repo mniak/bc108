@@ -1,4 +1,5 @@
 import 'package:bc108/src/layer1/operator.dart';
+import 'package:bc108/src/layer1/read/exceptions.dart';
 import 'package:bc108/src/layer1/read/frames.dart';
 import 'package:bc108/src/layer2/command_processor.dart';
 import 'package:bc108/src/layer2/command_request.dart';
@@ -82,12 +83,9 @@ void main() {
     final result = await sut.processor.send(request);
 
     verify(sut.oper.send(request.payload)).called(1);
-    expect(
-        result,
-        predicate<CommandResponse>((x) =>
-            x.code == request.code &&
-            x.status == Status.PP_OK &&
-            x.parameters[0] == responseData));
+    expect(result.code, equals(request.code));
+    expect(result.status, equals(Status.PP_OK));
+    expect(result.parameters[0], equals(responseData));
   });
 
   test('close should be bypassed', () {
@@ -104,25 +102,39 @@ void main() {
   });
 
   test(
-      'when calling blocking command and abort() is called, should return PP_ABORT',
+      'when calling blocking command and abort event received, should return PP_ABORT',
       () async {
+    // final sut = SUT();
+    // final request = CommandRequest('CMD', []);
+
+    // when(sut.oper.send(request.payload))
+    //     .thenAnswer((_) => Future.value(UnitFrame.ok()));
+    // when(sut.oper.receive(blocking: true)).thenAnswer((_) async {
+    //   await Future.delayed(Duration(seconds: 10));
+    //   return StringFrame.data("CMD" + "000" + "000");
+    // });
+    // final future = sut.processor.send(request, blocking: true);
+
+    // // await Future.delayed(Duration(milliseconds: 20));
+    // // // await sut.processor.abort();
+    // // await Future.delayed(Duration(milliseconds: 20));
+
+    // final response = await future;
+
+    // expect(response.status, Status.PP_CANCEL);
+
     final sut = SUT();
     final request = CommandRequest('CMD', []);
 
     when(sut.oper.send(request.payload))
         .thenAnswer((_) => Future.value(UnitFrame.ok()));
-    when(sut.oper.receive(blocking: true)).thenAnswer((_) async {
-      await Future.delayed(Duration(seconds: 10));
-      return StringFrame.data("CMD" + "000" + "000");
-    });
-    final future = sut.processor.send(request, blocking: true);
 
-    await Future.delayed(Duration(milliseconds: 20));
-    await sut.processor.abort();
-    await Future.delayed(Duration(milliseconds: 20));
+    when(sut.oper.receive(blocking: true)).thenThrow(AbortedException());
+    final result = await sut.processor.send(request, blocking: true);
 
-    final response = await future;
-
-    expect(response.status, Status.PP_CANCEL);
+    verify(sut.oper.send(request.payload)).called(1);
+    expect(result.code, equals(request.code));
+    expect(result.status, equals(Status.PP_CANCEL));
+    expect(result.parameters, isEmpty);
   });
 }

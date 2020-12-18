@@ -41,6 +41,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isFalse);
 
+      verify(sut.sender.send(frame)).called(1);
       verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
 
@@ -57,6 +58,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isTrue);
 
+      verify(sut.sender.send(frame)).called(1);
       verify(sut.receiver.receiveAck(ackTimeout)).called(1);
     });
 
@@ -73,6 +75,7 @@ void main() {
       expect(result.tryAgain, isTrue);
       expect(result.ok, isFalse);
 
+      verify(sut.sender.send(frame)).called(3);
       verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
 
@@ -95,6 +98,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isFalse);
 
+      verify(sut.sender.send(frame)).called(2);
       verify(sut.receiver.receiveAck(ackTimeout)).called(2);
     });
 
@@ -118,6 +122,7 @@ void main() {
       expect(result.tryAgain, isFalse);
       expect(result.ok, isFalse);
 
+      verify(sut.sender.send(frame)).called(3);
       verify(sut.receiver.receiveAck(ackTimeout)).called(3);
     });
   });
@@ -170,6 +175,102 @@ void main() {
       expect(result.data, isNull);
 
       verify(sut.receiver.receiveData(dataTimeout)).called(1);
+    });
+  });
+
+  group('abort', () {
+    test('when receive timeout, should not be retried', () async {
+      final sut = SUT();
+
+      when(sut.receiver.receiveEot(ackTimeout))
+          .thenAnswer((_) => Future.value(UnitFrame.timeout()));
+
+      final result = await sut.oper.abort();
+
+      expect(result.timeout, isTrue);
+      expect(result.tryAgain, isFalse);
+      expect(result.ok, isFalse);
+
+      verify(sut.sender.abort()).called(1);
+      verify(sut.receiver.receiveEot(ackTimeout)).called(1);
+    });
+
+    test('when receive ok, should not be retried', () async {
+      final sut = SUT();
+
+      when(sut.receiver.receiveEot(ackTimeout))
+          .thenAnswer((_) => Future.value(UnitFrame.ok()));
+
+      final result = await sut.oper.abort();
+
+      expect(result.timeout, isFalse);
+      expect(result.tryAgain, isFalse);
+      expect(result.ok, isTrue);
+
+      verify(sut.sender.abort()).called(1);
+      verify(sut.receiver.receiveEot(ackTimeout)).called(1);
+    });
+
+    test('when receive try again, should retry 2 more times', () async {
+      final sut = SUT();
+
+      when(sut.receiver.receiveEot(ackTimeout))
+          .thenAnswer((_) => Future.value(UnitFrame.tryAgain()));
+
+      final result = await sut.oper.abort();
+
+      expect(result, isNotNull);
+      expect(result.timeout, isFalse);
+      expect(result.tryAgain, isTrue);
+      expect(result.ok, isFalse);
+
+      verify(sut.sender.abort()).called(3);
+      verify(sut.receiver.receiveEot(ackTimeout)).called(3);
+    });
+
+    test(
+        'when receive try again and the first retry returns is timeout, should return timeout',
+        () async {
+      final sut = SUT();
+
+      var answers = [
+        UnitFrame.tryAgain(),
+        UnitFrame.timeout(),
+      ];
+      when(sut.receiver.receiveEot(ackTimeout))
+          .thenAnswer((_) => Future.value(answers.removeAt(0)));
+
+      final result = await sut.oper.abort();
+
+      expect(result.timeout, isTrue);
+      expect(result.tryAgain, isFalse);
+      expect(result.ok, isFalse);
+
+      verify(sut.sender.abort()).called(2);
+      verify(sut.receiver.receiveEot(ackTimeout)).called(2);
+    });
+
+    test(
+        'when receive try again and the second retry returns is timeout, should return timeout',
+        () async {
+      final sut = SUT();
+
+      var answers = [
+        UnitFrame.tryAgain(),
+        UnitFrame.tryAgain(),
+        UnitFrame.timeout(),
+      ];
+      when(sut.receiver.receiveEot(ackTimeout))
+          .thenAnswer((_) => Future.value(answers.removeAt(0)));
+
+      final result = await sut.oper.abort();
+
+      expect(result.timeout, isTrue);
+      expect(result.tryAgain, isFalse);
+      expect(result.ok, isFalse);
+
+      verify(sut.sender.abort()).called(3);
+      verify(sut.receiver.receiveEot(ackTimeout)).called(3);
     });
   });
 }

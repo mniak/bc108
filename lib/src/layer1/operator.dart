@@ -32,19 +32,19 @@ class Operator {
     return frame;
   }
 
-  void close() {
-    _sender.close();
-  }
-
   Future<UnitFrame> abort() async {
     var ackResult = UnitFrame.tryAgain();
     for (var remainingTries = 3;
         ackResult.tryAgain && remainingTries > 0;
         remainingTries--) {
-      // _sender.abort();
+      _sender.abort();
       log("Abortion sent");
       ackResult = await _receiver.receiveEot(ackTimeout);
     }
     return ackResult;
+  }
+
+  void close() {
+    _sender.close();
   }
 }

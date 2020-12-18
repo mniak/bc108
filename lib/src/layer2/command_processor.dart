@@ -22,11 +22,13 @@ class CommandProcessor {
   CommandProcessor.fromStreamAndSink(Stream<int> stream, Sink<int> sink)
       : this(Operator.fromStreamAndSink(stream, sink));
 
-  Future<CommandResponse> send(CommandRequest request, {bool blocking}) async {
+  Future<CommandResponse> send(CommandRequest request,
+      {bool blocking = false}) async {
     return await _lock.synchronized(() => _send(request, blocking: blocking));
   }
 
-  Future<CommandResponse> _send(CommandRequest request, {bool blocking}) async {
+  Future<CommandResponse> _send(CommandRequest request,
+      {bool blocking = false}) async {
     final ackFrame = await _operator.send(request.payload);
     if (ackFrame.tryAgain)
       return CommandResponse.fromStatus(Status.PP_COMMERR, request.code);

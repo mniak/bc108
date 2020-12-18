@@ -18,4 +18,6 @@ class FrameSender {
   void close() {
     this._sink.close();
   }
+
+  void abort() {}
 }
