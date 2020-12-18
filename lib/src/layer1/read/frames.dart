@@ -16,7 +16,7 @@ class DataFrame<T> extends Frame {
       : data = null,
         super(timeout: true);
 
-  DataFrame.data(T data) : data = data;
+  DataFrame.data(this.data);
 
   @override
   String toString() {

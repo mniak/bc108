@@ -172,6 +172,14 @@ void main() {
     });
   });
 
+  test('when EOT is received, should raise aborted error', () {
+    final sut = SUT();
+
+    sut.controller.sink.add(Byte.EOT.toInt());
+
+    expectLater(sut.eventStream, emitsError(TypeMatcher<AbortedException>()));
+  });
+
   test("error events are bypassed", () {
     final sut = SUT();
     final error = faker.lorem.sentence();
