@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bc108/src/layer1/utils/bytes.dart';
 import 'package:bc108/src/layer1/write/frame_builder.dart';
 import 'package:bc108/src/layer1/write/frame_sender.dart';
 import 'package:faker/faker.dart';
@@ -20,12 +21,10 @@ class SUT {
     frameBuilder = FrameBuilderMock();
     sender = FrameSender(controller.sink, frameBuilder: frameBuilder);
   }
-  Stream<Iterable<int>> get stream =>
-      controller.stream.bufferTime(Duration(milliseconds: 100));
 }
 
 void main() {
-  test('happy scenario', () {
+  test('send should build the frame and add to the sink', () {
     final sut = SUT();
 
     final payload = faker.lorem.sentence();
@@ -34,12 +33,24 @@ void main() {
 
     sut.sender.send(payload);
 
-    expectLater(sut.stream, emits(equals(data)));
+    expectLater(
+        sut.controller.stream,
+        emitsInOrder(
+          data.map((x) => equals(x)),
+        ));
+  });
+
+  test('abort should add byte CAN (0x18) to the sink', () {
+    final sut = SUT();
+
+    sut.sender.abort();
+
+    expectLater(sut.controller.stream, emits(equals(Byte.EOT.toInt())));
   });
 
   test('done event should be bypassed', () {
     final sut = SUT();
     sut.sender.close();
-    expectLater(sut.stream, emitsDone);
+    expectLater(sut.controller.stream, emitsDone);
   });
 }

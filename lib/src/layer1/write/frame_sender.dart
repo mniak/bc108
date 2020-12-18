@@ -1,3 +1,4 @@
+import '../utils/bytes.dart';
 import 'frame_builder.dart';
 
 class FrameSender {
@@ -15,9 +16,11 @@ class FrameSender {
     }
   }
 
+  void abort() {
+    _sink.add(Byte.EOT.toInt());
+  }
+
   void close() {
     this._sink.close();
   }
-
-  void abort() {}
 }

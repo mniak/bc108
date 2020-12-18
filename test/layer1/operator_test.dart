@@ -273,4 +273,10 @@ void main() {
       verify(sut.receiver.receiveEot(ackTimeout)).called(3);
     });
   });
+
+  test('when close is called, should close the sender', () {
+    var sut = SUT();
+    sut.oper.close();
+    verify(sut.sender.close()).called(1);
+  });
 }
