@@ -104,25 +104,6 @@ void main() {
   test(
       'when calling blocking command and abort event received, should return PP_ABORT',
       () async {
-    // final sut = SUT();
-    // final request = CommandRequest('CMD', []);
-
-    // when(sut.oper.send(request.payload))
-    //     .thenAnswer((_) => Future.value(UnitFrame.ok()));
-    // when(sut.oper.receive(blocking: true)).thenAnswer((_) async {
-    //   await Future.delayed(Duration(seconds: 10));
-    //   return StringFrame.data("CMD" + "000" + "000");
-    // });
-    // final future = sut.processor.send(request, blocking: true);
-
-    // // await Future.delayed(Duration(milliseconds: 20));
-    // // // await sut.processor.abort();
-    // // await Future.delayed(Duration(milliseconds: 20));
-
-    // final response = await future;
-
-    // expect(response.status, Status.PP_CANCEL);
-
     final sut = SUT();
     final request = CommandRequest('CMD', []);
 
