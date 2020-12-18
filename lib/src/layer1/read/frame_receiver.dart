@@ -25,7 +25,7 @@ class FrameReceiver {
       }
       return UnitFrame.ok();
     } on TimeoutException {
-      log('Expecting ack/nak, received timeout. Resetting buffer.');
+      log('Expecting ack/nak, received timeout');
       return UnitFrame.timeout();
     } finally {
       await queue.cancel(immediate: true);
@@ -44,7 +44,7 @@ class FrameReceiver {
       }
       return UnitFrame.ok();
     } on TimeoutException {
-      log('Expecting EOT, received timeout. Resetting buffer.');
+      log('Expecting EOT, received timeout');
       return UnitFrame.timeout();
     } finally {
       await queue.cancel(immediate: true);
@@ -60,7 +60,7 @@ class FrameReceiver {
       }
       return StringFrame.data(event.data);
     } on TimeoutException {
-      log('Expecting data, received timeout. Resetting buffer.');
+      log('Expecting data, received timeout');
       return StringFrame.timeout();
     } finally {
       await queue.cancel(immediate: true);
