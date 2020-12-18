@@ -53,32 +53,6 @@ void main() {
     });
   });
 
-  group('when bytes are CAN+well formatted message, should return string', () {
-    final data = [
-      "OPN000",
-      "AAAAAAAA",
-    ];
-    data.forEach((text) {
-      test(text, () {
-        final sut = SUT();
-        when(sut.checksumAlgorightm.validate(any, any)).thenAnswer((_) => true);
-
-        final bytes = BytesBuilder()
-            .addByte2(Byte.CAN)
-            .addByte2(Byte.SYN)
-            .addString(text)
-            .addByte2(Byte.ETB)
-            .addBytes([0x00, 0x00]).build();
-
-        for (var b in bytes) {
-          sut.controller.sink.add(b);
-        }
-        expectLater(sut.eventStream,
-            emits(predicate((x) => x.isDataEvent && x.data == text)));
-      });
-    });
-  });
-
   test('when there is no bytes, should receive no string', () {
     final sut = SUT();
     sut.eventStream.listen(expectAsync1((x) {}, count: 0));
@@ -179,8 +153,9 @@ void main() {
     });
   });
 
-  group('when ETB/X/8 are received, should raise error', () {
+  group('when CAN/ETB/X/8 are received, should raise error', () {
     final data = [
+      Byte.CAN.toInt(),
       Byte.ETB.toInt(),
       'X'.codeUnitAt(0),
       8,
