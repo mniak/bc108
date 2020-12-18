@@ -14,7 +14,7 @@ class DataFrame<T> extends Frame {
 
   DataFrame.timeout()
       : data = null,
-        super(tryAgain: true);
+        super(timeout: true);
 
   DataFrame.data(T data) : data = data;
 
