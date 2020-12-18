@@ -37,7 +37,7 @@ class FrameReceiver {
     try {
       final event = await queue.next.timeout(timeout);
       if (!event.aborted) {
-        throw ExpectingAckOrNakException(event);
+        throw ExpectingEotException(event);
       }
       if (event.nak) {
         return UnitFrame.tryAgain();
