@@ -25,7 +25,7 @@ class Operator {
     return ackResult;
   }
 
-  Future<StringFrame> receive({bool blocking}) async {
+  Future<StringFrame> receive({bool blocking = false}) async {
     final timeout = blocking == true ? Duration(days: 1) : dataTimeout;
     final frame = await _receiver.receiveData(timeout);
     log("Data frame received: $frame");
