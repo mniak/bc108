@@ -1,4 +1,5 @@
 enum Byte {
+  EOT,
   ACK,
   SYN,
   NAK,
@@ -10,6 +11,8 @@ enum Byte {
 extension ByteExtensions on Byte {
   int toInt() {
     switch (this) {
+      case Byte.EOT:
+        return 0x04;
       case Byte.ACK:
         return 0x06;
       case Byte.SYN:
@@ -29,6 +32,8 @@ extension ByteExtensions on Byte {
 extension BytesIntExtensions on int {
   Byte toByte() {
     switch (this) {
+      case 0x04:
+        return Byte.EOT;
       case 0x06:
         return Byte.ACK;
       case 0x16:
