@@ -95,6 +95,12 @@ void main() {
     expectLater(sut.processor.notifications, emitsDone);
   });
 
+  test('abort should be bypassed', () {
+    final sut = SUT();
+    sut.processor.abort();
+    verify(sut.oper.abort()).called(1);
+  });
+
   test('notification stream should allow many listeners', () {
     final sut = SUT();
     sut.processor.notifications.listen((event) {});
