@@ -5,10 +5,15 @@ abstract class FrameReceiverException implements Exception {}
 class ExpectingAckOrNakException implements FrameReceiverException {
   String message;
   ExpectingAckOrNakException(ReaderEvent event) {
+    this.message = "Expecting ACK/NAK but got ";
     if (event.isDataEvent) {
-      this.message = "Expecting ACK/NAK but got Data Event '${event.data}'";
+      this.message += "Data Event '${event.data}'";
+    } else if (event.badCRC) {
+      this.message += "Bad CRC";
+    } else if (event.aborted) {
+      this.message += "EOT";
     } else {
-      this.message = "Expecting ACK/NAK but got anything else";
+      this.message += "something else";
     }
   }
 
@@ -17,15 +22,42 @@ class ExpectingAckOrNakException implements FrameReceiverException {
   }
 }
 
+class ExpectingEotException implements FrameReceiverException {
+  String message;
+  ExpectingEotException(ReaderEvent event) {
+    this.message = "Expecting EOT but got ";
+    if (event.isDataEvent) {
+      this.message += "Data Event '${event.data}'";
+    } else if (event.ack) {
+      this.message += "ACK instead";
+    } else if (event.nak) {
+      this.message += "NAK instead";
+    } else if (event.badCRC) {
+      this.message += "Bad CRC";
+    } else {
+      this.message += "anything else";
+    }
+  }
+
+  String toString() {
+    return "ExpectingEotException: $message";
+  }
+}
+
 class ExpectingDataEventException implements FrameReceiverException {
   String message;
   ExpectingDataEventException(ReaderEvent event) {
+    message = "Expecting Data Event but got ";
     if (event.ack) {
-      this.message = "Expecting Data Event but got ACK";
+      this.message += "ACK";
     } else if (event.nak) {
-      this.message = "Expecting Data Event but got NAK";
+      this.message += "NAK";
+    } else if (event.badCRC) {
+      this.message += "Bad CRC";
+    } else if (event.aborted) {
+      this.message += "EOT";
     } else {
-      this.message = "Expecting Data Event but got anything else";
+      this.message += "anything else";
     }
   }
   String toString() {

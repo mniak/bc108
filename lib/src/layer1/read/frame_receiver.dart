@@ -36,7 +36,7 @@ class FrameReceiver {
     final queue = StreamQueue<ReaderEvent>(_stream);
     try {
       final event = await queue.next.timeout(timeout);
-      if (!event.ack && !event.nak) {
+      if (!event.aborted) {
         throw ExpectingAckOrNakException(event);
       }
       if (event.nak) {
