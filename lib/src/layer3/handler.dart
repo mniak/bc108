@@ -19,7 +19,7 @@ class RequestHandler<TRequest, TResponse> {
   }
 
   Future<PinpadResult<TResponse>> handle(TRequest request,
-      {bool blocking}) async {
+      {bool blocking = false}) async {
     final command = _requestMapper.mapRequest(request);
     final result = await _processor.send(command, blocking: blocking);
     final response = _responseMapper.mapResponse(request, result);
