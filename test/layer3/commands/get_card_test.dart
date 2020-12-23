@@ -1,4 +1,5 @@
 import 'package:bc108/bc108.dart';
+import 'package:bc108/src/layer3/commands/enums/application_type.dart';
 import 'package:bc108/src/layer3/commands/get_card.dart';
 import 'package:test/test.dart';
 
@@ -7,7 +8,7 @@ void main() {
     final mapper = GetCardMapper();
     final cmdRequest = mapper.mapRequest(GetCardRequest()
       ..acquirer = 0
-      ..application = 99
+      ..applicationType = ApplicationType.Credito
       ..amount = 1500
       ..datetime = DateTime(2002, 10, 24, 19, 38, 45)
       ..timestamp = 2310200201

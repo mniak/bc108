@@ -1,4 +1,5 @@
 import 'package:bc108/bc108.dart';
+import 'package:bc108/src/layer3/commands/enums/application_type.dart';
 import 'package:bc108/src/layer3/fields/boolean.dart';
 import 'package:bc108/src/layer3/fields/date.dart';
 import 'package:bc108/src/layer3/fields/date_time.dart';
@@ -16,7 +17,7 @@ class GetCardRequestListItem {
 
 class GetCardRequest {
   int acquirer = 0;
-  int application = 99;
+  ApplicationType applicationType = ApplicationType.Unspecified;
   int amount = 0;
   DateTime datetime = DateTime.now();
   int timestamp = 0;
@@ -25,7 +26,7 @@ class GetCardRequest {
 }
 
 class GetCardResponse {
-  int cardType;
+  CardType cardType;
   int statusLastChipRead;
   int applicationType;
   int acquirer;
@@ -71,7 +72,7 @@ class GetCardResponseMapper {
     if (result.status != Status.PP_OK) return null;
     final parsed = _responseField.parse(result.parameters[0]);
     return GetCardResponse()
-      ..cardType = parsed.data[0]
+      ..cardType = (parsed.data[0] as int).asCardType
       ..statusLastChipRead = parsed.data[1]
       ..applicationType = parsed.data[2]
       ..acquirer = parsed.data[3]
@@ -115,7 +116,7 @@ class GetCardMapper
     return CommandRequest("GCR", [
       _requestField.serialize([
         request.acquirer,
-        request.application,
+        request.applicationType,
         request.amount,
         request.datetime,
         request.timestamp,
