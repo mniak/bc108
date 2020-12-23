@@ -8,7 +8,7 @@ void main() {
     final mapper = GetCardMapper();
     final cmdRequest = mapper.mapRequest(GetCardRequest()
       ..acquirer = 0
-      ..applicationType = ApplicationType.Credito
+      ..applicationType = ApplicationType.Debito
       ..amount = 1500
       ..datetime = DateTime(2002, 10, 24, 19, 38, 45)
       ..timestamp = 2310200201
@@ -17,10 +17,10 @@ void main() {
 
     expect(cmdRequest.code, equals("GCR"));
     expect(cmdRequest.parameters.elementAt(0),
-        equals("00990000000015000210241938452310200201001"));
+        equals("00020000000015000210241938452310200201001"));
 
     expect(cmdRequest.payload,
-        equals("GCR04100990000000015000210241938452310200201001"));
+        equals("GCR04100020000000015000210241938452310200201001"));
   });
 
   test('parse', () {
@@ -34,7 +34,7 @@ void main() {
           "03001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000"
         ]));
 
-    expect(response.cardType, equals(3));
+    expect(response.cardType, equals(CardType.Emv));
     expect(response.statusLastChipRead, equals(0));
     expect(response.applicationType, equals(1));
     expect(response.acquirer, equals(01));

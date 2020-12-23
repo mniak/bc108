@@ -127,7 +127,7 @@ class GetCardMapper
     return CommandRequest("GCR", [
       _requestField.serialize([
         request.acquirer,
-        request.applicationType,
+        request.applicationType.value,
         request.amount,
         request.datetime,
         request.timestamp,
