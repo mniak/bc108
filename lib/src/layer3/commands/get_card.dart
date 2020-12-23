@@ -27,7 +27,7 @@ class GetCardRequest {
   bool enableContactless;
   GetCardRequest({
     this.acquirer = 0,
-    this.applicationType = ApplicationType.Unspecified,
+    this.applicationType = ApplicationType.Any,
     this.amount = 0,
     this.datetime,
     this.timestamp = 0,
@@ -134,7 +134,10 @@ class GetCardMapper
         request.amount,
         request.datetime,
         request.timestamp,
-        request.applications,
+        request.applications.map((x) => [
+              x.acquirer,
+              x.index,
+            ]),
         request.enableContactless,
       ])
     ]);

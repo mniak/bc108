@@ -8,7 +8,7 @@ void main() {
     final mapper = GetCardMapper();
     final cmdRequest = mapper.mapRequest(GetCardRequest()
       ..acquirer = 0
-      ..applicationType = ApplicationType.Debito
+      ..applicationType = ApplicationType.Any
       ..amount = 1500
       ..datetime = DateTime(2002, 10, 24, 19, 38, 45)
       ..timestamp = 2310200201
@@ -17,10 +17,10 @@ void main() {
 
     expect(cmdRequest.code, equals("GCR"));
     expect(cmdRequest.parameters.elementAt(0),
-        equals("00020000000015000210241938452310200201001"));
+        equals("00990000000015000210241938452310200201001"));
 
     expect(cmdRequest.payload,
-        equals("GCR04100020000000015000210241938452310200201001"));
+        equals("GCR04100990000000015000210241938452310200201001"));
   });
 
   test('parse', () {
