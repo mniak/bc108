@@ -13,6 +13,8 @@ import '../handler.dart';
 class GetCardRequestListItem {
   int acquirer;
   int index;
+
+  GetCardRequestListItem({this.acquirer, this.index});
 }
 
 class GetCardRequest {
@@ -21,8 +23,17 @@ class GetCardRequest {
   int amount = 0;
   DateTime datetime = DateTime.now();
   int timestamp = 0;
-  List<GetCardRequestListItem> applications = [];
+  Iterable<GetCardRequestListItem> applications = [];
   bool enableContactless = true;
+  GetCardRequest({
+    this.acquirer,
+    this.applicationType,
+    this.amount,
+    this.datetime,
+    this.timestamp,
+    this.applications,
+    this.enableContactless,
+  });
 }
 
 class GetCardResponse {

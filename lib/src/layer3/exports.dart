@@ -1,6 +1,7 @@
 export 'commands/close.dart' show CloseRequest;
 export 'commands/remove_card.dart' show RemoveCardRequest;
-export 'commands/get_card.dart' show GetCardRequest, GetCardResponse;
+export 'commands/get_card.dart'
+    show GetCardRequest, GetCardRequestListItem, GetCardResponse;
 export 'commands/go_on_chip.dart'
     show GoOnChipRequest, GoOnChipResponse, BiasedRandomSelection;
 export 'commands/finish_chip.dart' show FinishChipRequest, FinishChipResponse;
@@ -11,6 +12,7 @@ export 'commands/table_load_rec.dart' show TableLoadRecRequest;
 export 'commands/get_timestamp.dart'
     show GetTimestampRequest, GetTimestampResponse;
 
+export 'commands/enums/application_type.dart';
 export 'commands/enums/card_type.dart';
 export 'commands/enums/communication_status.dart';
 export 'commands/enums/encryption_mode.dart';
