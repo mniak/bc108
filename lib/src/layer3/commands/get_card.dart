@@ -18,22 +18,25 @@ class GetCardRequestListItem {
 }
 
 class GetCardRequest {
-  int acquirer = 0;
-  ApplicationType applicationType = ApplicationType.Unspecified;
-  int amount = 0;
-  DateTime datetime = DateTime.now();
-  int timestamp = 0;
-  Iterable<GetCardRequestListItem> applications = [];
-  bool enableContactless = true;
+  int acquirer;
+  ApplicationType applicationType;
+  int amount;
+  DateTime datetime;
+  int timestamp;
+  Iterable<GetCardRequestListItem> applications;
+  bool enableContactless;
   GetCardRequest({
-    this.acquirer,
-    this.applicationType,
-    this.amount,
+    this.acquirer = 0,
+    this.applicationType = ApplicationType.Unspecified,
+    this.amount = 0,
     this.datetime,
-    this.timestamp,
+    this.timestamp = 0,
     this.applications,
-    this.enableContactless,
-  });
+    this.enableContactless = true,
+  }) {
+    this.datetime ??= DateTime.now();
+    this.applications ??= [];
+  }
 }
 
 class GetCardResponse {
