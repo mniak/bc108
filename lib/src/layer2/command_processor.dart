@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bc108/src/layer1/read/exceptions.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'package:bc108/src/layer1/exports.dart';
@@ -29,25 +30,29 @@ class CommandProcessor {
 
   Future<CommandResponse> _send(CommandRequest request,
       {bool blocking = false}) async {
-    final ackFrame = await _operator.send(request.payload);
-    if (ackFrame.tryAgain)
-      return CommandResponse.fromStatus(Status.PP_COMMERR, request.code);
-    if (ackFrame.timeout)
-      return CommandResponse.fromStatus(Status.PP_COMMTOUT, request.code);
+    try {
+      final ackFrame = await _operator.send(request.payload);
+      if (ackFrame.tryAgain)
+        return CommandResponse.fromStatus(Status.PP_COMMERR, request.code);
+      if (ackFrame.timeout)
+        return CommandResponse.fromStatus(Status.PP_COMMTOUT, request.code);
 
-    CommandResponse response;
-    do {
-      final frameResult = await _operator.receive(blocking: blocking);
-      response = CommandResponse.fromDataFrame(frameResult);
-      if (response.code == "NTM") {
-        final message = response.parameters[0];
-        log('Notification received: $message');
-        _notificationController.sink.add(message);
-      } else {
-        log('Command response received: ${response.code} ${response.status} ${response.parameters.join(", ")}');
-        return response;
-      }
-    } while (true);
+      CommandResponse response;
+      do {
+        final frameResult = await _operator.receive(blocking: blocking);
+        response = CommandResponse.fromDataFrame(frameResult);
+        if (response.code == "NTM") {
+          final message = response.parameters[0];
+          log('Notification received: $message');
+          _notificationController.sink.add(message);
+        } else {
+          log('Command response received: ${response.code} ${response.status} ${response.parameters.join(", ")}');
+          return response;
+        }
+      } while (true);
+    } on AbortedException {
+      return CommandResponse(request.code, Status.PP_CANCEL, []);
+    }
   }
 
   void close() {

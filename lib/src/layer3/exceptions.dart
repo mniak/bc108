@@ -6,6 +6,7 @@ class InvalidCommandCodeInResponseException implements PinpadException {
     this.message = "Expecting code '$expectedCode' but got '$code'.";
   }
 
+  @override
   String toString() {
     return "InvalidCommandCodeInResponseException: $message";
   }

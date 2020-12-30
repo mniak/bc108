@@ -63,4 +63,7 @@ class BinaryData {
 
   bool get isEmpty => _bytes.isEmpty;
   bool get isNotEmpty => _bytes.isNotEmpty;
+
+  bool get isZero => _bytes.every((x) => x == 0);
+  bool get isNotZero => !isZero;
 }

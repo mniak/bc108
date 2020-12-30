@@ -1,4 +1,5 @@
 import 'package:bc108/bc108.dart';
+import 'package:bc108/src/layer3/commands/enums/application_type.dart';
 import 'package:bc108/src/layer3/fields/boolean.dart';
 import 'package:bc108/src/layer3/fields/date.dart';
 import 'package:bc108/src/layer3/fields/date_time.dart';
@@ -12,20 +13,34 @@ import '../handler.dart';
 class GetCardRequestListItem {
   int acquirer;
   int index;
+
+  GetCardRequestListItem({this.acquirer, this.index});
 }
 
 class GetCardRequest {
-  int acquirer = 0;
-  int application = 99;
-  int amount = 0;
-  DateTime datetime = DateTime.now();
-  int timestamp = 0;
-  List<GetCardRequestListItem> applications = [];
-  bool enableContactless = true;
+  int acquirer;
+  ApplicationType applicationType;
+  int amount;
+  DateTime datetime;
+  int timestamp;
+  Iterable<GetCardRequestListItem> applications;
+  bool enableContactless;
+  GetCardRequest({
+    this.acquirer = 0,
+    this.applicationType = ApplicationType.Any,
+    this.amount = 0,
+    this.datetime,
+    this.timestamp = 0,
+    this.applications,
+    this.enableContactless = true,
+  }) {
+    this.datetime ??= DateTime.now();
+    this.applications ??= [];
+  }
 }
 
 class GetCardResponse {
-  int cardType;
+  CardType cardType;
   int statusLastChipRead;
   int applicationType;
   int acquirer;
@@ -71,7 +86,7 @@ class GetCardResponseMapper {
     if (result.status != Status.PP_OK) return null;
     final parsed = _responseField.parse(result.parameters[0]);
     return GetCardResponse()
-      ..cardType = parsed.data[0]
+      ..cardType = (parsed.data[0] as int).asCardType
       ..statusLastChipRead = parsed.data[1]
       ..applicationType = parsed.data[2]
       ..acquirer = parsed.data[3]
@@ -115,11 +130,14 @@ class GetCardMapper
     return CommandRequest("GCR", [
       _requestField.serialize([
         request.acquirer,
-        request.application,
+        request.applicationType.value,
         request.amount,
         request.datetime,
         request.timestamp,
-        request.applications,
+        request.applications.map((x) => [
+              x.acquirer,
+              x.index,
+            ]),
         request.enableContactless,
       ])
     ]);

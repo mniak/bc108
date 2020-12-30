@@ -1,4 +1,5 @@
 import 'package:bc108/bc108.dart';
+import 'package:bc108/src/layer3/commands/enums/application_type.dart';
 import 'package:bc108/src/layer3/commands/get_card.dart';
 import 'package:test/test.dart';
 
@@ -7,7 +8,7 @@ void main() {
     final mapper = GetCardMapper();
     final cmdRequest = mapper.mapRequest(GetCardRequest()
       ..acquirer = 0
-      ..application = 99
+      ..applicationType = ApplicationType.Any
       ..amount = 1500
       ..datetime = DateTime(2002, 10, 24, 19, 38, 45)
       ..timestamp = 2310200201
@@ -33,7 +34,7 @@ void main() {
           "03001010200                                                                            29376436871651006=0305000523966        000                                                                                                        15376436871651006    01AMEX GREEN      246JOAO DA SILVA             04123100                   00000000076000"
         ]));
 
-    expect(response.cardType, equals(3));
+    expect(response.cardType, equals(CardType.Emv));
     expect(response.statusLastChipRead, equals(0));
     expect(response.applicationType, equals(1));
     expect(response.acquirer, equals(01));
