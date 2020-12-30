@@ -1,6 +1,6 @@
 name: bc108
 description: "Implementation of the 'Biblioteca Compartilhada' v1.08 specification."
-version: 0.1.7
+version: 0.1.8
 homepage: https://github.com/mniak/bc108
 
 environment:

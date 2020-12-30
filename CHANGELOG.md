@@ -1,4 +1,7 @@
 ## [0.1.7]
+- Implements Abort method
+
+## [0.1.7]
 - Fix a bug that made `FrameReceiver` read old reader events, making the lib stop working in some scenarios.
 
 ## [0.1.6]

@@ -47,7 +47,7 @@ print("🕐 The timestamp is ${tr.data.timestamp}");
 - ✅ `tableLoadRec`
 - ✅ `tableLoadEnd`
 - ⬜ `getDUKPT`
-- ⬜ `getTimeStamp`
+- ✅ `getTimeStamp`
 - ⬜ `defineWKPAN`
 
 ## Donations
