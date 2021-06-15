@@ -11,7 +11,7 @@ dependencies:
   collection: ^1.14.13
   convert: ^2.1.1
   matcher: ^0.12.9
-  synchronized: ^2.2.0+2
+  synchronized: ^3.0.0
 
 dev_dependencies:
   faker: ^1.2.1
