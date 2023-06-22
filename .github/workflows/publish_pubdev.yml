@@ -19,7 +19,7 @@ jobs:
       - run: dart pub get
       - run: dart test
       - name: Publish
-        uses: sakebook/actions-flutter-pub-publisher@v1.3.1
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.PUB_CACHE_CREDENTIALS_JSON }}
           flutter_package: false
